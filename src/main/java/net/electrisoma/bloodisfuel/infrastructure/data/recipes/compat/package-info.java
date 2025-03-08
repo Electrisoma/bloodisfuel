@@ -1,6 +1,6 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package net.electrisoma.bloodisfuel.infrastructure.data.recipe;
+package net.electrisoma.bloodisfuel.infrastructure.data.recipes.compat;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import javax.annotation.ParametersAreNonnullByDefault;

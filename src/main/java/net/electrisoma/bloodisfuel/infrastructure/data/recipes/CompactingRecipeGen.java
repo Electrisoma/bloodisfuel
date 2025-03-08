@@ -1,4 +1,4 @@
-package net.electrisoma.bloodisfuel.infrastructure.data.recipe;
+package net.electrisoma.bloodisfuel.infrastructure.data.recipes;
 
 import net.electrisoma.bloodisfuel.registry.fluids.BIF_Fluids;
 import net.electrisoma.bloodisfuel.registry.items.BIF_Items;
@@ -30,7 +30,5 @@ public class CompactingRecipeGen extends BloodProcessingRecipeGen{
     }
 
     @Override
-    protected AllRecipeTypes getRecipeType() {
-        return AllRecipeTypes.COMPACTING;
-    }
+    protected AllRecipeTypes getRecipeType() {return AllRecipeTypes.COMPACTING;}
 }

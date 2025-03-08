@@ -26,13 +26,14 @@ import net.minecraftforge.registries.IForgeRegistry;
 import java.util.Collections;
 
 import static net.electrisoma.bloodisfuel.registry.BIF_Tags.NameSpace.BM;
+import static net.electrisoma.bloodisfuel.registry.BIF_Tags.NameSpace.AC;
 import static net.electrisoma.bloodisfuel.registry.BIF_Tags.NameSpace.FORGE;
 
 
 @SuppressWarnings({"all"})
 public class BIF_Tags {
-    public static <T> TagKey<T> optionalTag(IForgeRegistry<T> registry,
-                                            ResourceLocation id) {
+
+    public static <T> TagKey<T> optionalTag(IForgeRegistry<T> registry, ResourceLocation id) {
         return registry.tags()
                 .createOptionalTagKey(id, Collections.emptySet());
     }
@@ -60,6 +61,7 @@ public class BIF_Tags {
         FORGE("forge"),
         TIC("tconstruct"),
         BM("biomancy"),
+        AC("alexscaves"),
         BF("biofactory")
 
         ;
@@ -80,7 +82,8 @@ public class BIF_Tags {
     }
 
     public enum AllBlockTags {
-
+        CARBOHYDRATES,
+        MEATS
         ;
 
         public final TagKey<Block> tag;
@@ -131,14 +134,13 @@ public class BIF_Tags {
     }
 
     public enum AllItemTags {
-        SYRINGE_BLADE,
-        RAW_MEATS(BM),
-        MEATS,
-        MODDED_MEATS,
+        CARBOHYDRATES,
         FISHES,
+        MEATS,
         MODDED_FISHES,
-        CARBOHYDRATES
-        ;
+        MODDED_MEATS,
+        RAW_MEATS(BM),
+        SYRINGE_BLADE;
 
         public final TagKey<Item> tag;
         public final boolean alwaysDatagen;
@@ -179,23 +181,21 @@ public class BIF_Tags {
             return stack.is(tag);
         }
 
-        private static void init() {}
+        private static void init() {
+        }
 
     }
 
     public enum AllFluidTags {
-
-        VISCERA,
         BLOOD,
-        ENRICHED_BLOOD,
-        OIL_ENRICHED_BLOOD,
+        CRUDE_OIL(FORGE),
         DIESEL_INFUSED_BLOOD,
+        ENRICHED_BLOOD,
+        FUEL(FORGE),
         GASOLINE_INFUSED_BLOOD,
         LIQUID_CARBOHYDRATES,
-        CRUDE_OIL(FORGE),
-        FUEL(FORGE)
-
-        ;
+        OIL_ENRICHED_BLOOD,
+        VISCERA;
 
         public final TagKey<Fluid> tag;
         public final boolean alwaysDatagen;
@@ -235,7 +235,8 @@ public class BIF_Tags {
             return state.is(tag);
         }
 
-        private static void init() {}
+        private static void init() {
+        }
 
     }
 

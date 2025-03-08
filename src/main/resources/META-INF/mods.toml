@@ -15,21 +15,21 @@ description='''
 Create: Blood is Fuel! adds a new fuel type for Create: Diesel Generators that is (as the name says) blood.
 '''
 
-[[dependencies.bloodisfuel]] #optional
+[[dependencies.${mod_id}]] #optional
 modId="forge" #mandatory
 mandatory=true #mandatory
 versionRange="[${big_forge_version},)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.bloodisfuel]]
+[[dependencies.${mod_id}]]
 modId="minecraft"
 mandatory=true
 versionRange="[1.20.1, 1.21)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.bloodisfuel]]
+[[dependencies.${mod_id}]]
 modId="create"
 mandatory=true
 versionRange="[${create_version},)"

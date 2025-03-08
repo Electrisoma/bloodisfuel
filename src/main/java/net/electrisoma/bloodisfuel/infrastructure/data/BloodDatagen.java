@@ -1,12 +1,10 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.simibubi.create.foundation.utility.FilesHelper;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.infrastructure.LangPartial;
 import net.electrisoma.bloodisfuel.infrastructure.data.advancements.AllAdvancements;
-import net.electrisoma.bloodisfuel.infrastructure.data.recipe.BloodProcessingRecipeGen;
+import net.electrisoma.bloodisfuel.infrastructure.data.recipes.BloodProcessingRecipeGen;
+import net.electrisoma.bloodisfuel.infrastructure.data.recipes.StandardRecipeGen;
 import net.electrisoma.bloodisfuel.infrastructure.data.tags.BloodRegistrateTags;
 
 import com.tterrag.registrate.providers.ProviderType;
@@ -14,9 +12,7 @@ import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.data.event.GatherDataEvent;
-import org.apache.logging.log4j.util.TriConsumer;
 
-import java.util.Map;
 import java.util.function.BiConsumer;
 
 
@@ -30,6 +26,7 @@ public class BloodDatagen {
 		if (event.includeServer()) {
 
 			generator.addProvider(true, new AllAdvancements(output));
+			generator.addProvider(true, new StandardRecipeGen(output));
 			BloodProcessingRecipeGen.registerAll(generator, output);
 		}
 	}
@@ -42,7 +39,6 @@ public class BloodDatagen {
 
 			AllAdvancements.provideLang(langConsumer);
 			providePartialLang(langConsumer);
-
 		});
 
 	}

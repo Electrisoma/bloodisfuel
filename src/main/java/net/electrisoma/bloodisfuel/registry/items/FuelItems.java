@@ -1,4 +1,4 @@
-package net.electrisoma.bloodisfuel.infrastructure.utils;
+package net.electrisoma.bloodisfuel.registry.items;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

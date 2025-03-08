@@ -181,6 +181,24 @@ public class BloodRegistrateTags  {
 	private static void genBlockTags(RegistrateTagsProvider<Block> provIn) {
 		TagGen.CreateTagsProvider<Block> prov =
 				new TagGen.CreateTagsProvider<>(provIn, Block::builtInRegistryHolder);
+
+		prov.tag(BIF_Tags.AllBlockTags.CARBOHYDRATES.tag)
+
+				//AC
+				.addOptional(Utils.location("alexscaves:block_of_chocolate"))
+				.addOptional(Utils.location("alexscaves:block_of_polished_chocolate"))
+				.addOptional(Utils.location("alexscaves:block_of_chiseled_chocolate"))
+				.addOptional(Utils.location("alexscaves:block_of_frosted_chocolate"))
+				.addOptional(Utils.location("alexscaves:block_of_frosting"))
+				.addOptional(Utils.location("alexscaves:block_of_vanilla_frosting"))
+				.addOptional(Utils.location("alexscaves:block_of_chocolate_frosting"))
+				.addOptional(Utils.location("alexscaves:cake_layer"))
+				.addOptional(Utils.location("alexscaves:cookie_block"))
+				.addOptional(Utils.location("alexscaves:wafer_cookie_block"))
+				.addOptional(Utils.location("alexscaves:dough_block"))
+				.addOptional(Utils.location("alexscaves:confection_oven"))
+				.addOptionalTag(Utils.location("alexscaves:rock_candies"))
+		;
 	}
 
 	private static void genEntityTags(RegistrateTagsProvider<EntityType<?>> provIn) {

@@ -1,13 +1,14 @@
-package net.electrisoma.bloodisfuel.infrastructure.data.recipe;
+package net.electrisoma.bloodisfuel.infrastructure.data.recipes;
 
+import com.simibubi.create.AllRecipeTypes;
+import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.infrastructure.data.recipe.compat.DistillationRecipeGen;
+import net.electrisoma.bloodisfuel.infrastructure.data.recipes.compat.DistillationRecipeGen;
 
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
 import com.simibubi.create.foundation.data.recipe.CreateRecipeProvider;
-import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import com.simibubi.create.foundation.utility.RegisteredObjects;
 
 import net.minecraft.data.CachedOutput;
@@ -16,7 +17,10 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +39,11 @@ public abstract class BloodProcessingRecipeGen extends CreateRecipeProvider {
         GENERATORS.add(new MixingRecipeGen(output));
         GENERATORS.add(new EmptyingRecipeGen(output));
         GENERATORS.add(new CompactingRecipeGen(output));
-        GENERATORS.add(new DistillationRecipeGen(output));
-        //GENERATORS.add(new LiquidBurningRecipeGen(output));
+
+        if(ModList.get().isLoaded("createdieselgenerators"))
+            GENERATORS.add(new DistillationRecipeGen(output));
+        //if(ModList.get().isLoaded("createaddition"))
+        //    GENERATORS.add(new LiquidBurningGen(output));
 
 
         gen.addProvider(true, new DataProvider() {

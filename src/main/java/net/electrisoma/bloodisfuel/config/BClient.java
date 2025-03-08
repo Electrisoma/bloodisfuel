@@ -14,6 +14,7 @@ public class BClient extends ConfigBase {
             group(1, "fluidFogSettings",
                     Comments.fluidFogSettings);
 
+    // fog transparency
     public final ConfigFloat visceraTransparencyMultiplier =
             f(1,.125f,128,"viscera",
                     Comments.visceraTransparencyMultiplier);
@@ -43,6 +44,7 @@ public class BClient extends ConfigBase {
         static String fluidFogSettings =
                 "Configure your vision range when submerged in Create Blood is Fuel!'s custom fluids";
 
+        // fog transparency
         static String visceraTransparencyMultiplier =
                 "The vision range through viscera will be multiplied by this factor";
         static String bloodTransparencyMultiplier =

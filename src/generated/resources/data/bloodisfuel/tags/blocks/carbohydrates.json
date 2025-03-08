@@ -1,0 +1,56 @@
+{
+  "values": [
+    {
+      "id": "alexscaves:block_of_chocolate",
+      "required": false
+    },
+    {
+      "id": "alexscaves:block_of_polished_chocolate",
+      "required": false
+    },
+    {
+      "id": "alexscaves:block_of_chiseled_chocolate",
+      "required": false
+    },
+    {
+      "id": "alexscaves:block_of_frosted_chocolate",
+      "required": false
+    },
+    {
+      "id": "alexscaves:block_of_frosting",
+      "required": false
+    },
+    {
+      "id": "alexscaves:block_of_vanilla_frosting",
+      "required": false
+    },
+    {
+      "id": "alexscaves:block_of_chocolate_frosting",
+      "required": false
+    },
+    {
+      "id": "alexscaves:cake_layer",
+      "required": false
+    },
+    {
+      "id": "alexscaves:cookie_block",
+      "required": false
+    },
+    {
+      "id": "alexscaves:wafer_cookie_block",
+      "required": false
+    },
+    {
+      "id": "alexscaves:dough_block",
+      "required": false
+    },
+    {
+      "id": "alexscaves:confection_oven",
+      "required": false
+    },
+    {
+      "id": "#alexscaves:rock_candies",
+      "required": false
+    }
+  ]
+}

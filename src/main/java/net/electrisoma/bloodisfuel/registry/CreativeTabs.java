@@ -36,7 +36,8 @@ public class CreativeTabs {
     private static final DeferredRegister<CreativeModeTab> REGISTER =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, BloodIsFuel.MOD_ID);
 
-    public static final RegistryObject<CreativeModeTab> BASE_CREATIVE_TAB = REGISTER.register("base",
+    public static final RegistryObject<CreativeModeTab> BASE_CREATIVE_TAB =
+            REGISTER.register("base",
             () -> CreativeModeTab.builder()
                     .title(Components.translatable("itemGroup.bloodisfuel.base"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)

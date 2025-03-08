@@ -33,7 +33,8 @@ import static net.electrisoma.bloodisfuel.BloodIsFuel.REGISTRATE;
 
 
 @SuppressWarnings("all")
-public class BIF_Fluids { static {
+public class BIF_Fluids {
+    static {
     REGISTRATE.setCreativeTab(CreativeTabs.BASE_CREATIVE_TAB);
 }
 

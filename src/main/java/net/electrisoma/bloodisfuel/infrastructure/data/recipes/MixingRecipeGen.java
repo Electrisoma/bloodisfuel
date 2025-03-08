@@ -1,4 +1,4 @@
-package net.electrisoma.bloodisfuel.infrastructure.data.recipe;
+package net.electrisoma.bloodisfuel.infrastructure.data.recipes;
 
 import net.electrisoma.bloodisfuel.registry.fluids.BIF_Fluids;
 import net.electrisoma.bloodisfuel.registry.BIF_Tags;
