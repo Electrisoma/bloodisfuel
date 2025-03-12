@@ -1,6 +1,6 @@
 package net.electrisoma.bloodisfuel.config;
 
-import com.simibubi.create.foundation.config.ConfigBase;
+import net.createmod.catnip.config.ConfigBase;
 
 
 @SuppressWarnings({"unused"})

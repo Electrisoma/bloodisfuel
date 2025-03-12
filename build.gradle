@@ -1,17 +1,13 @@
 plugins {
-    id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
+    id "net.neoforged.moddev.legacyforge" version "2.0.74"
 }
-
-version = mod_version
-group = mod_group_id
 
 base {
     archivesName = mod_id
+    group = mod_group_id
+    version = mod_version
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -19,142 +15,157 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println "Java: ${System.getProperty 'java.version'}, " +
         "JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), " +
         "Arch: ${System.getProperty 'os.arch'}"
-minecraft {
-    mappings channel: mapping_channel, version: mapping_version
 
-    copyIdeResources = true
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+legacyForge {
+    version = "$minecraft_version-$forge_version"
+
+    validateAccessTransformers = false
+
+    if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
+        accessTransformers.from "src/main/resources/META-INF/accesstransformer.cfg"
+    }
+
+    parchment {
+        minecraftVersion = minecraft_version
+        mappingsVersion = parchment_version
+    }
+
+    mods {
+        bloodisfuel {
+            sourceSet sourceSets.main
+        }
+    }
 
     runs {
+        // applies to all the run configs below
+        configureEach {
+            systemProperty 'forge.logging.markers', ''
+            systemProperty 'forge.logging.console.level', 'info'
+            jvmArguments = ["-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition"]
+            //jvmArgs("-XX:-OmitStackTraceInFastThrow") // uncomment when you get exceptions with null messages etc
+            //jvmArgs '-XX:+UnlockCommercialFeatures' // uncomment for profiling
+
+            systemProperty 'mixin.debug.export', 'true'
+            systemProperty 'mixin.debug.verbose', 'true'
+
+            //programArgument '-mixin.config=${mod_id}.mixins.json'
+        }
+
         client {
-            workingDirectory project.file('run')
+            client()
 
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
+            gameDirectory = project.file('run')
         }
 
         server {
-            workingDirectory project.file('run')
+            server()
 
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        gameTestServer {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
+            gameDirectory = project.file('run/server')
         }
 
         data {
-            workingDirectory project.file('run')
+            data()
 
-            property 'forge.logging.markers', 'REGISTRIES'
+            gameDirectory = project.file('run')
+            systemProperty 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            systemProperty 'forge.logging.console.level', 'debug'
+            programArguments.addAll("--mod", mod_id as String, "--all", "--output",
+                    file("src/generated/resources/").getAbsolutePath(), "--existing",
+                    file("src/main/resources").getAbsolutePath())
+        }
 
-            property 'forge.logging.console.level', 'debug'
+        gameTestServer {
+            type = "gameTestServer"
 
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
+            gameDirectory = project.file('run/gametest')
         }
     }
 }
-sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    maven { url = "https://dvs1.progwml6.com/files/maven/" }  // JEI
-    maven { url = "https://modmaven.k-4u.nl" }  // JEI backup
-    maven { url = 'https://maven.blamejared.com' }
     maven {
-        name = 'tterrag maven'
-        url = 'https://maven.tterrag.com/'
+        url = "https://maven.createmod.net"
+    } // Create, Ponder, Flywheel
+    maven {
+        url = "https://maven.tterrag.com"
+    } // Registrate
+
+    maven {
+        url = "https://maven.blamejared.com"
+    } // JEI, Vazkii's Mods
+    maven {
+        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+    } // ForgeConfigAPIPort
+
+    maven {
+        url = "https://www.cursemaven.com"
     }
-    maven { url = "https://www.cursemaven.com" }
-    maven { url = "https://api.modrinth.com/maven" }
+    maven {
+        url = "https://api.modrinth.com/maven"
+    }
+
+    mavenCentral()
+    mavenLocal()
+    flatDir {
+        dirs "libs"
+    }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    //Create, Flywheel, Registrate, Create Diesel Generators
+    modImplementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
+    modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
+    modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
+    modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
+
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
+
+    //modImplementation("curse.maven:create-diesel-generators-869316:5401010")
+    //modImplementation("curse.maven:createaddition-439890:5658602")
 
     //JEI
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
-    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
-
-    //Create, Flywheel, Registrate, Create Diesel Generators
-    implementation fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}-${create_build_number}:slim") { transitive = false }
-    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
-    implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
-    implementation fg.deobf("curse.maven:create-diesel-generators-869316:5401010")
-    implementation fg.deobf("curse.maven:createaddition-439890:5658602")
+    modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    modCompileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    modImplementation("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //Biomancy
-    implementation fg.deobf("curse.maven:bio-factory-1136762:5887553")
-    implementation fg.deobf("curse.maven:biomancy-492939:5886758")
-    implementation fg.deobf("curse.maven:geckolib-388172:6027567")
+    //implementation fg.deobf("curse.maven:bio-factory-1136762:5887553")
+    //implementation fg.deobf("curse.maven:biomancy-492939:5886758")
+    //implementation fg.deobf("curse.maven:geckolib-388172:6027567")
 
     //TConstruct, Mantle
-    implementation fg.deobf("curse.maven:mantle-74924:6041712")
-    implementation fg.deobf("curse.maven:tinkers-construct-74072:6041763")
+    //implementation fg.deobf("curse.maven:mantle-74924:6041712")
+    //implementation fg.deobf("curse.maven:tinkers-construct-74072:6041763")
+
+    if (!Boolean.getBoolean('idea.sync.active')) {
+        annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    }
 }
 
-def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
-def replaceProperties = [
-        mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-        mod_authors: mod_authors, mod_description: mod_description,
+sourceSets.main {
+    java{
 
-        minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range, big_mc_version: big_mc_version,
-        forge_version: forge_version, forge_version_range: forge_version_range, big_forge_version: big_forge_version,
-        loader_version_range: loader_version_range,
-        mapping_channel: mapping_channel, mapping_version: mapping_version,
+    }
 
-        create_version: create_version, flywheel_version: flywheel_version,
-        registrate_version: registrate_version,
-        jei_version: jei_version, jei_version_range: jei_version_range
-]
-processResources {
-    inputs.properties replaceProperties
-    replaceProperties.put 'project', project
-
-    filesMatching(resourceTargets) {
-        expand replaceProperties
+    resources {
+        srcDir 'src/generated/resources'
+        exclude ".cache"
     }
 }
 
 jar {
+    from('LICENSE') {
+        rename { "${it}_${archivesBaseName}" }
+    }
     manifest {
         attributes([
                 "Specification-Title"     : mod_id,
@@ -167,12 +178,12 @@ jar {
         ])
     }
 }
-jar.finalizedBy('reobfJar')
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact jar
+            artifactId base.archivesName.get()
+            from components.java
         }
     }
     repositories {
@@ -183,5 +194,5 @@ publishing {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = 'UTF-8'
 }

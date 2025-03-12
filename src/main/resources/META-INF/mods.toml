@@ -1,37 +1,35 @@
-modLoader="javafml" #mandatory
-loaderVersion="[40,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+modLoader="javafml"
+loaderVersion="[47,)"
 license="${mod_license}"
-#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
-[[mods]] #mandatory
-modId="bloodisfuel" #mandatory
-version="${mod_version}" #mandatory
-displayName="Create: Blood is Fuel!" #mandatory
-#updateJSONURL="https://change.me.example.invalid/updates.json" #optional
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
-#logoFile="examplemod.png" #optional
-#credits="" #optional
-authors="Electrisoma" #optional
+issueTrackerURL="https://github.com/Electrisoma/bloodisfuel/issues/"
+
+[[mods]]
+modId="bloodisfuel"
+version="${file.jarVersion}"
+displayName="Create: Blood is Fuel!"
+logoFile="logo.png"
+authors="Electrisoma"
 description='''
 Create: Blood is Fuel! adds a new fuel type for Create: Diesel Generators that is (as the name says) blood.
 '''
 
-[[dependencies.${mod_id}]] #optional
-modId="forge" #mandatory
-mandatory=true #mandatory
-versionRange="[${big_forge_version},)"
+[[dependencies.bloodisfuel]]
+modId="forge"
+mandatory=true
+versionRange="[47.1.3,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.bloodisfuel]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.20.1, 1.21)"
+versionRange="[1.20.1]"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.bloodisfuel]]
 modId="create"
 mandatory=true
-versionRange="[${create_version},)"
+versionRange="[6.0.1,6.1.0)"
 ordering="NONE"
 side="BOTH"

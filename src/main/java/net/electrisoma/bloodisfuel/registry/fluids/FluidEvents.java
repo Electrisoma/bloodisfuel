@@ -19,12 +19,12 @@ public class FluidEvents {
     static void onFurnaceFuel(FurnaceFuelBurnTimeEvent event) {
         for (FluidEntry<ForgeFlowingFluid.Flowing> flowingFluidEntry :
                 Arrays.asList(
-                        BIF_Fluids.VISCERA,
-                        BIF_Fluids.BLOOD,
-                        BIF_Fluids.ENRICHED_BLOOD,
-                        BIF_Fluids.OIL_ENRICHED_BLOOD,
-                        BIF_Fluids.DIESEL_INFUSED_BLOOD,
-                        BIF_Fluids.GASOLINE_INFUSED_BLOOD)) {
+                        BFluids.VISCERA,
+                        BFluids.BLOOD,
+                        BFluids.ENRICHED_BLOOD,
+                        BFluids.OIL_ENRICHED_BLOOD,
+                        BFluids.DIESEL_INFUSED_BLOOD,
+                        BFluids.GASOLINE_INFUSED_BLOOD)) {
             if (event.getItemStack().getItem() ==
                     flowingFluidEntry.getBucket().get()) {
                 event.setBurnTime(30000);}

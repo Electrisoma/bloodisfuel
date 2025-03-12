@@ -1,19 +1,17 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
-import net.electrisoma.bloodisfuel.infrastructure.Lang;
-import net.electrisoma.bloodisfuel.registry.BIF_Tags;
+import net.electrisoma.bloodisfuel.registry.BTags;
 
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.content.equipment.armor.CapacityEnchantment;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 
-import net.minecraft.ChatFormatting;
+import net.electrisoma.bloodisfuel.registry.items.ItemUtils;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -26,22 +24,18 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
 
 
 @SuppressWarnings("all")
-public class SyringeBladeItem extends SwordItem implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable {
-
-    public static final int BLOOD_CAPACITY = 1000;
-    public static final int BLOOD_CAPACITY_ENCHANTMENT = 1000;
-
+public class SyringeBladeItem extends SwordItem implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable, ItemUtils {
     boolean isOnCooldown;
     boolean offHandPower;
 
@@ -52,17 +46,17 @@ public class SyringeBladeItem extends SwordItem implements CustomArmPoseItem, Ca
     @Override
     public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) {
         super.inventoryTick(pStack, pLevel, pEntity, pSlotId, pIsSelected);
-        if (BIF_Tags.AllItemTags.SYRINGE_BLADE.matches(pStack)) {
+        if (BTags.BItemTags.SYRINGE_BLADE.matches(pStack)) {
             if (pEntity instanceof Player pPlayer && pIsSelected) {
                 isOnCooldown = pPlayer.getCooldowns().isOnCooldown(pPlayer.getMainHandItem().getItem());
-                offHandPower = BIF_Tags.AllItemTags.SYRINGE_BLADE.matches(pPlayer.getOffhandItem().getItem());
+                offHandPower = BTags.BItemTags.SYRINGE_BLADE.matches(pPlayer.getOffhandItem().getItem());
             }
         }
     }
 
     //enemy debuffs and cooldown trigger
     public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
-        if (BIF_Tags.AllItemTags.SYRINGE_BLADE.matches(pStack)) {
+        if (BTags.BItemTags.SYRINGE_BLADE.matches(pStack)) {
             if (pAttacker instanceof Player pPlayer && !isOnCooldown) {
                 resetCooldown(pStack, pPlayer);
                 return true;
@@ -108,35 +102,9 @@ public class SyringeBladeItem extends SwordItem implements CustomArmPoseItem, Ca
     }
 
     //tooltip for fluid amount
-    public void appendHoverText(ItemStack stack, Level level, List<Component> components, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, level, components, tooltipFlag);
-            if(stack.getTag() != null) {
-            CompoundTag Blood = stack.getTag().getCompound("Fluid");
-
-            FluidStack fStack = FluidStack.loadFluidStackFromNBT(Blood);
-            if(fStack.isEmpty()){
-                components.add(Component.translatable("bloodisfuel.tooltip.empty").withStyle(ChatFormatting.GRAY));
-                return;
-            }
-
-            components.add(Lang.fluidName(fStack)
-                    .component()
-                    .withStyle(ChatFormatting.GRAY)
-                    .append(" ")
-                    .append(Lang.number(fStack.getAmount())
-                            .style(ChatFormatting.GOLD).component())
-                    .append(Component.translatable("create.generic.unit.millibuckets")
-                            .withStyle(ChatFormatting.GOLD))
-                    .append(Component.literal(" / "))
-                    .append(Lang.number(BLOOD_CAPACITY
-                            + stack.getEnchantmentLevel(AllEnchantments.CAPACITY.get())
-                            * BLOOD_CAPACITY_ENCHANTMENT).style(ChatFormatting.GRAY)
-                            .component())
-                    .append(Component.translatable("create.generic.unit.millibuckets")
-                            .withStyle(ChatFormatting.GRAY)));
-            return;
-        }
-        components.add(Component.translatable( "bloodisfuel.tooltip.empty").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, level, tooltip, tooltipFlag);
+        tooltipMaker(tooltip, stack);
     }
 
     //red bar if contains fluid
@@ -151,24 +119,13 @@ public class SyringeBladeItem extends SwordItem implements CustomArmPoseItem, Ca
     //bar visible based on if there is fluid
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        if(stack.getTag() != null) {
-            CompoundTag tankCompound = stack.getTag().getCompound("Fluid");
-            FluidStack fStack = FluidStack.loadFluidStackFromNBT(tankCompound);
-            return !fStack.isEmpty();
-        }
-        return false;
+        return getCurrentFillLevel(stack) > 0;
     }
 
     //bar width based on how much fluid
     @Override
     public int getBarWidth(ItemStack stack) {
-        if(stack.getTag() == null)
-            return 0;
-        CompoundTag tankCompound = stack.getTag().getCompound("Fluid");
-        return Math.round(13
-                * Mth.clamp(FluidStack.loadFluidStackFromNBT(tankCompound).getAmount()
-                / ((float)BLOOD_CAPACITY + stack.getEnchantmentLevel(AllEnchantments.CAPACITY.get())
-                * BLOOD_CAPACITY_ENCHANTMENT), 0, 1));
+        return Math.round(13 * (getCurrentFillLevel(stack) / (float) getCapacity(stack)));
     }
 
     //valid enchantments
@@ -193,10 +150,7 @@ public class SyringeBladeItem extends SwordItem implements CustomArmPoseItem, Ca
     //filling
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new
-                FluidHandlerItemStack(stack, BLOOD_CAPACITY
-                + stack.getEnchantmentLevel(AllEnchantments.CAPACITY.get())
-                * BLOOD_CAPACITY_ENCHANTMENT);
+        return getFluidHandler(stack);
     }
 
     //3rd person arm pose
