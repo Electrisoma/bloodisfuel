@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "bloodisfuel",
+  "version": "${version}",
+
+  "name": "Blood is Fuel",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": ["Electrisoma"],
+  "contact": {},
+
+  "license": "Insert License Here",
+  "icon": "assets/bloodisfuel/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.electrisoma.fabric.BloodIsFuelImpl"
+    ]
+  },
+  "mixins": [
+    "bloodisfuel-common.mixins.json",
+    "bloodisfuel.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "${minecraft_version}",
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": ">=${fabric_api_version}",
+    "create": "${create_version}"
+  }
+}

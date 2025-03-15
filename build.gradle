@@ -1,0 +1,57 @@
+plugins {
+    id "architectury-plugin" version "3.4.+"
+    id "dev.architectury.loom" version "1.7.+" apply false
+    //id "io.github.pacifistmc.forgix" version "1.2.6"
+}
+
+architectury {
+    minecraft = minecraft_version
+}
+
+//forgix {
+//    group = "net.electrisoma.bloodisfuel"
+//    mergedJarName = "BloodisFuel-${mod_version}-multiloader.jar"
+//}
+
+subprojects {
+    apply plugin: "dev.architectury.loom"
+
+    loom {
+        silentMojangMappingsLicense()
+    }
+
+    repositories {
+        maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
+
+        // mavens used on both forge and fabric
+        maven { url = "https://maven.blamejared.com/" } // JEI
+        maven { url = "https://maven.tterrag.com/" } // Flywheel on both, Create and Registrate on forge
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:$minecraft_version"
+        // Can't use parchment for some reason, game ends up completely unmapped
+        mappings loom.officialMojangMappings()
+
+        // see each subproject for more dependencies.
+    }
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+    apply plugin: "maven-publish"
+
+    archivesBaseName = rootProject.archives_base_name
+    version = rootProject.mod_version
+    group = rootProject.maven_group
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.release.set(17)
+    }
+
+    java {
+        withSourcesJar()
+    }
+}
