@@ -8,8 +8,12 @@
   "superheated": false,
   "conditions": [
     {
-      "fluidTag": "bloodisfuel:viscera",
-      "type": "createaddition:has_fluid_tag"
+      "type": "createaddition:has_fluid_tag",
+      "fluidTag": "bloodisfuel:viscera"
+    },
+    {
+      "type": "forge:mod_loaded",
+      "modid": "createaddition"
     }
   ]
 }

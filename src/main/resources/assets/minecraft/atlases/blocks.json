@@ -1,0 +1,52 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/viscera_flow"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/viscera_still"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/blood_flow"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/blood_still"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/enriched_blood_flow"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/enriched_blood_still"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/oil_enriched_blood_flow"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/oil_enriched_blood_still"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/diesel_infused_blood_flow"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/diesel_infused_blood_still"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/gasoline_infused_blood_flow"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/gasoline_infused_blood_still"
+    }
+  ]
+}

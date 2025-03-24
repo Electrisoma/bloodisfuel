@@ -1,13 +1,14 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
-import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.infrastructure.utils.Utils;
 import net.electrisoma.bloodisfuel.registry.fluids.BFluids;
 import net.electrisoma.bloodisfuel.registry.items.BItems;
 import net.electrisoma.bloodisfuel.registry.BTags;
 
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.TagGen;
+
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 

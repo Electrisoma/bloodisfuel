@@ -8,8 +8,12 @@
   "superheated": true,
   "conditions": [
     {
-      "fluidTag": "bloodisfuel:oil_enriched_blood",
-      "type": "createaddition:has_fluid_tag"
+      "type": "createaddition:has_fluid_tag",
+      "fluidTag": "bloodisfuel:oil_enriched_blood"
+    },
+    {
+      "type": "forge:mod_loaded",
+      "modid": "createaddition"
     }
   ]
 }

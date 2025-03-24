@@ -1,12 +1,12 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
 import net.electrisoma.bloodisfuel.registry.BTags;
+import net.electrisoma.bloodisfuel.registry.items.ItemUtils;
 
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.content.equipment.armor.CapacityEnchantment;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 
-import net.electrisoma.bloodisfuel.registry.items.ItemUtils;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
@@ -32,8 +32,7 @@ import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nullable;
 import java.util.List;
 
-
-
+//all these methods are really giving me a headache lol
 @SuppressWarnings("all")
 public class SyringeBladeItem extends SwordItem implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable, ItemUtils {
     boolean isOnCooldown;

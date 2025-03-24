@@ -1,19 +1,21 @@
 package net.electrisoma.bloodisfuel.registry.items;
 
-import com.simibubi.create.foundation.data.AssetLookup;
-import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-
-import com.tterrag.registrate.util.entry.ItemEntry;
-
 import net.electrisoma.bloodisfuel.registry.BTags;
 import net.electrisoma.bloodisfuel.registry.BModTabs;
 import net.electrisoma.bloodisfuel.registry.items.syringe_blade.SyringeBladeItem;
+
+import com.simibubi.create.foundation.data.AssetLookup;
+import com.simibubi.create.foundation.data.CreateRegistrate;
+
+import com.tterrag.registrate.util.entry.ItemEntry;
+
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Rarity;
+
 
 @SuppressWarnings({"all"})
 public class BItems {

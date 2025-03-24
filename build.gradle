@@ -111,10 +111,18 @@ repositories {
         url = "https://api.modrinth.com/maven"
     }
 
+    maven {
+        name = 'Geckolib'
+        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroupByRegex("software\\.bernie.*")
+        }
+    }
+
     mavenCentral()
     mavenLocal()
     flatDir {
-        dirs "libs"
+        dir "libs"
     }
 }
 
@@ -129,7 +137,7 @@ dependencies {
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
     implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
 
-    //modImplementation("curse.maven:create-diesel-generators-869316:5401010")
+    //modImplementation("curse.maven:create-diesel-generators-869316:6286179")
     //modImplementation("curse.maven:createaddition-439890:5658602")
 
     //JEI
@@ -138,9 +146,9 @@ dependencies {
     modImplementation("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //Biomancy
-    //implementation fg.deobf("curse.maven:bio-factory-1136762:5887553")
-    //implementation fg.deobf("curse.maven:biomancy-492939:5886758")
-    //implementation fg.deobf("curse.maven:geckolib-388172:6027567")
+    modRuntimeOnly("curse.maven:biomancy-492939:5886758")
+    modRuntimeOnly("curse.maven:bio-factory-1136762:6293100")
+    modRuntimeOnly("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
 
     //TConstruct, Mantle
     //implementation fg.deobf("curse.maven:mantle-74924:6041712")
@@ -152,9 +160,7 @@ dependencies {
 }
 
 sourceSets.main {
-    java{
-
-    }
+    java{}
 
     resources {
         srcDir 'src/generated/resources'

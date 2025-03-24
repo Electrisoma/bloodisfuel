@@ -3,6 +3,7 @@ package net.electrisoma.bloodisfuel.config;
 import net.createmod.catnip.config.ConfigBase;
 
 
+@SuppressWarnings({"unused"})
 public class BServer extends ConfigBase {
 
     public final ConfigGroup infrastructure =

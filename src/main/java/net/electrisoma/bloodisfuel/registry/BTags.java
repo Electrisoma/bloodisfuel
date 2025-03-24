@@ -1,7 +1,8 @@
 package net.electrisoma.bloodisfuel.registry;
 
-import net.createmod.catnip.lang.Lang;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
+
+import net.createmod.catnip.lang.Lang;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -23,16 +24,17 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Collections;
+import java.util.Objects;
 
 import static net.electrisoma.bloodisfuel.registry.BTags.NameSpace.BM;
 import static net.electrisoma.bloodisfuel.registry.BTags.NameSpace.FORGE;
 
 
-@SuppressWarnings({"all"})
+@SuppressWarnings({"unused","DataFlowIssue"})
 public class BTags {
 
     public static <T> TagKey<T> optionalTag(IForgeRegistry<T> registry, ResourceLocation id) {
-        return registry.tags()
+        return Objects.requireNonNull(registry.tags())
                 .createOptionalTagKey(id, Collections.emptySet());
     }
 
@@ -120,7 +122,7 @@ public class BTags {
         }
 
         public boolean matches(ItemStack stack) {
-            return stack != null && stack.getItem() instanceof BlockItem blockItem && matches(blockItem.getBlock());
+            return stack.getItem() instanceof BlockItem blockItem && matches(blockItem.getBlock());
         }
 
         public boolean matches(BlockState state) {

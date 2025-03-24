@@ -1,13 +1,15 @@
 package net.electrisoma.bloodisfuel.infrastructure.utils;
 
-
+import com.tterrag.registrate.builders.Builder;
 import net.createmod.catnip.lang.Lang;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 
@@ -18,17 +20,21 @@ public enum Mods {
     MC("minecraft"),
     CDG("createdieselgenerators"),
     BF("biofactory"),
-    BM("biomancy");
+    BM("biomancy")
+
+    ;
 
     private final String id;
 
-    Mods(String string) {
-        id = Lang.asId(name());
+    private Mods(String id) {
+        this(id, b -> {
+        });
     }
 
-    public String id() {
-        return id;
+    private Mods(String id, Consumer<Builder> props) {
+        this.id = id;
     }
+
 
     public ResourceLocation rl(String path) {
         return new ResourceLocation(id, path);
@@ -36,6 +42,10 @@ public enum Mods {
 
     public Block getBlock(String id) {
         return ForgeRegistries.BLOCKS.getValue(rl(id));
+    }
+
+    public String getId() {
+        return id;
     }
 
     public boolean isLoaded() {

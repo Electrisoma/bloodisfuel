@@ -1,6 +1,7 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
+
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;

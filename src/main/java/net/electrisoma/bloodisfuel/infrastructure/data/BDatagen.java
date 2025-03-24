@@ -1,10 +1,11 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
-import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.foundation.data.advancements.AllAdvancements;
 import net.electrisoma.bloodisfuel.foundation.data.recipes.BProcessingRecipeGen;
 import net.electrisoma.bloodisfuel.foundation.data.recipes.StandardRecipeGen;
+
+import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import com.tterrag.registrate.providers.ProviderType;
 

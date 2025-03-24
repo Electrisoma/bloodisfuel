@@ -1,16 +1,16 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
-import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
-import net.createmod.catnip.platform.CatnipServices;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 //import net.electrisoma.bloodisfuel.foundation.data.recipes.compat.DistillationRecipeGen;
+import net.electrisoma.bloodisfuel.infrastructure.utils.Mods;
+
+import net.createmod.catnip.platform.CatnipServices;
 
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
-import com.simibubi.create.foundation.data.recipe.CreateRecipeProvider;
+import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 
-import net.electrisoma.bloodisfuel.infrastructure.utils.Mods;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public abstract class BProcessingRecipeGen extends BRecipeProvider {
 
     protected static final List<BProcessingRecipeGen> GENERATORS = new ArrayList<>();
@@ -37,9 +37,8 @@ public abstract class BProcessingRecipeGen extends BRecipeProvider {
         GENERATORS.add(new MixingRecipeGen(output));
         GENERATORS.add(new EmptyingRecipeGen(output));
         GENERATORS.add(new CompactingRecipeGen(output));
+        //GENERATORS.add(new DistillationRecipeGen(output));
 
-        if(Mods.CDG.isLoaded())
-            //GENERATORS.add(new DistillationRecipeGen(output));
         //if(ModList.get().isLoaded("createaddition"))
         //    GENERATORS.add(new LiquidBurningGen(output));
 

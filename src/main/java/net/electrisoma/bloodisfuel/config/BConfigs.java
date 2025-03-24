@@ -1,6 +1,7 @@
 package net.electrisoma.bloodisfuel.config;
 
 import net.createmod.catnip.config.ConfigBase;
+
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
 
 @SuppressWarnings("unused")
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)

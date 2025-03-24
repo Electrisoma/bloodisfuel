@@ -3,7 +3,7 @@ package net.electrisoma.bloodisfuel.config;
 import net.createmod.catnip.config.ConfigBase;
 
 
-@SuppressWarnings({"unused"})
+@SuppressWarnings({"all"})
 public class BClient extends ConfigBase {
 
     public final ConfigGroup client = group(0, "client",

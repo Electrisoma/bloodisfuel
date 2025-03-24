@@ -1,11 +1,12 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
-import net.createmod.catnip.platform.CatnipServices;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
+import net.electrisoma.bloodisfuel.registry.items.BItems;
+
+import net.createmod.catnip.platform.CatnipServices;
 
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 
-import net.electrisoma.bloodisfuel.registry.items.BItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -305,7 +306,9 @@ public class StandardRecipeGen extends BRecipeProvider {
     }
 
     @Override
-    public String getName() {return BloodIsFuel.NAME + "Standard Recipes";}
+    public String getName() {
+        return BloodIsFuel.NAME + "Standard Recipes";
+    }
 
     public StandardRecipeGen(PackOutput generator) {
         super(generator);

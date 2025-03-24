@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.Arrays;
 
 
-@SuppressWarnings("all")
+@SuppressWarnings({"unused","OptionalGetWithoutIsPresent"})
 @Mod.EventBusSubscriber(modid = BloodIsFuel.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class FluidEvents {
     @SubscribeEvent

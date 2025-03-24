@@ -2,6 +2,7 @@ package net.electrisoma.bloodisfuel.registry.items;
 
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.utility.CreateLang;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+
+@SuppressWarnings("all")
 public interface ItemUtils {
 
     default int getBaseCapacity(ItemStack stack){

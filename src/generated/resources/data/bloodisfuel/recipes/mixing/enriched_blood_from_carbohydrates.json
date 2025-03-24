@@ -1,0 +1,19 @@
+{
+  "type": "create:mixing",
+  "heatRequirement": "superheated",
+  "ingredients": [
+    {
+      "tag": "bloodisfuel:carbohydrates"
+    },
+    {
+      "amount": 1000,
+      "fluidTag": "bloodisfuel:blood"
+    }
+  ],
+  "results": [
+    {
+      "amount": 500,
+      "fluid": "bloodisfuel:enriched_blood"
+    }
+  ]
+}

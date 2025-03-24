@@ -1,7 +1,5 @@
 package net.electrisoma.bloodisfuel;
 
-import com.simibubi.create.foundation.item.ItemDescription;
-import net.createmod.catnip.lang.LangBuilder;
 import net.electrisoma.bloodisfuel.config.BConfigs;
 import net.electrisoma.bloodisfuel.infrastructure.data.BDatagen;
 import net.electrisoma.bloodisfuel.registry.*;
@@ -9,14 +7,16 @@ import net.electrisoma.bloodisfuel.registry.*;
 import net.electrisoma.bloodisfuel.registry.fluids.BFluids;
 import net.electrisoma.bloodisfuel.registry.items.BItems;
 
-import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.createmod.catnip.lang.FontHelper;
+import net.createmod.catnip.lang.LangBuilder;
+
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.KineticStats;
 import com.simibubi.create.foundation.item.TooltipModifier;
+import com.simibubi.create.foundation.item.ItemDescription;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,7 +35,7 @@ import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
 
-@SuppressWarnings({"removal","all"})
+@SuppressWarnings("unused")
 @Mod(BloodIsFuel.MOD_ID)
 public class BloodIsFuel {
     public static final String NAME = "Create: Blood is Fuel!";

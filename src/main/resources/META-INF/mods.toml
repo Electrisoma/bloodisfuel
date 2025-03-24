@@ -1,16 +1,16 @@
 modLoader="javafml"
 loaderVersion="[47,)"
-license="${mod_license}"
+license="MIT"
 issueTrackerURL="https://github.com/Electrisoma/bloodisfuel/issues/"
 
 [[mods]]
 modId="bloodisfuel"
-version="${file.jarVersion}"
+version="1.1.5"
 displayName="Create: Blood is Fuel!"
 logoFile="logo.png"
 authors="Electrisoma"
 description='''
-Create: Blood is Fuel! adds a new fuel type for Create: Diesel Generators that is (as the name says) blood.
+Create: Blood is Fuel! adds a new fuel type for machines.
 '''
 
 [[dependencies.bloodisfuel]]

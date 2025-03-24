@@ -5,6 +5,7 @@
 -vampiric engine
 -vampiric weapons
 -blood loss debuff
+-fluid physics on syringe blade vial
 
 -loot tables for when mobs die to create machines
 
