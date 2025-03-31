@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.electrisoma.bloodisfuel.fabric.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "client.FabricFluidBuilderClientMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

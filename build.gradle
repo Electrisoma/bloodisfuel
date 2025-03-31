@@ -1,0 +1,52 @@
+plugins {
+    id "architectury-plugin" version "3.4.+"
+    id "dev.architectury.loom" version "1.7.+" apply false
+    id "io.github.pacifistmc.forgix" version "1.2.6" //https://github.com/PacifistMC/Forgix
+}
+
+architectury {
+    minecraft = minecraft_version
+}
+
+forgix {
+    group = maven_group
+    mergedJarName = "bloodisfuel-${mod_version}-mult.jar"
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+    apply plugin: "maven-publish"
+
+    base.archivesName = archives_base_name
+    group = maven_group
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = "UTF-8"
+    }
+
+    java {
+        withSourcesJar()
+    }
+}
+
+subprojects {
+    apply plugin: "dev.architectury.loom"
+
+    loom {
+        silentMojangMappingsLicense()
+    }
+
+    repositories {
+        maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
+
+        maven { url = "https://maven.blamejared.com/" } // JEI
+        maven { url = "https://maven.tterrag.com/" } // Flywheel on both, Create and Registrate on forge
+        maven { url = "https://maven.createmod.net/" } // Flywheel on both, Create and Registrate on forge
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:$minecraft_version"
+        mappings loom.officialMojangMappings()
+    }
+}

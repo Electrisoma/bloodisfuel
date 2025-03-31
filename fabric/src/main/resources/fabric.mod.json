@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "${modId}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": [
+    "${authors}"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "${license}",
+  "icon": "assets/bloodisfuel/icon.png",
+
+  "environment": "*",
+
+  "entrypoints": {
+    "main": [
+      "net.electrisoma.bloodisfuel.fabric.BloodIsFuelImpl"
+    ],
+    "fabric-datagen": [
+      "net.electrisoma.bloodisfuel.fabric.BloodDataFabric"
+    ]
+  },
+  "mixins": [
+    "bloodisfuel.mixins.json",
+    "bloodisfuel-common.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "${minecraft_version}",
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": ">=${fabric_api_version}",
+    "create": "${create_version}"
+  }
+}
