@@ -79,7 +79,7 @@ processResources {
     Map<String, Object> properties = [
             "version": mod_version, "license": license,
             "modId": mod_id, "name": mod_name,
-            "description": description, "authors": authors,
+            "description": mod_description, "authors": authors,
 
             "fabric_loader_version": fabric_loader_version,
             "fabric_api_version": fabric_api_version,

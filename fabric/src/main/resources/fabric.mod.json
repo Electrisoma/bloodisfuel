@@ -8,8 +8,7 @@
     "${authors}"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/Electrisoma/bloodisfuel"
   },
   "license": "${license}",
   "icon": "assets/bloodisfuel/icon.png",
@@ -19,6 +18,9 @@
   "entrypoints": {
     "main": [
       "net.electrisoma.bloodisfuel.fabric.BloodIsFuelImpl"
+    ],
+    "client": [
+      "net.electrisoma.bloodisfuel.fabric.BClientFabric"
     ],
     "fabric-datagen": [
       "net.electrisoma.bloodisfuel.fabric.BloodDataFabric"

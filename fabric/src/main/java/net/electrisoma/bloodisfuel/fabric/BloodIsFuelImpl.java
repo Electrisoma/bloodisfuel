@@ -2,7 +2,7 @@ package net.electrisoma.bloodisfuel.fabric;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 
-//import net.electrisoma.bloodisfuel.registry.fabric.BFluidsImpl;
+import net.electrisoma.bloodisfuel.config.fabric.BConfigImpl;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -14,7 +14,7 @@ public class BloodIsFuelImpl implements ModInitializer {
     public void onInitialize() {
 
         BloodIsFuel.init();
-        //BFluidsImpl.register();
+        BConfigImpl.register();
 
     }
 

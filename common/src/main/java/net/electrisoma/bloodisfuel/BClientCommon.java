@@ -1,15 +1,14 @@
 package net.electrisoma.bloodisfuel;
 
+import net.electrisoma.bloodisfuel.config.BConfig;
 import net.electrisoma.bloodisfuel.registry.BFluids;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 public class BClientCommon {
@@ -18,6 +17,7 @@ public class BClientCommon {
         Minecraft mc = Minecraft.getInstance();
         Level level = mc.level;
         BlockPos blockPos = info.getBlockPosition();
+        assert level != null;
         FluidState fluidState = level.getFluidState(blockPos);
         if (info.getPosition().y > blockPos.getY() + fluidState.getHeight(level, blockPos)) return;
 
@@ -25,12 +25,15 @@ public class BClientCommon {
 
         if (BFluids.VISCERA.get().isSame(fluid)) {
             wrapper.setFogColor(101 / 255f, 11 / 255f, 15 / 255f);
-            return;
         }
-    }
 
-    public interface SetColorWrapper {
-        void setFogColor(float r, float g, float b);
+        if (BFluids.BLOOD.get().isSame(fluid)) {
+            wrapper.setFogColor(87 / 255f, 0 / 255f, 0 / 255f);
+        }
+
+        if (BFluids.ENRICHED_BLOOD.get().isSame(fluid)) {
+            wrapper.setFogColor(131 / 255f, 0 / 255f, 0 / 255f);
+        }
     }
 
     public static float getFogDensity(Camera info, float farDistance) {
@@ -38,17 +41,27 @@ public class BClientCommon {
         Level level = mc.level;
         BlockPos blockPos = info.getBlockPosition();
         FluidState fluidState = level.getFluidState(blockPos);
-        if (info.getPosition().y > blockPos.getY() + fluidState.getHeight(level, blockPos)) return -1;
+        if (info.getPosition().y > blockPos.getY() + fluidState.getHeight(level, blockPos))
+            return -1;
 
         Fluid fluid = fluidState.getType();
 
-        if (BFluids.VISCERA.get()
-                .isSame(fluid)) {
-            //fogData.scaleFarPlaneDistance(1f / 32f * BConfigs.client().visceraTransparencyMultiplier.getF());
-            //fogData.scaleFarPlaneDistance(1f / 32f * 1);
-            return -1;
+        if (BFluids.VISCERA.get().isSame(fluid)) {
+            return 1 / 32f * BConfig.client().visceraTransparencyMultiplier.getF();
+        }
+
+        if (BFluids.BLOOD.get().isSame(fluid)) {
+            return 1 / 16f * BConfig.client().bloodTransparencyMultiplier.getF();
+        }
+
+        if (BFluids.ENRICHED_BLOOD.get().isSame(fluid)) {
+            return 1 / 8f * BConfig.client().enrichedBloodTransparencyMultiplier.getF();
         }
 
         return -1;
+    }
+
+    public interface SetColorWrapper {
+        void setFogColor(float r, float g, float b);
     }
 }

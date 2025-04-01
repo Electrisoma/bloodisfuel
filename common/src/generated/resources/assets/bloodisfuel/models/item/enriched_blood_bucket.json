@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "bloodisfuel:item/enriched_blood_bucket"
-  }
-}

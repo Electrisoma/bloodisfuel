@@ -62,10 +62,9 @@ public class BloodIsFuel {
         REGISTRATE.addDataGenerator(ProviderType.FLUID_TAGS, BTagGen::generateFluidTags);
 
         REGISTRATE.addDataGenerator(ProviderType.LANG, BLangGen::generate);
-        //gen.addProvider(NumismaticsSequencedAssemblyRecipeGen::new);
 
         //gen.addProvider(BStandardRecipeGen::new);
-        //gen.addProvider(NumismaticsAdvancements::new);
+        //gen.addProvider(BAdvancements::new);
     }
 
     @ExpectPlatform

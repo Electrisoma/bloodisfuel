@@ -1,11 +1,16 @@
 package net.electrisoma.bloodisfuel.forge;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
+import net.electrisoma.bloodisfuel.config.forge.BConfigImpl;
 import net.electrisoma.bloodisfuel.registry.forge.BModTabImpl;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.MavenVersionStringHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
@@ -17,15 +22,20 @@ import java.util.List;
 @Mod.EventBusSubscriber
 public class BloodIsFuelImpl {
     static IEventBus eventBus;
+    static IEventBus forgeBus;
 
     public BloodIsFuelImpl() {
         eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        forgeBus = MinecraftForge.EVENT_BUS;
 
         BModTabImpl.register(eventBus);
         //BFluidsForge.register();
 
         BloodIsFuel.init();
 
+        BConfigImpl.register(ModLoadingContext.get());
+
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> BClientForge.prepareClient(eventBus, forgeBus));
     }
 
     public static String findVersion() {

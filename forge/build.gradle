@@ -55,7 +55,7 @@ processResources {
     Map<String, Object> properties = [
             "version": mod_version, "license": license,
             "modId": mod_id, "name": mod_name,
-            "description": description, "authors": authors,
+            "description": mod_description, "authors": authors,
 
             "forge_version": forge_version.split("\\.")[0], // only specify major version of forge
             "minecraft_version": minecraft_version,
@@ -86,7 +86,7 @@ shadowJar {
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
+    inputFile = shadowJar.archiveFile
     dependsOn shadowJar
     archiveClassifier = null
 }

@@ -9,7 +9,7 @@ version="${version}"
 displayName="${name}"
 authors="${authors}"
 description='''
-"${description}"
+${description}
 '''
 logoFile="icon.png"
 

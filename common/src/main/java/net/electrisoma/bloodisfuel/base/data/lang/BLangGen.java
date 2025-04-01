@@ -4,6 +4,7 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 import java.util.function.BiConsumer;
 
+
 public class BLangGen {
     public static void generate(RegistrateLangProvider provider) {
         BiConsumer<String, String> langConsumer = provider::add;

@@ -16,12 +16,13 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 import net.electrisoma.bloodisfuel.registry.fabric.fluids_utils.FluidBuilderImpl;
 import net.electrisoma.bloodisfuel.registry.fabric.fluids_utils.RenderHandlerFactory;
-import net.electrisoma.bloodisfuel.fabric.mixin.mixin_interfaces.FabricFluidBuilderClient;
+import net.electrisoma.bloodisfuel.fabric.mixin_interfaces.FabricFluidBuilderClient;
 import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
 import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
 import net.electrisoma.bloodisfuel.multiloader.Env;
@@ -53,7 +54,6 @@ public abstract class FabricFluidBuilderClientMixin extends FluidBuilder<BFlowin
         this.renderHandler(() -> SimpleFluidRenderHandler::new);
     }
 
-    @Unique
     protected void registerRenderHandler(BFlowingFluid entry) {
         Env.executeOnClient(() -> () -> {
             final FluidRenderHandler handler = this.renderHandler.get().create(this.stillTexture, this.flowingTexture);
@@ -75,7 +75,6 @@ public abstract class FabricFluidBuilderClientMixin extends FluidBuilder<BFlowin
         return this;
     }
 
-    @Unique
     protected void registerLayer(BFlowingFluid entry) {
         Env.executeOnClient(() -> () -> {
             final RenderType layer = renderLayer.get().get();

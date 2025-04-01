@@ -17,30 +17,28 @@ import java.util.List;
 public class BLiquidBlockMixin extends LiquidBlock {
 
     @Unique
-    private List<FluidState> cbc$stateCache = null;
+    private List<FluidState> bloodisfuel$stateCache = null;
 
     public BLiquidBlockMixin(FlowingFluid arg, Properties arg2) { super(arg, arg2); }
 
-    // Taken from Bumblezone with help from TelepathicGrunt - thanks! --ritchie
     @Nonnull
     @Override
     public FluidState getFluidState(BlockState arg) {
         int i = arg.getValue(LEVEL);
-        if (this.cbc$stateCache == null) {
+        if (this.bloodisfuel$stateCache == null) {
             this.initFluidStateCache();
         }
-        return this.cbc$stateCache.get(Math.min(i, 8));
+        return this.bloodisfuel$stateCache.get(Math.min(i, 8));
     }
 
     protected synchronized void initFluidStateCache() {
-        if (this.cbc$stateCache == null) {
-            this.cbc$stateCache = new ArrayList<>();
-            this.cbc$stateCache.add(this.getFluid().getSource(false));
+        if (this.bloodisfuel$stateCache == null) {
+            this.bloodisfuel$stateCache = new ArrayList<>();
+            this.bloodisfuel$stateCache.add(this.getFluid().getSource(false));
             for(int i = 1; i < 8; ++i) {
-                this.cbc$stateCache.add(this.getFluid().getFlowing(8 - i, false));
+                this.bloodisfuel$stateCache.add(this.getFluid().getFlowing(8 - i, false));
             }
-            this.cbc$stateCache.add(this.getFluid().getFlowing(8, true));
+            this.bloodisfuel$stateCache.add(this.getFluid().getFlowing(8, true));
         }
     }
-
 }

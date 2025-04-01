@@ -13,15 +13,7 @@ public class CommonTags {
     public static final List<CommonTag<Block>> ALL_BLOCKS = new ArrayList<>();
 
     public static final CommonTag<Item>
-            STRING = item("string"),
-            IRON_NUGGETS = item("nuggets/iron_nuggets", "iron_nuggets", "nuggets/iron"),
-            ZINC_NUGGETS = item("nuggets/zinc_nuggets", "zinc_nuggets", "nuggets/zinc"),
-            BRASS_NUGGETS = item("nuggets/brass_nuggets", "brass_nuggets", "nuggets/brass"),
-            IRON_PLATES = item("plates/iron_plates", "iron_plates", "plates/iron"),
-            GOLD_PLATES = item("plates/gold_plates", "gold_plates", "plates/gold"),
-            COPPER_INGOTS = item("ingots/copper_ingots", "copper_ingots", "ingots/copper"),
-            IRON_INGOTS = item("ingots/iron_ingots", "iron_ingots", "ingots/iron");
-
+            STRING = item("leather")
     ;
 
     /**
