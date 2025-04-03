@@ -1,44 +1,46 @@
 package net.electrisoma.bloodisfuel.registry.fluid_utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
-import com.tterrag.registrate.AbstractRegistrate;
-import com.tterrag.registrate.builders.AbstractBuilder;
-import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.builders.BuilderCallback;
-import com.tterrag.registrate.builders.ItemBuilder;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
-import com.tterrag.registrate.providers.RegistrateItemModelProvider;
-import com.tterrag.registrate.util.entry.RegistryEntry;
-import com.tterrag.registrate.util.nullness.NonNullBiFunction;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullFunction;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.core.registries.Registries;
-
 import net.electrisoma.bloodisfuel.base.utils.LazySupplier;
 import net.electrisoma.bloodisfuel.multiloader.RegistryPlatform;
 
+import com.tterrag.registrate.AbstractRegistrate;
+import com.tterrag.registrate.builders.ItemBuilder;
+import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.DataGenContext;
+import com.tterrag.registrate.builders.BuilderCallback;
+import com.tterrag.registrate.util.entry.RegistryEntry;
+import com.tterrag.registrate.builders.AbstractBuilder;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import com.tterrag.registrate.util.nullness.NonNullFunction;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import com.tterrag.registrate.util.nullness.NonNullBiFunction;
+import com.tterrag.registrate.providers.RegistrateItemModelProvider;
+import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+
+import net.minecraft.Util;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
+import com.google.common.annotations.Beta;
+import com.google.common.base.Preconditions;
+
+import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
+
+
+@SuppressWarnings("all")
 public abstract class FluidBuilder<T extends BFlowingFluid, P> extends AbstractBuilder<Fluid, T, P, FluidBuilder<T, P>> {
 
     public static <P> FluidBuilder<BFlowingFluid.Flowing, P> create(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
@@ -58,10 +60,8 @@ public abstract class FluidBuilder<T extends BFlowingFluid, P> extends AbstractB
     protected final String bucketName;
     protected final NonNullFunction<BFlowingFluid.Properties, T> factory;
 
-    @Nullable
     private Boolean defaultSource, defaultBlock, defaultBucket;
     private NonNullConsumer<BFlowingFluid.Properties> properties;
-    @Nullable
     private NonNullSupplier<? extends BFlowingFluid> source;
     protected List<TagKey<Fluid>> tags = new ArrayList<>();
 
@@ -96,10 +96,9 @@ public abstract class FluidBuilder<T extends BFlowingFluid, P> extends AbstractB
         return this;
     }
 
-    public FluidBuilder<T, P> source(NonNullFunction<BFlowingFluid.Properties, ? extends BFlowingFluid> factory) {
+    public void source(NonNullFunction<BFlowingFluid.Properties, ? extends BFlowingFluid> factory) {
         this.defaultSource = false;
         this.source = new LazySupplier<>(() -> factory.apply(makeProperties()));
-        return this;
     }
 
     public FluidBuilder<T, P> defaultBlock() {
@@ -197,7 +196,6 @@ public abstract class FluidBuilder<T extends BFlowingFluid, P> extends AbstractB
         return factory.apply(makeProperties());
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public RegistryEntry<T> register() {
         if (defaultSource == Boolean.TRUE) {
@@ -220,5 +218,9 @@ public abstract class FluidBuilder<T extends BFlowingFluid, P> extends AbstractB
 
     protected String makeDescriptionId(T fluid) {
         return Util.makeDescriptionId("fluid", new ResourceLocation(this.getOwner().getModid(), this.sourceName));
+    }
+
+    public interface FluidGetter {
+        FlowingFluid getFluid();
     }
 }

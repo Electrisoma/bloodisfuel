@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.registry.fluid_utils;
 
+import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder.FluidGetter;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.architectury.injectables.targets.ArchitecturyTarget;
 import net.minecraft.core.BlockPos;
@@ -17,6 +18,8 @@ import net.minecraft.world.level.material.Fluids;
 
 import java.util.Optional;
 
+
+@SuppressWarnings("unused")
 public class BLiquidBlock extends LiquidBlock implements FluidGetter {
     private final NonNullSupplier<? extends FlowingFluid> fluidSup;
 

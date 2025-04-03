@@ -7,7 +7,9 @@ import net.electrisoma.bloodisfuel.registry.forge.BModTabImpl;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.MavenVersionStringHelper;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -29,7 +31,6 @@ public class BloodIsFuelImpl {
         forgeBus = MinecraftForge.EVENT_BUS;
 
         BModTabImpl.register(eventBus);
-        //BFluidsForge.register();
 
         BloodIsFuel.init();
 
@@ -52,6 +53,11 @@ public class BloodIsFuelImpl {
             }
         }
         return versionString;
+    }
+
+    @SubscribeEvent
+    public void onServerStarting(ServerStartingEvent event) {
+        BloodIsFuel.LOGGER.info(BloodIsFuel.SERVER_START);
     }
 
     public static void finalizeRegistrate() {

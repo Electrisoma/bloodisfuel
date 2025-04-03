@@ -1,14 +1,18 @@
 package net.electrisoma.bloodisfuel.config;
 
 import net.createmod.catnip.config.ConfigBase;
+
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
+
 import org.apache.commons.lang3.tuple.Pair;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
 
 public class BConfig {
     @ApiStatus.Internal

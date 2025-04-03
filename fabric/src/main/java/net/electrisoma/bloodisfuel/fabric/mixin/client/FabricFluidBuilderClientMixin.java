@@ -1,16 +1,21 @@
 package net.electrisoma.bloodisfuel.fabric.mixin.client;
 
-import java.util.function.Supplier;
+import net.electrisoma.bloodisfuel.registry.fabric.fluids_utils.FluidBuilderImpl;
+import net.electrisoma.bloodisfuel.registry.fabric.fluids_utils.RenderHandlerFactory;
+import net.electrisoma.bloodisfuel.fabric.mixin_interfaces.FabricFluidBuilderClient;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
+import net.electrisoma.bloodisfuel.multiloader.Env;
+
+import com.tterrag.registrate.AbstractRegistrate;
+import com.tterrag.registrate.builders.BuilderCallback;
+import com.tterrag.registrate.util.nullness.NonNullFunction;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import com.tterrag.registrate.AbstractRegistrate;
-import com.tterrag.registrate.builders.BuilderCallback;
-import com.tterrag.registrate.util.nullness.NonNullFunction;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
@@ -20,14 +25,10 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-import net.electrisoma.bloodisfuel.registry.fabric.fluids_utils.FluidBuilderImpl;
-import net.electrisoma.bloodisfuel.registry.fabric.fluids_utils.RenderHandlerFactory;
-import net.electrisoma.bloodisfuel.fabric.mixin_interfaces.FabricFluidBuilderClient;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
-import net.electrisoma.bloodisfuel.multiloader.Env;
+import java.util.function.Supplier;
 
 
+@SuppressWarnings({"unchecked","rawtypes"})
 @Mixin(FluidBuilderImpl.class)
 public abstract class FabricFluidBuilderClientMixin extends FluidBuilder<BFlowingFluid, Object> implements FabricFluidBuilderClient {
 
@@ -54,6 +55,7 @@ public abstract class FabricFluidBuilderClientMixin extends FluidBuilder<BFlowin
         this.renderHandler(() -> SimpleFluidRenderHandler::new);
     }
 
+    @Unique
     protected void registerRenderHandler(BFlowingFluid entry) {
         Env.executeOnClient(() -> () -> {
             final FluidRenderHandler handler = this.renderHandler.get().create(this.stillTexture, this.flowingTexture);
@@ -75,6 +77,7 @@ public abstract class FabricFluidBuilderClientMixin extends FluidBuilder<BFlowin
         return this;
     }
 
+    @Unique
     protected void registerLayer(BFlowingFluid entry) {
         Env.executeOnClient(() -> () -> {
             final RenderType layer = renderLayer.get().get();

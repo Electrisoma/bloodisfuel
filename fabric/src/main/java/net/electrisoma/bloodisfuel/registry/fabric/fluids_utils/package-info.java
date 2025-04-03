@@ -1,0 +1,7 @@
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+
+package net.electrisoma.bloodisfuel.registry.fabric.fluids_utils;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+import javax.annotation.ParametersAreNonnullByDefault;

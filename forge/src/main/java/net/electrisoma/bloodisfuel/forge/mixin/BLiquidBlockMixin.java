@@ -1,14 +1,17 @@
 package net.electrisoma.bloodisfuel.forge.mixin;
 
 import net.electrisoma.bloodisfuel.registry.fluid_utils.BLiquidBlock;
+
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.FluidState;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import javax.annotation.Nonnull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +22,10 @@ public class BLiquidBlockMixin extends LiquidBlock {
     @Unique
     private List<FluidState> bloodisfuel$stateCache = null;
 
-    public BLiquidBlockMixin(FlowingFluid arg, Properties arg2) { super(arg, arg2); }
+    @Deprecated
+    public BLiquidBlockMixin(FlowingFluid arg, Properties arg2) {
+        super(arg, arg2);
+    }
 
     @Nonnull
     @Override

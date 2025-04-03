@@ -1,6 +1,5 @@
 package net.electrisoma.bloodisfuel.registry.forge;
 
-
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.BBlocks;
 import net.electrisoma.bloodisfuel.registry.BModTab.Tabs;

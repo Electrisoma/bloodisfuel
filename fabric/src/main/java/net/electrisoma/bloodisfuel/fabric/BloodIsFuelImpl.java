@@ -1,21 +1,22 @@
 package net.electrisoma.bloodisfuel.fabric;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-
 import net.electrisoma.bloodisfuel.config.fabric.BConfigImpl;
+
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 
 
 public class BloodIsFuelImpl implements ModInitializer {
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"unused"})
     @Override
     public void onInitialize() {
+        onServerStarting();
 
         BloodIsFuel.init();
         BConfigImpl.register();
-
     }
 
     public static String findVersion() {
@@ -27,7 +28,14 @@ public class BloodIsFuelImpl implements ModInitializer {
                 .getFriendlyString();
     }
 
+
     public static void finalizeRegistrate() {
         BloodIsFuel.registrate().register();
+    }
+
+    public void onServerStarting(){
+        ServerLifecycleEvents.SERVER_STARTED.register(server ->
+                BloodIsFuel.LOGGER.info(BloodIsFuel.SERVER_START)
+        );
     }
 }

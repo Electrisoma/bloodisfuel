@@ -1,13 +1,16 @@
 package net.electrisoma.bloodisfuel.config.forge;
 
-import net.createmod.catnip.config.ConfigBase;
 import net.electrisoma.bloodisfuel.config.BConfig;
+
+import net.createmod.catnip.config.ConfigBase;
+
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import java.util.Map;
+
 
 public class BConfigImpl {
     public static void register(ModLoadingContext context) {

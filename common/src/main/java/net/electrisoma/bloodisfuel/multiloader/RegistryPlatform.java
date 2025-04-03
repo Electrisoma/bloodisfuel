@@ -1,16 +1,18 @@
 package net.electrisoma.bloodisfuel.multiloader;
 
+import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
+
 import com.simibubi.create.foundation.data.CreateRegistrate;
+
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.fabric.SimpleFlowableFluid;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 
 import net.minecraft.resources.ResourceLocation;
 
-import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 
 
 public class RegistryPlatform {

@@ -1,5 +1,8 @@
 package net.electrisoma.bloodisfuel.registry.forge.fluid_utils;
 
+import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
+
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
@@ -19,8 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 
-import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -58,12 +60,12 @@ public class FluidBuilderImpl<T extends BFlowingFluid, P> extends FluidBuilder<T
     }
 
     @Override
-    protected <B extends Block> void acceptBlockstate(DataGenContext<Block, B> ctx, RegistrateBlockstateProvider prov) {
+    protected <B extends Block> void acceptBlockstate(@NotNull DataGenContext<Block, B> ctx, @NotNull RegistrateBlockstateProvider prov) {
         prov.simpleBlock(ctx.get(), prov.models().getBuilder(this.sourceName).texture("particle", this.stillTexture));
     }
 
     @Override
-    protected <I extends Item> void acceptItemModel(DataGenContext<Item, I> ctx, RegistrateItemModelProvider prov) {
+    protected <I extends Item> void acceptItemModel(DataGenContext<Item, I> ctx, @NotNull RegistrateItemModelProvider prov) {
         prov.generated(ctx, new ResourceLocation(this.getOwner().getModid(), "item/" + this.bucketName));
     }
 }

@@ -1,9 +1,13 @@
 package net.electrisoma.bloodisfuel.fabric;
 
-import io.github.fabricators_of_create.porting_lib.event.client.FogEvents;
 import net.electrisoma.bloodisfuel.BClientCommon;
+
+import io.github.fabricators_of_create.porting_lib.event.client.FogEvents;
+
 import net.fabricmc.api.ClientModInitializer;
+
 import net.minecraft.client.Camera;
+
 
 public class BClientFabric implements ClientModInitializer {
     @Override

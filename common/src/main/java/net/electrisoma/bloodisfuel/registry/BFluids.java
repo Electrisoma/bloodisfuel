@@ -1,24 +1,31 @@
 package net.electrisoma.bloodisfuel.registry;
 
+
+import net.electrisoma.bloodisfuel.BloodIsFuel;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
+import net.electrisoma.bloodisfuel.multiloader.RegistryPlatform;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.BLiquidBlock;
+
 import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 
-import net.electrisoma.bloodisfuel.multiloader.RegistryPlatform;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.BLiquidBlock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
-import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
 
-
-@SuppressWarnings("unchecked assignment")
+@SuppressWarnings("unchecked")
 public class BFluids {
+
+    public static void register() {
+        // load the class and register everything
+        BloodIsFuel.LOGGER.info("Registering fluids for " + BloodIsFuel.NAME);
+    }
+
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
 
     public static final RegistryEntry<BFlowingFluid.Flowing> VISCERA =
@@ -66,8 +73,51 @@ public class BFluids {
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
                     .register();
 
+    public static final RegistryEntry<BFlowingFluid.Flowing> OIL_ENRICHED_BLOOD =
+            standardFluid("oil_enriched_blood")
+                    .lang("Oil Enriched Blood")
+                    .properties(p -> p
+                            .levelDecreasePerBlock(2)
+                            .tickRate(25)
+                            .flowSpeed(3)
+                            .blastResistance(100f)
+                    ).tag(BTags.AllFluidTags.OIL_ENRICHED_BLOOD.tag,
+                            forgeTag("oil_enriched_blood"),
+                            fabricTag("oil_enriched_blood"))
+                    .block(BLiquidBlock::new).build()
+                    .transform(RegistryPlatform::doFluidBuilderTransforms)
+                    .register();
 
-    public static void register() {}
+    public static final RegistryEntry<BFlowingFluid.Flowing> GASOLINE_INFUSED_BLOOD =
+            standardFluid("gasoline_infused_blood")
+                    .lang("Gasoline Infused Blood")
+                    .properties(p -> p
+                            .levelDecreasePerBlock(2)
+                            .tickRate(25)
+                            .flowSpeed(3)
+                            .blastResistance(100f)
+                    ).tag(BTags.AllFluidTags.GASOLINE_INFUSED_BLOOD.tag,
+                            forgeTag("gasoline_infused_blood"),
+                            fabricTag("gasoline_infused_blood"))
+                    .block(BLiquidBlock::new).build()
+                    .transform(RegistryPlatform::doFluidBuilderTransforms)
+                    .register();
+
+    public static final RegistryEntry<BFlowingFluid.Flowing> DIESEL_INFUSED_BLOOD =
+            standardFluid("diesel_infused_blood")
+                    .lang("Diesel Infused Blood")
+                    .properties(p -> p
+                            .levelDecreasePerBlock(2)
+                            .tickRate(25)
+                            .flowSpeed(3)
+                            .blastResistance(100f)
+                    ).tag(BTags.AllFluidTags.DIESEL_INFUSED_BLOOD.tag,
+                            forgeTag("diesel_infused_blood"),
+                            fabricTag("diesel_infused_blood"))
+                    .block(BLiquidBlock::new).build()
+                    .transform(RegistryPlatform::doFluidBuilderTransforms)
+                    .register();
+
 
     private static <T extends BFlowingFluid, P> FluidBuilder<T, P>
     createFluid(String name, NonNullFunction<BFlowingFluid.Properties, T> fac) {

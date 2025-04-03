@@ -37,7 +37,8 @@ public class BModTab {
     }
 
     public static void register() {
-        // just to load class
+        // load the class and register everything
+        BloodIsFuel.LOGGER.info("Registering tabs for " + BloodIsFuel.NAME);
     }
 
     public enum Tabs {

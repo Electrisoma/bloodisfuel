@@ -219,6 +219,9 @@ public class BTags {
     }
 
     public static void register() {
+        // load the class and register everything
+        BloodIsFuel.LOGGER.info("Registering tags for " + BloodIsFuel.NAME);
+
         AllBlockTags.register();
         AllItemTags.register();
         AllFluidTags.register();

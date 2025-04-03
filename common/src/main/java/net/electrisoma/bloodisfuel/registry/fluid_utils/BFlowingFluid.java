@@ -21,16 +21,17 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
+
+@SuppressWarnings("unused")
 public abstract class BFlowingFluid extends FlowingFluid {
 
     private final boolean infinite;
     private final Supplier<? extends Fluid> flowing;
     private final Supplier<? extends Fluid> still;
-    @Nullable private final Supplier<? extends Item> bucket;
-    @Nullable private final Supplier<? extends LiquidBlock> block;
+    private final Supplier<? extends Item> bucket;
+    private final Supplier<? extends LiquidBlock> block;
     private final int dropoff;
     private final int flowspeed;
     private final int tickRate;
@@ -119,8 +120,8 @@ public abstract class BFlowingFluid extends FlowingFluid {
      * Taken from SimpleFlowableFluid.Properties
      */
     public static class Properties {
-        private Supplier<? extends Fluid> still;
-        private Supplier<? extends Fluid> flowing;
+        private final Supplier<? extends Fluid> still;
+        private final Supplier<? extends Fluid> flowing;
         private boolean infinite;
         private Supplier<? extends Item> bucket;
         private Supplier<? extends LiquidBlock> block;
@@ -132,7 +133,6 @@ public abstract class BFlowingFluid extends FlowingFluid {
         // Fluid attributes stuff deemed necessary
         private final ResourceLocation stillTex;
         private final ResourceLocation flowingTex;
-        private int color = 0x00ffffff;
         private SoundEvent fillSound;
         private SoundEvent emptySound;
 
@@ -170,9 +170,8 @@ public abstract class BFlowingFluid extends FlowingFluid {
             return this;
         }
 
-        public Properties blastResistance(float blastResistance) {
+        public void blastResistance(float blastResistance) {
             this.blastResistance = blastResistance;
-            return this;
         }
 
         public Properties tickRate(int tickRate) {
@@ -181,7 +180,6 @@ public abstract class BFlowingFluid extends FlowingFluid {
         }
 
         public Properties color(int color) {
-            this.color = color;
             return this;
         }
 

@@ -9,7 +9,7 @@ public class ModSetup {
         BModTab.register();
         BTags.register();
         BBlocks.register();
-        //BItems.register();
+        BItems.register();
         BFluids.register();
     }
 }

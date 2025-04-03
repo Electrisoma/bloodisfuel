@@ -1,7 +1,8 @@
 package net.electrisoma.bloodisfuel.multiloader.fabric;
 
-import com.tterrag.registrate.fabric.EnvExecutor;
 import net.electrisoma.bloodisfuel.multiloader.Env;
+
+import com.tterrag.registrate.fabric.EnvExecutor;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -20,6 +21,8 @@ public class EnvImpl {
                 Env.SERVER;
     }
 
-    public static void executeOnClient(Supplier<Runnable> sup) { EnvExecutor.runWhenOn(EnvType.CLIENT, sup); }
-
+    public static void executeOnClient(Supplier<Runnable> sup) {
+        EnvExecutor.runWhenOn(EnvType.CLIENT, sup);
+    }
 }
+

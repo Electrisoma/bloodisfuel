@@ -28,6 +28,7 @@ public class BloodIsFuel {
     public static final String MOD_ID = "bloodisfuel";
     public static final String NAME = "Blood is Fuel";
     public static final String VERSION = findVersion();
+    public static final String SERVER_START = "HELL IS FULL";
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
     private static final CreateRegistrate REGISTRATE =

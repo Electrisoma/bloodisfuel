@@ -10,10 +10,11 @@ public class BLangGen {
         BiConsumer<String, String> langConsumer = provider::add;
 
         provideDefaultLang(langConsumer);
+
         //BAdvancements.provideLang(langConsumer);
     }
 
     private static void provideDefaultLang(BiConsumer<String, String> consumer) {
-        defaultLang.provideLang(consumer);
+        defaultLangGen.provideLang(consumer);
     }
 }

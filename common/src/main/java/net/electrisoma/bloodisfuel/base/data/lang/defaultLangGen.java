@@ -6,7 +6,7 @@ import net.minecraft.world.level.ItemLike;
 import java.util.function.BiConsumer;
 
 
-public class defaultLang {
+public class defaultLangGen {
     static String tab = "itemGroup";
 
     public static void provideLang(BiConsumer<String, String> consumer) {
@@ -14,17 +14,17 @@ public class defaultLang {
         var meat = BItems.DRAINED_MEAT;
 
         //interfaces
-        consume(consumer, tab,"base", "Create: Blood is Fuel!");
+        consume(consumer, tab,"main", "Create: Blood is Fuel!");
 
 
         //tooltips
+        tooltipSummary(consumer, syringe, "Extract _blood_ from your _friends_ or _enemies_!");
         tooltipCondition(consumer, syringe, "L-Click at Mob", 1);
         tooltipBehaviour(consumer, syringe, "Extract _blood_", 1);
-        tooltipSummary(consumer, syringe, "Extract _blood_ from your _friends_ or _enemies_!");
 
+        tooltipSummary(consumer, meat, "Poor fella");
         tooltipCondition(consumer, meat, "Put in a basin with press or a drain", 1);
         tooltipBehaviour(consumer, meat, "Extract _blood_", 1);
-        tooltipSummary(consumer, meat, "Poor fella");
 
         consume(consumer, "bloodisfuel.tooltip.empty", "Empty :3");
     }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "bloodisfuel:item/diesel_infused_blood_bucket"
+  }
+}

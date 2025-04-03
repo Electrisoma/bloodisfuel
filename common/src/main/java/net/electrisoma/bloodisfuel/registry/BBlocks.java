@@ -18,7 +18,8 @@ import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 public class BBlocks {
 	private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
 
-	public static final BlockEntry<Block> EXAMPLE_BLOCK = REGISTRATE.block("example_block", Block::new)
+	public static final BlockEntry<Block> EXAMPLE_BLOCK =
+			REGISTRATE.block("example_block", Block::new)
 			.initialProperties(SharedProperties::softMetal)
 			.properties(p -> p.mapColor(MapColor.COLOR_GRAY))
 			.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))

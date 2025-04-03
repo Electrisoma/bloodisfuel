@@ -1,7 +1,6 @@
 package net.electrisoma.bloodisfuel.fabric;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.base.data.lang.BLangGen;
 import net.electrisoma.bloodisfuel.compat.Mods;
 
 import io.github.fabricators_of_create.porting_lib.data.ExistingFileHelper;
@@ -22,7 +21,7 @@ public class BloodDataFabric implements DataGeneratorEntrypoint {
             mod.assertForDataGen();
 
         Path bloodisfuelResources = Paths.get(System.getProperty(ExistingFileHelper.EXISTING_RESOURCES));
-        // fixme re-enable the existing file helper when porting lib's ResourcePackLoader.createPackForMod is fixed
+        // re-enable the existing file helper when porting lib's ResourcePackLoader.createPackForMod is fixed
         ExistingFileHelper helper = new ExistingFileHelper(
                 Set.of(bloodisfuelResources), Set.of("create"), false, null, null
         );

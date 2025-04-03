@@ -1,12 +1,15 @@
 package net.electrisoma.bloodisfuel.multiloader.forge;
 
-import com.tterrag.registrate.AbstractRegistrate;
-import com.tterrag.registrate.builders.BuilderCallback;
-import com.tterrag.registrate.util.nullness.NonNullFunction;
 import net.electrisoma.bloodisfuel.registry.forge.fluid_utils.FluidBuilderImpl;
 import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
 import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
+
+import com.tterrag.registrate.AbstractRegistrate;
+import com.tterrag.registrate.builders.BuilderCallback;
+import com.tterrag.registrate.util.nullness.NonNullFunction;
+
 import net.minecraft.resources.ResourceLocation;
+
 
 public class RegistryPlatformImpl {
 
