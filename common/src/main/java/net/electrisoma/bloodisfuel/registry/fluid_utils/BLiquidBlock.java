@@ -22,7 +22,7 @@ import net.minecraft.world.level.material.Fluids;
 import java.util.Optional;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public class BLiquidBlock extends LiquidBlock implements FluidGetter {
     private final NonNullSupplier<? extends FlowingFluid> fluidSup;
 

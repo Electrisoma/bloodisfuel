@@ -1,24 +1,21 @@
 package net.electrisoma.bloodisfuel.base.data.recipe.compat;
 
-import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
-import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
-import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
-import net.createmod.catnip.platform.CatnipServices;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-
 import net.electrisoma.bloodisfuel.base.data.recipe.BRecipeProvider;
+
+import net.createmod.catnip.platform.CatnipServices;
+
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 
 @SuppressWarnings("unused")
@@ -35,12 +32,12 @@ public abstract class CompatRecipeGen extends BRecipeProvider {
         return new DataProvider() {
 
             @Override
-            public String getName() {
+            public @NotNull String getName() {
                 return "Compat Recipes for " + BloodIsFuel.NAME;
             }
 
             @Override
-            public CompletableFuture<?> run(CachedOutput dc) {
+            public @NotNull CompletableFuture<?> run(@NotNull CachedOutput dc) {
                 return CompletableFuture.allOf(GENERATORS.stream()
                         .map(gen -> gen.run(dc))
                         .toArray(CompletableFuture[]::new));
@@ -63,7 +60,7 @@ public abstract class CompatRecipeGen extends BRecipeProvider {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return BloodIsFuel.NAME + " Compat Recipes"
                 + getRecipeType();
     }

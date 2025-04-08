@@ -1,4 +1,3 @@
-import me.modmuss50.mpp.ReleaseType
 import java.util.*
 
 architectury.fabric()
@@ -72,37 +71,37 @@ dependencies {
 //    modCompileOnly("dev.emi:emi:$emi_version")
 }
 
-// Modmuss Publish
-publishMods {
-    file = tasks.remapJar.get().archiveFile
-    version.set(project.version.toString())
-    changelog = "sum stuff"
-    type = ALPHA
-    dryRun = System.getenv("DRYRUN")?.toBoolean() ?: true
-    displayName = "Create: Blood is Fuel! ${"mod_version"()} Fabric ${"minecraft_version"()}"
-    modLoaders.add("fabric")
-    modLoaders.add("quilt")
-
-    curseforge {
-        projectId = "curseforge_id"()
-        accessToken = System.getenv("CURSEFORGE_TOKEN")
-        minecraftVersions.add("minecraft_version"())
-
-        requires {
-            slug = "create-fabric"
-        }
-    }
-
-    modrinth {
-        projectId = "modrinth_id"()
-        accessToken = System.getenv("MODRINTH_TOKEN")
-        minecraftVersions.add("minecraft_version"())
-
-        requires {
-            slug = "create-fabric"
-        }
-    }
-}
+// Modmuss Publish - dead until create fabric 6.0.0 release
+//publishMods {
+//    file = tasks.remapJar.get().archiveFile
+//    version.set(project.version.toString())
+//    changelog = "sum stuff"
+//    type = ALPHA
+//    dryRun = System.getenv("DRYRUN")?.toBoolean() ?: true
+//    displayName = "Create: Blood is Fuel! ${"mod_version"()} Fabric ${"minecraft_version"()}"
+//    modLoaders.add("fabric")
+//    modLoaders.add("quilt")
+//
+//    curseforge {
+//        projectId = "curseforge_id"()
+//        accessToken = System.getenv("CURSEFORGE_TOKEN")
+//        minecraftVersions.add("minecraft_version"())
+//
+//        requires {
+//            slug = "create-fabric"
+//        }
+//    }
+//
+//    modrinth {
+//        projectId = "modrinth_id"()
+//        accessToken = System.getenv("MODRINTH_TOKEN")
+//        minecraftVersions.add("minecraft_version"())
+//
+//        requires {
+//            slug = "create-fabric"
+//        }
+//    }
+//}
 
 // If the property is not set; :person_shrugging:
 operator fun String.invoke(): String {

@@ -8,6 +8,7 @@ import com.simibubi.create.AllRecipeTypes;
 
 import net.minecraft.data.PackOutput;
 
+@SuppressWarnings("unused")
 public class EmptyingRecipeGen extends BProcessingRecipeGen {
 
     GeneratedRecipe
@@ -18,7 +19,7 @@ public class EmptyingRecipeGen extends BProcessingRecipeGen {
                     .output(.4f, BItems.DRAINED_MEAT)
                     .output(BFluids.VISCERA.get(), 100)),
 
-    VISCERA_FROM_FISHES =
+            VISCERA_FROM_FISHES =
             create("viscera_from_fishes", b -> b
                     .require(BTags.AllItemTags.FISHES.tag)
                     .output(.4f, BItems.DRAINED_MEAT)

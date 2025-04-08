@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+@SuppressWarnings("all")
 public class BloodIsFuel {
     public static final String MOD_ID = "bloodisfuel";
     public static final String NAME = "Blood is Fuel";

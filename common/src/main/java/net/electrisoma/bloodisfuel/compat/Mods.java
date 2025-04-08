@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
 
+@SuppressWarnings("unused")
 public enum Mods {
 
 

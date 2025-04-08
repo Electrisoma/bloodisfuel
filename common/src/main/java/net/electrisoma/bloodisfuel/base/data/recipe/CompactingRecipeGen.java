@@ -9,6 +9,7 @@ import com.simibubi.create.AllRecipeTypes;
 import net.minecraft.data.PackOutput;
 
 
+@SuppressWarnings("unused")
 public class CompactingRecipeGen extends BProcessingRecipeGen {
 
     GeneratedRecipe

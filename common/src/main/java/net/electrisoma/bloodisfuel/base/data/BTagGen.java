@@ -12,7 +12,6 @@ import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
-import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
