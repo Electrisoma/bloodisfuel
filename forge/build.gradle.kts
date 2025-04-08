@@ -68,6 +68,7 @@ dependencies {
 //    modCompileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
 }
 
+// Modmuss Publish
 publishMods {
     file = tasks.remapJar.get().archiveFile
     version.set(project.version.toString())
@@ -99,6 +100,7 @@ publishMods {
     }
 }
 
+// If the property is not set; :person_shrugging:
 operator fun String.invoke(): String {
     return rootProject.ext[this] as? String
         ?: throw IllegalStateException("Property $this is not defined")

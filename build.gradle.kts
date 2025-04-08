@@ -221,6 +221,7 @@ fun hasUnstaged(): Boolean {
     }
 }
 
+// Global control over Modmuss Publish
 tasks.create("bloodisfuelPublish") {
     when (val platform = System.getenv("PLATFORM")) {
         "both" -> {
@@ -232,6 +233,7 @@ tasks.create("bloodisfuelPublish") {
     }
 }
 
+// If the property is not set; :person_shrugging:
 operator fun String.invoke(): String {
     return rootProject.ext[this] as? String
         ?: throw IllegalStateException("Property $this is not defined")
