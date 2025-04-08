@@ -25,6 +25,7 @@ import it.unimi.dsi.fastutil.objects.*;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
 
+@SuppressWarnings("all")
 public class BModTab {
     @ExpectPlatform
     public static CreativeModeTab getBaseTab() {

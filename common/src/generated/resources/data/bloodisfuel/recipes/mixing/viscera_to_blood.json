@@ -1,0 +1,16 @@
+{
+  "type": "create:mixing",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+      "amount": 1000,
+      "fluidTag": "bloodisfuel:viscera"
+    }
+  ],
+  "results": [
+    {
+      "amount": 500,
+      "fluid": "bloodisfuel:blood"
+    }
+  ]
+}

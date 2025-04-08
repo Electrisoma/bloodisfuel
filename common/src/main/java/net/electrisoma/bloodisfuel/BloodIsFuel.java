@@ -2,6 +2,9 @@ package net.electrisoma.bloodisfuel;
 
 import net.electrisoma.bloodisfuel.base.data.lang.BLangGen;
 import net.electrisoma.bloodisfuel.base.data.BTagGen;
+import net.electrisoma.bloodisfuel.base.data.recipe.BProcessingRecipeGen;
+import net.electrisoma.bloodisfuel.base.data.recipe.BStandardRecipeGen;
+import net.electrisoma.bloodisfuel.base.data.recipe.compat.CompatRecipeGen;
 import net.electrisoma.bloodisfuel.multiloader.Loader;
 import net.electrisoma.bloodisfuel.registry.BModTab.Tabs;
 
@@ -64,7 +67,10 @@ public class BloodIsFuel {
 
         REGISTRATE.addDataGenerator(ProviderType.LANG, BLangGen::generate);
 
-        //gen.addProvider(BStandardRecipeGen::new);
+        gen.addProvider(BStandardRecipeGen::new);
+        gen.addProvider(BProcessingRecipeGen::registerAll);
+        gen.addProvider(CompatRecipeGen::registerAll);
+
         //gen.addProvider(BAdvancements::new);
     }
 

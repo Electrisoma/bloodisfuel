@@ -1,6 +1,7 @@
 package net.electrisoma.bloodisfuel.registry.fluid_utils;
 
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;

@@ -2,7 +2,6 @@ package net.electrisoma.bloodisfuel.compat;
 
 import net.createmod.catnip.lang.Lang;
 
-
 import java.util.Optional;
 import java.util.function.Supplier;
 

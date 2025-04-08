@@ -145,7 +145,9 @@ public abstract class FluidBuilder<T extends BFlowingFluid, P> extends AbstractB
         return bucket(BucketItem::new);
     }
 
-    public <I extends BucketItem> ItemBuilder<I, FluidBuilder<T, P>> bucket(NonNullBiFunction<? extends BFlowingFluid, Item.Properties, ? extends I> factory) {
+    public <I extends BucketItem> ItemBuilder<I, FluidBuilder<T, P>> bucket(NonNullBiFunction<? extends
+            BFlowingFluid, Item.Properties, ? extends I> factory) {
+
         if (this.defaultBucket == Boolean.FALSE) {
             throw new IllegalStateException("Only one call to bucket/noBucket per builder allowed");
         }

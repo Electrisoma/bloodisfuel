@@ -5,14 +5,10 @@ import net.electrisoma.bloodisfuel.registry.BTags;
 import com.simibubi.create.content.equipment.armor.CapacityEnchantment;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 
-//import io.github.fabricators_of_create.porting_lib.fluids.FluidStack;
 
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,7 +19,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 
 import static net.minecraft.client.model.HumanoidModel.*;
 
@@ -94,12 +89,10 @@ public class SyringeBladeItem extends SwordItem implements CustomArmPoseItem, Ca
         return !isOnCooldown;
     }
 
-
     @Override
     public boolean isEnchantable(ItemStack stack) {
         return true;
     }
-
 
     @Nullable
     @Override
