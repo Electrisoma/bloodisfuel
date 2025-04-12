@@ -1,11 +1,9 @@
-name: build
-on: [ pull_request, push ]
+name: Build
+
+on: [workflow_dispatch, push, pull_request]
 
 jobs:
   build:
-    strategy:
-      matrix:
-        java: [ 17 ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -25,17 +23,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-home-cache-cleanup: true
+          cache-read-only: ${{ !endsWith(github.ref_name, '/dev') }}
 
       - name: Validate Gradle Wrapper Integrity
         uses: gradle/wrapper-validation-action@v2
-
-      - name: build
-        run: ./gradlew build
-
-      - name: capture build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: Artifacts
-          path: |
-            fabric/build/libs/
-            forge/build/libs/
