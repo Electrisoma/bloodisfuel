@@ -22,7 +22,8 @@ public class BClientForge {
     }
 
     public static void getFogDensity(ViewportEvent.RenderFog event) {
-        if (!event.isCancelable()) return;
+        if (!event.isCancelable())
+            return;
         float density = BClientCommon.getFogDensity(event.getCamera(), event.getFarPlaneDistance());
         if (density != -1) {
             event.setFarPlaneDistance(density);

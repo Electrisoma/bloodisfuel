@@ -31,15 +31,13 @@ public abstract class BProcessingRecipeGen extends BRecipeProvider {
         GENERATORS.add(new MixingRecipeGen(pOutput));
         GENERATORS.add(new EmptyingRecipeGen(pOutput));
         GENERATORS.add(new CompactingRecipeGen(pOutput));
-        //GENERATORS.add(new DistillationRecipeGen(output));
-        //GENERATORS.add(new LiquidBurningRecipeGen(output));
 
 
         return new DataProvider() {
 
             @Override
             public String getName() {
-                return "Processing Recipes for " + BloodIsFuel.NAME;
+                return BloodIsFuel.NAME + "'s Processing Recipes";
             }
 
             @Override
@@ -112,7 +110,7 @@ public abstract class BProcessingRecipeGen extends BRecipeProvider {
 
     @Override
     public String getName() {
-        return BloodIsFuel.NAME + " Processing Recipes"
+        return BloodIsFuel.NAME + "'s Processing Recipes "
                 + getRecipeType()
                 .getId()
                 .getPath();

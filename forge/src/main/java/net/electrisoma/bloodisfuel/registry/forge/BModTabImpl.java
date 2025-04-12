@@ -5,6 +5,7 @@ import net.electrisoma.bloodisfuel.registry.BBlocks;
 import net.electrisoma.bloodisfuel.registry.BModTab.Tabs;
 import net.electrisoma.bloodisfuel.registry.BModTab.RegistrateDisplayItemsGenerator;
 
+import net.electrisoma.bloodisfuel.registry.items.BItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -34,7 +35,7 @@ public class BModTabImpl {
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.bloodisfuel.main"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-                    .icon(() -> BBlocks.EXAMPLE_BLOCK.asStack())
+                    .icon(() -> BItems.DRAINED_MEAT.asItem().getDefaultInstance())
                     .displayItems(new RegistrateDisplayItemsGenerator(Tabs.MAIN))
                     .build());
 

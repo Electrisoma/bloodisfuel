@@ -52,7 +52,9 @@ public abstract class BFlowingFluidMixin extends FlowingFluid {
                     FluidType.Properties.create()
                             .sound(SoundActions.BUCKET_FILL, this.fillSound)
                             .sound(SoundActions.BUCKET_EMPTY, this.emptySound)
-                            .descriptionId(Util.makeDescriptionId("fluid", BuiltInRegistries.FLUID.getKey(this))), this.stillTex, this.flowingTex);
+                            .descriptionId(Util.makeDescriptionId("fluid",
+                                    BuiltInRegistries.FLUID.getKey(this))),
+                    this.stillTex, this.flowingTex);
         }
         return this.fluidType;
     }

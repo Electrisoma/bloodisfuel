@@ -20,6 +20,7 @@ import net.minecraftforge.forgespi.language.IModInfo;
 import java.util.List;
 
 
+@SuppressWarnings("all")
 @Mod(BloodIsFuel.MOD_ID)
 @Mod.EventBusSubscriber
 public class BloodIsFuelImpl {
@@ -55,12 +56,12 @@ public class BloodIsFuelImpl {
         return versionString;
     }
 
+    public static void finalizeRegistrate() {
+        BloodIsFuel.registrate().registerEventListeners(eventBus);
+    }
+
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         BloodIsFuel.LOGGER.info(BloodIsFuel.SERVER_START);
-    }
-
-    public static void finalizeRegistrate() {
-        BloodIsFuel.registrate().registerEventListeners(eventBus);
     }
 }

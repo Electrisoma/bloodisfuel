@@ -4,7 +4,7 @@ import net.electrisoma.bloodisfuel.base.data.lang.BLangGen;
 import net.electrisoma.bloodisfuel.base.data.BTagGen;
 import net.electrisoma.bloodisfuel.base.data.recipe.BProcessingRecipeGen;
 import net.electrisoma.bloodisfuel.base.data.recipe.BStandardRecipeGen;
-import net.electrisoma.bloodisfuel.base.data.recipe.compat.CompatRecipeGen;
+//import net.electrisoma.bloodisfuel.base.data.recipe.compat.CompatRecipeGen;
 import net.electrisoma.bloodisfuel.multiloader.Loader;
 import net.electrisoma.bloodisfuel.registry.BModTab.Tabs;
 
@@ -70,7 +70,7 @@ public class BloodIsFuel {
 
         gen.addProvider(BStandardRecipeGen::new);
         gen.addProvider(BProcessingRecipeGen::registerAll);
-        gen.addProvider(CompatRecipeGen::registerAll);
+        //gen.addProvider(CompatRecipeGen::registerAll);
 
         //gen.addProvider(BAdvancements::new);
     }
@@ -79,6 +79,8 @@ public class BloodIsFuel {
     public static String findVersion() {
         throw new AssertionError();
     }
+
+
 
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);

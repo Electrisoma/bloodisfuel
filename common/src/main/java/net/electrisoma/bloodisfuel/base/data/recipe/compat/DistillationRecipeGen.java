@@ -17,8 +17,9 @@
 //                    .requiresHeat(HeatCondition.SUPERHEATED)
 //                    .duration(100)
 //                    .output(BFluids.DIESEL_INFUSED_BLOOD.get(),50)
-//                    .output(BFluids.GASOLINE_INFUSED_BLOOD.get(), 50))
-//            ;
+//                    .output(BFluids.GASOLINE_INFUSED_BLOOD.get(), 50)
+//                    );
+//
 //
 //    public DistillationRecipeGen(PackOutput pOutput) {
 //        super(pOutput);

@@ -18,12 +18,14 @@ public class CompactingRecipeGen extends BProcessingRecipeGen {
             create("viscera_from_meats", b -> b
                     .require(BTags.AllItemTags.MEATS.tag)
                     .output(BFluids.VISCERA.get(), 100)
-                    .output(.4f, BItems.DRAINED_MEAT)),
+                    .output(.4f, BItems.DRAINED_MEAT)
+            ),
 
             VISCERA_FROM_FISHES =
             create("viscera_from_fishes", b -> b
                     .require(BTags.AllItemTags.FISHES.tag)
-                    .output(BFluids.VISCERA.get(), 25));
+                    .output(BFluids.VISCERA.get(), 25)
+            );
 
     public CompactingRecipeGen(PackOutput pOutput) {
         super(pOutput);

@@ -31,11 +31,8 @@ public class BStandardRecipeGen extends BRecipeProvider {
     GeneratedRecipe
 
             DRAINED_MEAT_TO_LEATHER =
-                create(() -> Items.LEATHER)
-                .viaCooking(BItems.DRAINED_MEAT)
-                .inSmoker()
+                create(() -> Items.LEATHER).viaCooking(BItems.DRAINED_MEAT).inSmoker()
             ;
-
 
 
 

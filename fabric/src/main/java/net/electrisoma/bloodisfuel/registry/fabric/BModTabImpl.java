@@ -6,6 +6,7 @@ import net.electrisoma.bloodisfuel.registry.BModTab.Tabs;
 import net.electrisoma.bloodisfuel.registry.BModTab.TabInfo;
 import net.electrisoma.bloodisfuel.registry.BModTab.RegistrateDisplayItemsGenerator;
 
+import net.electrisoma.bloodisfuel.registry.items.BItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 
 import net.minecraft.core.Registry;
@@ -25,7 +26,7 @@ public class BModTabImpl {
     private static final TabInfo MAIN_TAB = register("main",
             () -> FabricItemGroup.builder()
                     .title(Component.translatable("itemGroup.bloodisfuel.main"))
-                    .icon(() -> BBlocks.EXAMPLE_BLOCK.asStack())
+                    .icon(() -> BItems.DRAINED_MEAT.asItem().getDefaultInstance())
                     .displayItems(new RegistrateDisplayItemsGenerator(Tabs.MAIN))
                     .build());
 

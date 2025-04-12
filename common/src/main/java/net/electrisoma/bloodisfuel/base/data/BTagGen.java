@@ -31,9 +31,9 @@ public class BTagGen {
 
     public static void generateBlockTags(RegistrateTagsProvider<Block> prov) {
 
-        prov.addTag(BTags.AllBlockTags.EXAMPLE.tag)
-                .add(BBlocks.EXAMPLE_BLOCK.get())
-        ;
+//        prov.addTag(BTags.AllBlockTags.EXAMPLE.tag)
+//                .add(BBlocks.EXAMPLE_BLOCK.get())
+//        ;
 
 
 
@@ -156,10 +156,6 @@ public class BTagGen {
                 .add(BFluids.GASOLINE_INFUSED_BLOOD.getId())
         ;
 
-        prov.addTag(AllFluidTags.BLOOD.tag)
-
-        ;
-
         prov.addTag(BTags.AllFluidTags.LIQUID_CARBOHYDRATES.tag)
                 //Create
                 .addOptional(new ResourceLocation("create:tea"))
@@ -216,7 +212,6 @@ public class BTagGen {
     public static TagAppender<Fluid> tagAppender(RegistrateTagsProvider<Fluid> prov, AllFluidTags tag) {
         return tagAppender(prov, tag.tag);
     }
-
 
     public static TagAppender<Item> tagAppender(RegistrateTagsProvider<Item> prov, AllItemTags tag) {
         return tagAppender(prov, tag.tag);

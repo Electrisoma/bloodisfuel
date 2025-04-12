@@ -12,6 +12,7 @@ plugins {
     id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.8" // https://github.com/JetBrains/gradle-idea-ext-plugin
     id("io.github.pacifistmc.forgix") version "1.2.6" //https://github.com/PacifistMC/Forgix
+    id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
 }
 
 val isRelease = System.getenv("RELEASE_BUILD")?.toBoolean() ?: false

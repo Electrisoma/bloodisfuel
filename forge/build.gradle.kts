@@ -1,3 +1,5 @@
+import dev.ithundxr.silk.ChangelogText
+
 architectury.forge()
 
 loom {
@@ -51,7 +53,7 @@ dependencies {
 //
 //    modLocalRuntime("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
 //    forgeRuntimeLibrary("com.eliotlash.mclib:mclib:20")
-//    https://h2database.com/html/mvstore.html
+//    //https://h2database.com/html/mvstore.html
 //    loaderLibraries(group: "com.h2database", name: "h2-mvstore", version: "2.2.224")
 //    (group: "com.h2database", name: "h2-mvstore", version: "[2.2.220,3.0.0)")
 
@@ -63,6 +65,7 @@ dependencies {
 
     // Development QOL
     modLocalRuntime("mezz.jei:jei-${"minecraft_version"()}-forge:${"jei_version"()}") { isTransitive = false }
+    modLocalRuntime("curse.maven:embeddium-908741:5681725")
 
     // if you would like to add integration with JEI, uncomment this line.
 //    modCompileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
@@ -72,10 +75,10 @@ dependencies {
 publishMods {
     file = tasks.remapJar.get().archiveFile
     version.set(project.version.toString())
-    changelog = "sum stuff"
+    changelog = ChangelogText.getChangelogText(rootProject).toString()
     type = ALPHA
     dryRun = System.getenv("DRYRUN")?.toBoolean() ?: true
-    displayName = "Create: Blood is Fuel! ${"mod_version"()} Forge ${"minecraft_version"()}"
+    displayName = "${"mod_name_full"()} ${"mod_version"()} Forge ${"minecraft_version"()}"
     modLoaders.add("forge")
     modLoaders.add("neoforge")
 

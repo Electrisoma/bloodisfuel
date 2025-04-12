@@ -38,8 +38,7 @@ public class BRecipeProvider extends RecipeProvider {
         void register(Consumer<FinishedRecipe> consumer);
     }
 
-    protected static class Marker {
-    }
+    protected static class Marker { }
 
     protected static class I {
 

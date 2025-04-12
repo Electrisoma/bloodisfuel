@@ -13,10 +13,9 @@ public class BloodIsFuelImpl implements ModInitializer {
     @SuppressWarnings({"unused"})
     @Override
     public void onInitialize() {
-        onServerStarting();
-
         BloodIsFuel.init();
         BConfigImpl.register();
+
     }
 
     public static String findVersion() {
@@ -28,12 +27,11 @@ public class BloodIsFuelImpl implements ModInitializer {
                 .getFriendlyString();
     }
 
-
     public static void finalizeRegistrate() {
         BloodIsFuel.registrate().register();
     }
 
-    public void onServerStarting(){
+    public static void onServerStarting(){
         ServerLifecycleEvents.SERVER_STARTED.register(server ->
                 BloodIsFuel.LOGGER.info(BloodIsFuel.SERVER_START)
         );

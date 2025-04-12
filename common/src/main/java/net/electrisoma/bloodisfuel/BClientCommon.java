@@ -19,7 +19,8 @@ public class BClientCommon {
         Level level = mc.level;
         BlockPos blockPos = info.getBlockPosition();
         FluidState fluidState = level.getFluidState(blockPos);
-        if (info.getPosition().y > blockPos.getY() + fluidState.getHeight(level, blockPos)) return;
+        if (info.getPosition().y > blockPos.getY() + fluidState.getHeight(level, blockPos))
+            return;
 
         Fluid fluid = fluidState.getType();
 
@@ -63,7 +64,8 @@ public class BClientCommon {
         Level level = mc.level;
         BlockPos blockPos = info.getBlockPosition();
         FluidState fluidState = level.getFluidState(blockPos);
-        if (info.getPosition().y > blockPos.getY() + fluidState.getHeight(level, blockPos)) return -1;
+        if (info.getPosition().y >= blockPos.getY() + fluidState.getHeight(level, blockPos))
+            return -1;
 
         Fluid fluid = fluidState.getType();
 
