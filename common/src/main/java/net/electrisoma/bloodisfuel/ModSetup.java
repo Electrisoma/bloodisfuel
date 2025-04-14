@@ -5,6 +5,7 @@ import net.electrisoma.bloodisfuel.registry.items.BItems;
 
 
 public class ModSetup {
+
     public static void register() {
         BModTab.register();
         BTags.register();

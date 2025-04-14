@@ -14,6 +14,7 @@ import java.util.Set;
 
 
 public class BloodDataFabric implements DataGeneratorEntrypoint {
+
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator gen) {
         // Ensure that all mods are present if they are needed for data gen

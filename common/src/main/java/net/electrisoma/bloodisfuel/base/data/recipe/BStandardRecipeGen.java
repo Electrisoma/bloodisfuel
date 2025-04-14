@@ -43,16 +43,16 @@ public class BStandardRecipeGen extends BRecipeProvider {
         return new Marker();
     }
 
-    GeneratedRecipeBuilder create(Supplier<ItemLike> result) {
-        return new GeneratedRecipeBuilder("/", result);
+    GeneratedRecipeBuilder create(ItemProviderEntry<? extends ItemLike> result) {
+        return create(result::get);
     }
 
     GeneratedRecipeBuilder create(ResourceLocation result) {
         return new GeneratedRecipeBuilder("/", result);
     }
 
-    GeneratedRecipeBuilder create(ItemProviderEntry<? extends ItemLike> result) {
-        return create(result::get);
+    GeneratedRecipeBuilder create(Supplier<ItemLike> result) {
+        return new GeneratedRecipeBuilder("/", result);
     }
 
     public BStandardRecipeGen(PackOutput pOutput) {

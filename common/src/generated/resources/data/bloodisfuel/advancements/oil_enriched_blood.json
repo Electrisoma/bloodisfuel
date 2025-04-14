@@ -1,0 +1,39 @@
+{
+  "parent": "bloodisfuel:enriched_blood",
+  "criteria": {
+    "0": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "bloodisfuel:oil_enriched_blood_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "color": "#DBA213",
+      "translate": "advancement.bloodisfuel.oil_enriched_blood.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bloodisfuel:oil_enriched_blood_bucket"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bloodisfuel.oil_enriched_blood"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

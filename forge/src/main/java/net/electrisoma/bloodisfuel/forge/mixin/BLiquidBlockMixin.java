@@ -3,9 +3,9 @@ package net.electrisoma.bloodisfuel.forge.mixin;
 import net.electrisoma.bloodisfuel.registry.fluid_utils.BLiquidBlock;
 
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.block.state.BlockState;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

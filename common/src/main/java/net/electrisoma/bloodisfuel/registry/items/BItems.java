@@ -9,15 +9,16 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.effect.MobEffectInstance;
 
 
 public class BItems {
+
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
 
     public static final ItemEntry<Item> DRAINED_MEAT =
@@ -30,7 +31,8 @@ public class BItems {
                                     .effect(new MobEffectInstance(MobEffects.HUNGER, 600, 0),0.8f)
                                     .effect(new MobEffectInstance(MobEffects.POISON, 300, 2),0.8f)
                                     .build()))
-                    .register();
+                    .register()
+            ;
 
     public static final ItemEntry<SyringeBladeItem> SYRINGE_BLADE =
             REGISTRATE.item("syringe_blade", p ->
@@ -38,7 +40,10 @@ public class BItems {
                     .model(AssetLookup.itemModelWithPartials())
                     .tag(BTags.AllItemTags.SYRINGE_BLADE.tag)
                     .lang("Syringe Blade")
-                    .register();
+                    .register()
+            ;
+
+
 
     public static void register(){
         // load the class and register everything

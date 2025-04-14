@@ -7,6 +7,7 @@ import static net.electrisoma.bloodisfuel.registry.forge.BModTabRegistrateDispla
 
 
 public class BModTabTabsImpl {
+
     public static void use(BModTab.Tabs tab) {
         BloodIsFuel.registrate().setCreativeTab(getTabObject(tab.getKey()));
     }

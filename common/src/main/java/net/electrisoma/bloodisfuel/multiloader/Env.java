@@ -1,13 +1,14 @@
 package net.electrisoma.bloodisfuel.multiloader;
 
-import java.util.function.Supplier;
-
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
 
+import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public enum Env {
+
     CLIENT, SERVER;
 
     public static final Env CURRENT = getCurrent();
@@ -34,5 +35,7 @@ public enum Env {
         throw new AssertionError();
     }
 
-    @ExpectPlatform public static void executeOnClient(Supplier<Runnable> sup) { throw new AssertionError(); }
+    @ExpectPlatform public static void executeOnClient(Supplier<Runnable> sup) {
+        throw new AssertionError();
+    }
 }

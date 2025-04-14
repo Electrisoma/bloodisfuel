@@ -10,6 +10,7 @@ import net.minecraft.client.Camera;
 
 
 public class BClientFabric implements ClientModInitializer {
+
     @Override
     public void onInitializeClient() {
 

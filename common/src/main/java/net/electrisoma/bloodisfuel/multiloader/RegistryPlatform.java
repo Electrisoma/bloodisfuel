@@ -1,7 +1,7 @@
 package net.electrisoma.bloodisfuel.multiloader;
 
-import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
 import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
 
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BuilderCallback;

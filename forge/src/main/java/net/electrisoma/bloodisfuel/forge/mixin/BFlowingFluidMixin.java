@@ -5,12 +5,12 @@ import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import net.minecraft.Util;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.common.SoundActions;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.Unique;
 import javax.annotation.Nonnull;
 
 
-@SuppressWarnings({"unused","deprecated"})
+@SuppressWarnings("all")
 @Mixin(BFlowingFluid.class)
 public abstract class BFlowingFluidMixin extends FlowingFluid {
 

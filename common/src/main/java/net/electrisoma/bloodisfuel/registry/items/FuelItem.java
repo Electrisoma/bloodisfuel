@@ -6,7 +6,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 
 
 public class FuelItem extends Item {
+
     int burnTime;
+
     public FuelItem(Properties properties, int burnTime) {
         super(properties);
         this.burnTime = burnTime;

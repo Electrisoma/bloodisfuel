@@ -4,8 +4,8 @@ import net.electrisoma.bloodisfuel.config.BConfig;
 import net.electrisoma.bloodisfuel.registry.BFluids;
 
 import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;

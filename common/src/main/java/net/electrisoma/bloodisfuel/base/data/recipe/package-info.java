@@ -1,5 +1,5 @@
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 
 package net.electrisoma.bloodisfuel.base.data.recipe;
 

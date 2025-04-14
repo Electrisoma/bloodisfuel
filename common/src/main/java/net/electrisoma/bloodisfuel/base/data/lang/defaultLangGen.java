@@ -1,6 +1,7 @@
 package net.electrisoma.bloodisfuel.base.data.lang;
 
 import net.electrisoma.bloodisfuel.registry.items.BItems;
+
 import net.minecraft.world.level.ItemLike;
 
 import java.util.function.BiConsumer;

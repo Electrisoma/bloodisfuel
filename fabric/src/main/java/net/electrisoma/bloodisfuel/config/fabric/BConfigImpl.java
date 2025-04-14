@@ -5,8 +5,8 @@ import net.electrisoma.bloodisfuel.config.BConfig;
 
 import net.createmod.catnip.config.ConfigBase;
 
-import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
 import fuzs.forgeconfigapiport.api.config.v2.ModConfigEvents;
+import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
 
 import net.minecraftforge.fml.config.ModConfig;
 
@@ -14,6 +14,7 @@ import java.util.Map;
 
 
 public class BConfigImpl {
+
     public static void register() {
         BConfig.registerCommon();
 

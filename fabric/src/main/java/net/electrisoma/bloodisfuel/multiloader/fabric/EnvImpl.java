@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 
 
 public class EnvImpl {
+
     @Internal
     public static Env getCurrent() {
         return FabricLoader.getInstance().getEnvironmentType() ==

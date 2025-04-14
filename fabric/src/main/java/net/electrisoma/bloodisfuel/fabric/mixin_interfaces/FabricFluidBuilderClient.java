@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 import java.util.function.Supplier;
 
 
+@SuppressWarnings("all")
 public interface FabricFluidBuilderClient {
 
     FabricFluidBuilderClient layer(Supplier<Supplier<RenderType>> layer);

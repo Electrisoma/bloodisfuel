@@ -46,7 +46,7 @@ dependencies {
     include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-forge:${"mixin_extras_version"()}")!!)!!)
 
     // Content Testing
-    modLocalRuntime("curse.maven:create-diesel-generators-869316:6286179")
+//    modLocalRuntime("curse.maven:create-diesel-generators-869316:6286179")
 
 //    modLocalRuntime("maven.modrinth:biomancy:${biomancy_version}")
 //    modLocalRuntime("maven.modrinth:biofactory:${biofactory_version}")
@@ -64,7 +64,8 @@ dependencies {
 
 
     // Development QOL
-    modLocalRuntime("mezz.jei:jei-${"minecraft_version"()}-forge:${"jei_version"()}") { isTransitive = false }
+    //modLocalRuntime("mezz.jei:jei-${"minecraft_version"()}-forge:${"jei_version"()}") { isTransitive = false }
+
     modLocalRuntime("curse.maven:embeddium-908741:5681725")
 
     // if you would like to add integration with JEI, uncomment this line.

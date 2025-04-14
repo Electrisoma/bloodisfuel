@@ -1,13 +1,14 @@
 package net.electrisoma.bloodisfuel.multiloader;
 
-import java.util.function.Supplier;
-
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public enum Loader {
+
     FORGE, FABRIC;
 
     public static final Loader CURRENT = getCurrent();

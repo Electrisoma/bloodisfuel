@@ -3,20 +3,17 @@ package net.electrisoma.bloodisfuel.registry;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.simibubi.create.foundation.data.SharedProperties;
-
-import com.tterrag.registrate.util.entry.BlockEntry;
-
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
-
-import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 
 
+@SuppressWarnings("unused")
 public class BBlocks {
+
 	private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
+
+	public static void register() {
+		// load the class and register everything
+		BloodIsFuel.LOGGER.info("Registering blocks for " + BloodIsFuel.NAME);
+	}
 
 //	public static final BlockEntry<Block> EXAMPLE_BLOCK =
 //			REGISTRATE.block("example_block", Block::new)
@@ -29,10 +26,4 @@ public class BBlocks {
 //			.lang("Example Block")
 //			.simpleItem()
 //			.register();
-
-
-	public static void register() {
-		// load the class and register everything
-		BloodIsFuel.LOGGER.info("Registering blocks for " + BloodIsFuel.NAME);
-	}
 }

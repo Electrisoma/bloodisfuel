@@ -6,5 +6,6 @@ import net.minecraft.resources.ResourceLocation;
 
 
 public interface RenderHandlerFactory {
+
     FluidRenderHandler create(ResourceLocation stillTexture, ResourceLocation flowingTexture);
 }

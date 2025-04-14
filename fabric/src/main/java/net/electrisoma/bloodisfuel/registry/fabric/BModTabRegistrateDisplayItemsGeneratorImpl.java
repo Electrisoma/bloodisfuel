@@ -9,6 +9,7 @@ import net.minecraft.world.item.CreativeModeTab;
 
 
 public class BModTabRegistrateDisplayItemsGeneratorImpl {
+
     public static boolean isInCreativeTab(RegistryEntry<?> entry, ResourceKey<CreativeModeTab> tab) {
         return CreateRegistrate.isInCreativeTab(entry, tab);
     }

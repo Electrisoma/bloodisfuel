@@ -2,9 +2,8 @@ package net.electrisoma.bloodisfuel.config;
 
 import net.createmod.catnip.config.ConfigBase;
 
-import org.jetbrains.annotations.NotNull;
 
-
+@SuppressWarnings("unused")
 public class BServer extends ConfigBase {
 
     public final ConfigGroup infrastructure =
@@ -21,7 +20,7 @@ public class BServer extends ConfigBase {
             Comments.blood_capacity_enchanting);
 
     @Override
-    public @NotNull String getName() {
+    public String getName() {
         return "server";
     }
 

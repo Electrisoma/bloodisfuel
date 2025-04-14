@@ -1,5 +1,7 @@
 package net.electrisoma.bloodisfuel.base.data.lang;
 
+import net.electrisoma.bloodisfuel.registry.BAdvancements;
+
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 import java.util.function.BiConsumer;
@@ -11,7 +13,7 @@ public class BLangGen {
 
         provideDefaultLang(langConsumer);
 
-        //BAdvancements.provideLang(langConsumer);
+        BAdvancements.provideLang(langConsumer);
     }
 
     private static void provideDefaultLang(BiConsumer<String, String> consumer) {

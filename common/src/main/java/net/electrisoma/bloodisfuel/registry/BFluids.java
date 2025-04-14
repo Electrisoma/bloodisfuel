@@ -1,20 +1,20 @@
 package net.electrisoma.bloodisfuel.registry;
 
-
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
 import net.electrisoma.bloodisfuel.multiloader.RegistryPlatform;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
 import net.electrisoma.bloodisfuel.registry.fluid_utils.BLiquidBlock;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.liquid_blocks.BloodLiquidBlock;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
 
@@ -38,8 +38,9 @@ public class BFluids {
                             .blastResistance(100f)
                     ).tag(BTags.AllFluidTags.VISCERA.tag,
                             forgeTag("viscera"),
-                            fabricTag("viscera"))
-                    .block(BLiquidBlock::new).build()
+                            fabricTag("viscera")
+                    )
+                    .block(BloodLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
                     .register();
 
@@ -53,8 +54,9 @@ public class BFluids {
                             .blastResistance(100f)
                     ).tag(BTags.AllFluidTags.BLOOD.tag,
                             forgeTag("blood"),
-                            fabricTag("blood"))
-                    .block(BLiquidBlock::new).build()
+                            fabricTag("blood")
+                    )
+                    .block(BloodLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
                     .register();
 
@@ -68,8 +70,9 @@ public class BFluids {
                             .blastResistance(100f)
                     ).tag(BTags.AllFluidTags.ENRICHED_BLOOD.tag,
                             forgeTag("enriched_blood"),
-                            fabricTag("enriched_blood"))
-                    .block(BLiquidBlock::new).build()
+                            fabricTag("enriched_blood")
+                    )
+                    .block(BloodLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
                     .register();
 
@@ -83,8 +86,9 @@ public class BFluids {
                             .blastResistance(100f)
                     ).tag(BTags.AllFluidTags.OIL_ENRICHED_BLOOD.tag,
                             forgeTag("oil_enriched_blood"),
-                            fabricTag("oil_enriched_blood"))
-                    .block(BLiquidBlock::new).build()
+                            fabricTag("oil_enriched_blood")
+                    )
+                    .block(BloodLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
                     .register();
 
@@ -98,8 +102,9 @@ public class BFluids {
                             .blastResistance(100f)
                     ).tag(BTags.AllFluidTags.GASOLINE_INFUSED_BLOOD.tag,
                             forgeTag("gasoline_infused_blood"),
-                            fabricTag("gasoline_infused_blood"))
-                    .block(BLiquidBlock::new).build()
+                            fabricTag("gasoline_infused_blood")
+                    )
+                    .block(BloodLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
                     .register();
 
@@ -113,11 +118,15 @@ public class BFluids {
                             .blastResistance(100f)
                     ).tag(BTags.AllFluidTags.DIESEL_INFUSED_BLOOD.tag,
                             forgeTag("diesel_infused_blood"),
-                            fabricTag("diesel_infused_blood"))
-                    .block(BLiquidBlock::new).build()
+                            fabricTag("diesel_infused_blood")
+                    )
+                    .block(BloodLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
                     .register();
 
+    // boiling blood
+    // blazing stuff idk
+    // extra mob blood types
 
     private static <T extends BFlowingFluid, P> FluidBuilder<T, P>
     createFluid(String name, NonNullFunction<BFlowingFluid.Properties, T> fac) {
@@ -132,8 +141,9 @@ public class BFluids {
         return createFluid(name, BFlowingFluid.Flowing::new);
     }
 
-    @SuppressWarnings("unchecked")
-    private static <S> S regSelf() { return (S) BFluids.REGISTRATE; }
+    private static <S> S regSelf() {
+        return (S) BFluids.REGISTRATE;
+    }
 
     private static TagKey<Fluid> forgeTag(String path) {
         return TagKey.create(Registries.FLUID, new ResourceLocation("forge", path));

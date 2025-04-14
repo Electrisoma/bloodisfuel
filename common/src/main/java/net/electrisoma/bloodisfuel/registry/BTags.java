@@ -4,22 +4,32 @@ import net.electrisoma.bloodisfuel.BloodIsFuel;
 
 import net.createmod.catnip.lang.Lang;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.state.BlockState;
 
 
 @SuppressWarnings("all")
 public class BTags {
+
+    public static void register() {
+        // load the class and register everything
+        BloodIsFuel.LOGGER.info("Registering tags for " + BloodIsFuel.NAME);
+
+        AllBlockTags.register();
+        AllItemTags.register();
+        AllFluidTags.register();
+    }
+
     public static <T> TagKey<T> optionalTag(Registry<T> registry, ResourceLocation id) {
         return TagKey.create(registry.key(), id);
     }
@@ -65,7 +75,7 @@ public class BTags {
     public enum AllBlockTags {
         CARBOHYDRATES,
         MEATS,
-        EXAMPLE
+
         ;
 
         public final TagKey<Block> tag;
@@ -117,7 +127,6 @@ public class BTags {
     }
 
     public enum AllItemTags {
-        EXAMPLE,
         CARBOHYDRATES,
         FISHES,
         MEATS,
@@ -217,14 +226,5 @@ public class BTags {
 
         public static void register() {
         }
-    }
-
-    public static void register() {
-        // load the class and register everything
-        BloodIsFuel.LOGGER.info("Registering tags for " + BloodIsFuel.NAME);
-
-        AllBlockTags.register();
-        AllItemTags.register();
-        AllFluidTags.register();
     }
 }

@@ -2,10 +2,11 @@ package net.electrisoma.bloodisfuel.forge;
 
 import net.electrisoma.bloodisfuel.BClientCommon;
 
-import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.client.event.ViewportEvent;
 
 
+@SuppressWarnings("unused")
 public class BClientForge {
 
     public static void prepareClient(IEventBus modEventBus, IEventBus forgeEventBus) {

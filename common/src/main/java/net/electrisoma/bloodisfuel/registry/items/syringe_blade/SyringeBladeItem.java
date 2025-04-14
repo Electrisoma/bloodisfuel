@@ -2,32 +2,35 @@ package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
 import net.electrisoma.bloodisfuel.registry.BTags;
 
-import com.simibubi.create.content.equipment.armor.CapacityEnchantment;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
+import com.simibubi.create.content.equipment.armor.CapacityEnchantment;
 
-
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.player.AbstractClientPlayer;
 
 import org.jetbrains.annotations.Nullable;
-
 
 import static net.minecraft.client.model.HumanoidModel.*;
 
 
-public class SyringeBladeItem extends SwordItem implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable {
+public class SyringeBladeItem extends SwordItem
+        implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable {
+
     boolean isOnCooldown;
     boolean offHandPower;
 
-    public SyringeBladeItem(Tier pTier, float pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
+    public SyringeBladeItem(Tier pTier,
+                            float pAttackDamageModifier,
+                            float pAttackSpeedModifier,
+                            Properties pProperties) {
         super(pTier, (int) pAttackDamageModifier, pAttackSpeedModifier, pProperties);
     }
 

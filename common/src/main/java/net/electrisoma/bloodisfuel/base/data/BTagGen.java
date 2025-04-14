@@ -1,12 +1,9 @@
 package net.electrisoma.bloodisfuel.base.data;
 
-import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.registry.BTags;
-import net.electrisoma.bloodisfuel.registry.BBlocks;
+import net.electrisoma.bloodisfuel.registry.BTags.*;
+import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.registry.items.BItems;
-import net.electrisoma.bloodisfuel.registry.BTags.AllItemTags;
-import net.electrisoma.bloodisfuel.registry.BTags.AllBlockTags;
-import net.electrisoma.bloodisfuel.registry.BTags.AllFluidTags;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
@@ -31,12 +28,6 @@ public class BTagGen {
 
     public static void generateBlockTags(RegistrateTagsProvider<Block> prov) {
 
-//        prov.addTag(BTags.AllBlockTags.EXAMPLE.tag)
-//                .add(BBlocks.EXAMPLE_BLOCK.get())
-//        ;
-
-
-
 
         /**
          * end of block tags
@@ -47,6 +38,7 @@ public class BTagGen {
                 tagAppender(prov, tag);
             }
         }
+
         for (TagKey<Block> tag : OPTIONAL_TAGS.keySet()) {
             var appender = tagAppender(prov, tag);
             for (ResourceLocation loc : OPTIONAL_TAGS.get(tag))
@@ -56,11 +48,8 @@ public class BTagGen {
 
     public static void generateItemTags(RegistrateTagsProvider<Item> prov) {
 
-        prov.addTag(AllItemTags.EXAMPLE.tag)
-
-        ;
-
         prov.addTag(AllItemTags.CARBOHYDRATES.tag)
+
                 //Vanilla
                 .add(
                         Items.CAKE,
@@ -89,6 +78,7 @@ public class BTagGen {
         ;
 
         prov.addTag(BTags.AllItemTags.MEATS.tag)
+
                 //Vanilla
                 .add(
                         Items.BEEF,
@@ -113,6 +103,7 @@ public class BTagGen {
         ;
 
         prov.addTag(BTags.AllItemTags.FISHES.tag)
+
                 //Vanilla
                 .add(
                         Items.COD,
@@ -120,6 +111,7 @@ public class BTagGen {
                         Items.PUFFERFISH,
                         Items.TROPICAL_FISH
                 )
+
                 //Farmer's Delight
                 .addOptional(new ResourceLocation("farmersdelight:cod_slice"))
                 .addOptional(new ResourceLocation("farmersdelight:salmon_slice"))
@@ -129,9 +121,6 @@ public class BTagGen {
         prov.addTag(BTags.AllItemTags.RAW_MEATS.tag)
                 .add(BItems.DRAINED_MEAT.getId())
         ;
-
-
-
 
 
         /**
@@ -147,6 +136,7 @@ public class BTagGen {
     public static void generateFluidTags(RegistrateTagsProvider<Fluid> prov){
 
         prov.addTag(BTags.AllFluidTags.FUEL.tag)
+
                 //BIF
                 .add(BFluids.VISCERA.getId())
                 .add(BFluids.BLOOD.getId())
@@ -157,6 +147,7 @@ public class BTagGen {
         ;
 
         prov.addTag(BTags.AllFluidTags.LIQUID_CARBOHYDRATES.tag)
+
                 //Create
                 .addOptional(new ResourceLocation("create:tea"))
                 .addOptional(new ResourceLocation("create:honey"))
@@ -180,8 +171,6 @@ public class BTagGen {
         ;
 
 
-
-
         /**
          * end of fluid tags
          */
@@ -193,11 +182,7 @@ public class BTagGen {
     }
 
     /**
-     * @~~~~~~~~~~~~~~~~~~~~~~~~
-     *
      * end of all tags
-     *
-     * @~~~~~~~~~~~~~~~~~~~~~~~~
      */
 
     private static final Map<TagKey<Block>, List<ResourceLocation>> OPTIONAL_TAGS = new HashMap<>();
@@ -209,20 +194,24 @@ public class BTagGen {
         }
     }
 
-    public static TagAppender<Fluid> tagAppender(RegistrateTagsProvider<Fluid> prov, AllFluidTags tag) {
+    public static TagAppender<Item>
+    tagAppender(RegistrateTagsProvider<Item> prov, AllItemTags tag) {
         return tagAppender(prov, tag.tag);
     }
 
-    public static TagAppender<Item> tagAppender(RegistrateTagsProvider<Item> prov, AllItemTags tag) {
+    public static TagAppender<Fluid>
+    tagAppender(RegistrateTagsProvider<Fluid> prov, AllFluidTags tag) {
         return tagAppender(prov, tag.tag);
     }
 
-    public static TagAppender<Block> tagAppender(RegistrateTagsProvider<Block> prov, AllBlockTags tag) {
+    public static TagAppender<Block>
+    tagAppender(RegistrateTagsProvider<Block> prov, AllBlockTags tag) {
         return tagAppender(prov, tag.tag);
     }
 
     @ExpectPlatform // this has to be platformed out because addTag on fabric has a signature that includes FabricTagProvider$FabricTagBuilder
-    public static <T> TagAppender<T> tagAppender(RegistrateTagsProvider<T> prov, TagKey<T> tag) {
+    public static <T> TagAppender<T>
+    tagAppender(RegistrateTagsProvider<T> prov, TagKey<T> tag) {
         throw new AssertionError();
     }
 }

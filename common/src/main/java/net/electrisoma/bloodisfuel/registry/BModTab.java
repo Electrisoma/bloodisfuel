@@ -5,20 +5,20 @@ import net.electrisoma.bloodisfuel.multiloader.Env;
 
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab.TabVisibility;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.Predicate;
 
 import it.unimi.dsi.fastutil.objects.*;
 
@@ -27,6 +27,12 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 
 @SuppressWarnings("all")
 public class BModTab {
+
+    public static void register() {
+        // load the class and register everything
+        BloodIsFuel.LOGGER.info("Registering tabs for " + BloodIsFuel.NAME);
+    }
+
     @ExpectPlatform
     public static CreativeModeTab getBaseTab() {
         throw new AssertionError();
@@ -35,11 +41,6 @@ public class BModTab {
     @ExpectPlatform
     public static ResourceKey<CreativeModeTab> getBaseTabKey() {
         throw new AssertionError();
-    }
-
-    public static void register() {
-        // load the class and register everything
-        BloodIsFuel.LOGGER.info("Registering tabs for " + BloodIsFuel.NAME);
     }
 
     public enum Tabs {

@@ -1,14 +1,16 @@
 package net.electrisoma.bloodisfuel.multiloader;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.core.registries.Registries;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 
+@SuppressWarnings("unused")
 public class CommonTags {
+
     public static final List<CommonTag<Item>> ALL_ITEMS = new ArrayList<>();
     public static final List<CommonTag<Block>> ALL_BLOCKS = new ArrayList<>();
 
@@ -19,6 +21,7 @@ public class CommonTags {
     /**
      * Only for writing TO, not for testing
      */
+
     public static final CommonTag<Block>
             RELOCATION_NOT_SUPPORTED = block("relocation_not_supported");
 

@@ -1,24 +1,26 @@
 package net.electrisoma.bloodisfuel.base.data.recipe;
 
+import net.electrisoma.bloodisfuel.BloodIsFuel;
+
+import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
-import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
-import net.createmod.catnip.platform.CatnipServices;
-import net.electrisoma.bloodisfuel.BloodIsFuel;
 
+import net.createmod.catnip.platform.CatnipServices;
+
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.concurrent.CompletableFuture;
 
 
 @SuppressWarnings("unused")
@@ -53,8 +55,16 @@ public abstract class BProcessingRecipeGen extends BRecipeProvider {
         super(generator);
     }
 
+    protected abstract IRecipeTypeInfo getRecipeType();
+
     protected <T extends ProcessingRecipe<?>>
-    GeneratedRecipe create(String namespace, Supplier<ItemLike> singleIngredient, UnaryOperator<ProcessingRecipeBuilder<T>> transform) {
+    ProcessingRecipeSerializer<T> getSerializer() {
+        return getRecipeType().getSerializer();
+    }
+
+    protected <T extends ProcessingRecipe<?>>
+    GeneratedRecipe create(String namespace, Supplier<ItemLike> singleIngredient,
+                           UnaryOperator<ProcessingRecipeBuilder<T>> transform) {
         ProcessingRecipeSerializer<T> serializer = getSerializer();
         GeneratedRecipe generatedRecipe = c -> {
             ItemLike itemLike = singleIngredient.get();
@@ -69,35 +79,33 @@ public abstract class BProcessingRecipeGen extends BRecipeProvider {
     }
 
     <T extends ProcessingRecipe<?>>
-    GeneratedRecipe create(Supplier<ItemLike> singleIngredient, UnaryOperator<ProcessingRecipeBuilder<T>> transform) {
+    GeneratedRecipe create(Supplier<ItemLike> singleIngredient,
+                           UnaryOperator<ProcessingRecipeBuilder<T>> transform) {
         return create(BloodIsFuel.MOD_ID, singleIngredient, transform);
     }
 
+
     protected <T extends ProcessingRecipe<?>>
-    GeneratedRecipe createWithDeferredId(Supplier<ResourceLocation> name, UnaryOperator<ProcessingRecipeBuilder<T>> transform) {
+    GeneratedRecipe create(ResourceLocation name,
+                           UnaryOperator<ProcessingRecipeBuilder<T>> transform) {
+        return createWithDeferredId(() -> name, transform);
+    }
+
+    <T extends ProcessingRecipe<?>>
+    GeneratedRecipe create(String name,
+                           UnaryOperator<ProcessingRecipeBuilder<T>> transform) {
+        return create(BloodIsFuel.asResource(name), transform);
+    }
+
+    protected <T extends ProcessingRecipe<?>>
+    GeneratedRecipe createWithDeferredId(Supplier<ResourceLocation> name,
+                                         UnaryOperator<ProcessingRecipeBuilder<T>> transform) {
         ProcessingRecipeSerializer<T> serializer = getSerializer();
         GeneratedRecipe generatedRecipe =
                 c -> transform.apply(new ProcessingRecipeBuilder<>(serializer.getFactory(), name.get()))
                         .build(c);
         all.add(generatedRecipe);
         return generatedRecipe;
-    }
-
-    protected <T extends ProcessingRecipe<?>>
-    GeneratedRecipe create(ResourceLocation name, UnaryOperator<ProcessingRecipeBuilder<T>> transform) {
-        return createWithDeferredId(() -> name, transform);
-    }
-
-    <T extends ProcessingRecipe<?>>
-    GeneratedRecipe create(String name, UnaryOperator<ProcessingRecipeBuilder<T>> transform) {
-        return create(BloodIsFuel.asResource(name), transform);
-    }
-
-    protected abstract IRecipeTypeInfo getRecipeType();
-
-    protected <T extends ProcessingRecipe<?>>
-    ProcessingRecipeSerializer<T> getSerializer() {
-        return getRecipeType().getSerializer();
     }
 
     protected Supplier<ResourceLocation> idWithSuffix(Supplier<ItemLike> item, String suffix) {
