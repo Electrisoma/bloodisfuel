@@ -50,6 +50,7 @@ public abstract class BFlowingFluidMixin extends FlowingFluid {
         if (this.fluidType == null) {
             this.fluidType = CreateRegistrate.defaultFluidType(
                     FluidType.Properties.create()
+
                             .sound(SoundActions.BUCKET_FILL, this.fillSound)
                             .sound(SoundActions.BUCKET_EMPTY, this.emptySound)
                             .descriptionId(Util.makeDescriptionId("fluid",

@@ -86,7 +86,9 @@ public class FluidBuilderImpl<T
 
     public <B extends LiquidBlock> BlockBuilder<B, FluidBuilder<T, P>>
     block1(NonNullBiFunction<? extends T, BlockBehaviour.Properties, ? extends B> factory) {
-        return block((supplier, settings) -> ((NonNullBiFunction<T, BlockBehaviour.Properties, ? extends B>) factory).apply(supplier.get(), settings));
+        return block((supplier, settings) -> (
+                (NonNullBiFunction<T, BlockBehaviour.Properties, ? extends B>) factory).apply(supplier.get(), settings)
+        );
     }
 
     @Override
@@ -104,7 +106,9 @@ public class FluidBuilderImpl<T
         BFluidData.Builder attributes = this.attributes.get();
         RegistryEntry<Block> block = getOwner().getOptional(this.sourceName, Registries.BLOCK);
         this.attributesCallback.accept(attributes);
-        attributes.translationKey(Util.makeDescriptionId("fluid", new ResourceLocation(getOwner().getModid(), this.sourceName)));
+        attributes.translationKey(
+                Util.makeDescriptionId("fluid", new ResourceLocation(getOwner().getModid(), this.sourceName))
+        );
         return super.makeProperties();
     }
 

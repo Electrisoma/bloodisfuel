@@ -19,9 +19,7 @@ repositories {
     maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
     maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") // Forge config api port
 
-    maven("https://jitpack.io/") { // Fabric ASM for Porting Lib
-        content { includeGroupAndSubgroups("com.github") }
-    }
+    maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
 
     maven("https://maven.shedaniel.me") // Cloth Config, REI
     maven("https://maven.blamejared.com") // JEI

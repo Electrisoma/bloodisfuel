@@ -18,8 +18,8 @@ public class BClientFabric implements ClientModInitializer {
         FogEvents.SET_DENSITY.register(BClientFabric::getFogDensity);
     }
 
-    public static float getFogDensity(Camera info, float currentDensity) {
-        float density = BClientCommon.getFogDensity(info, currentDensity);
+    public static float getFogDensity(Camera Camera, float currentDensity) {
+        float density = BClientCommon.getFogDensity(Camera, currentDensity);
         return density == -1 ? currentDensity : density;
     }
 

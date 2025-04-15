@@ -36,7 +36,8 @@ public class BloodIsFuelImpl {
         BModTabImpl.register(eventBus);
         BConfigImpl.register(ModLoadingContext.get());
 
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> BClientForge::new);
+//        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> BClientForge::new);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> BClientForge.prepareClient(eventBus, forgeBus));
 
         forgeBus.addListener(this::onServerStarting);
     }

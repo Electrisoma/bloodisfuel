@@ -1,7 +1,9 @@
 package net.electrisoma.bloodisfuel.forge;
 
+import com.mojang.blaze3d.shaders.FogShape;
 import net.electrisoma.bloodisfuel.BClientCommon;
 
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.client.event.ViewportEvent;
 
@@ -23,13 +25,19 @@ public class BClientForge {
     }
 
     public static void getFogDensity(ViewportEvent.RenderFog event) {
-        if (!event.isCancelable())
-            return;
+        if (!event.isCancelable()) return;
+
+        Fluid fluid = BClientCommon.getCamera(event.getCamera());
+
         float density = BClientCommon.getFogDensity(event.getCamera(), event.getFarPlaneDistance());
-        if (density != -1) {
-            event.setFarPlaneDistance(density);
-            event.setNearPlaneDistance(density);
+
+        if (!BClientCommon.isCustomFluid(fluid)) return;
+
+        if (density != -1f) {
             event.setCanceled(true);
+            event.setNearPlaneDistance(0.0F);
+            event.setFarPlaneDistance(density);
+            event.setFogShape(FogShape.CYLINDER);
         }
     }
 }

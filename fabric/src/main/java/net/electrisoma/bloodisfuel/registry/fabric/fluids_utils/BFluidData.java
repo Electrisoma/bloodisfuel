@@ -8,8 +8,7 @@ public record BFluidData(String translationKey, int light) {
 
     public static class Builder {
 
-        public void translationKey(String key) {
-        }
+        public void translationKey(String key) {}
 
         public Builder luminosity(int light) {
             return this;

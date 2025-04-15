@@ -64,7 +64,7 @@ dependencies {
 
 
     // Development QOL
-    //modLocalRuntime("mezz.jei:jei-${"minecraft_version"()}-forge:${"jei_version"()}") { isTransitive = false }
+    modLocalRuntime("mezz.jei:jei-${"minecraft_version"()}-forge:${"jei_version"()}") { isTransitive = false }
 
     modLocalRuntime("curse.maven:embeddium-908741:5681725")
 

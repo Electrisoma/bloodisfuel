@@ -1,5 +1,7 @@
-import java.util.*
 import dev.ithundxr.silk.ChangelogText
+
+import java.util.*
+
 
 architectury.fabric()
 
@@ -14,7 +16,7 @@ loom {
             name = "Minecraft Data"
             vmArg("-Dfabric-api.datagen")
             vmArg("-Dfabric-api.datagen.output-dir=${common.file("src/generated/resources")}")
-            vmArg("-Dfabric-api.datagen.modid=bloodisfuel")
+            vmArg("-Dfabric-api.datagen.modid=${"modId"}")
             vmArg("-Dporting_lib.datagen.existing_resources=${common.file("src/main/resources")}")
 
             environmentVariable("DATAGEN", "TRUE")
@@ -56,15 +58,17 @@ dependencies {
 
     // Recipe Viewers - Create Fabric supports JEI, REI, and EMI.
     // See root gradle.properties to choose which to use at runtime.
-    when ("fabric_recipe_viewer".lowercase(Locale.ROOT)) {
-        "jei" -> modLocalRuntime("mezz.jei:jei-${"minecraft_version"}-fabric:${"jei_version"}")
-        "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:${"rei_version"}")
-        "emi" -> modLocalRuntime("dev.emi:emi-fabric:${"emi_version"}")
+    when ("fabric_recipe_viewer"().lowercase(Locale.ROOT)) {
+        "jei" -> modLocalRuntime("mezz.jei:jei-${"minecraft_version"()}-fabric:${"jei_version"()}")
+        "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:${"rei_version"()}")
+        "emi" -> modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
         "disabled" -> {}
-        else -> println("Unknown recipe viewer specified: ${"fabric_recipe_viewer"}. Must be JEI, REI, EMI, or disabled.")
+        else -> println("Unknown recipe viewer specified: ${"fabric_recipe_viewer"()}. Must be JEI, REI, EMI, or disabled.")
     }
 
-    // if you would like to add integration with them, uncomment them here.
+//    modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
+//
+//     if you would like to add integration with them, uncomment them here.
 //    modCompileOnly("mezz.jei:jei-$minecraft_version-fabric:$jei_version")
 //    modCompileOnly("mezz.jei:jei-$minecraft_version-common:$jei_version")
 //    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version")

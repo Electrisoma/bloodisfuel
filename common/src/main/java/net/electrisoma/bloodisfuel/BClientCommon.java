@@ -14,15 +14,22 @@ import net.minecraft.world.level.material.FluidState;
 @SuppressWarnings({"all"})
 public class BClientCommon {
 
-    public static void setFogColor(Camera info, SetColorWrapper wrapper) {
+    public static Fluid getCamera(Camera camera) {
         Minecraft mc = Minecraft.getInstance();
         Level level = mc.level;
-        BlockPos blockPos = info.getBlockPosition();
+        BlockPos blockPos = camera.getBlockPosition();
         FluidState fluidState = level.getFluidState(blockPos);
-        if (info.getPosition().y > blockPos.getY() + fluidState.getHeight(level, blockPos))
-            return;
 
-        Fluid fluid = fluidState.getType();
+        if (camera.getPosition().y >= blockPos.getY() + fluidState.getHeight(level, blockPos)) {
+            return null;
+        }
+
+        return fluidState.getType();
+    }
+
+    public static void setFogColor(Camera camera, SetColorWrapper wrapper) {
+        Fluid fluid = getCamera(camera);
+        if (!isCustomFluid(fluid)) return;
 
         if (BFluids.VISCERA.get().isSame(fluid)) {
             wrapper.setFogColor(101 / 255f, 11 / 255f, 15 / 255f);
@@ -59,15 +66,23 @@ public class BClientCommon {
         void setFogColor(float r, float g, float b);
     }
 
-    public static float getFogDensity(Camera info, float farDistance) {
-        Minecraft mc = Minecraft.getInstance();
-        Level level = mc.level;
-        BlockPos blockPos = info.getBlockPosition();
-        FluidState fluidState = level.getFluidState(blockPos);
-        if (info.getPosition().y >= blockPos.getY() + fluidState.getHeight(level, blockPos))
-            return -1;
+    private static float previousDensity = -1f;
 
-        Fluid fluid = fluidState.getType();
+    public static float getFogDensity(Camera camera, float farPlane) {
+        Fluid fluid = getCamera(camera);
+        if (fluid == null || !isCustomFluid(fluid)) {
+            previousDensity = -1;
+            return -1;
+        }
+
+        float targetDensity = getFluidDensity(fluid);
+        float smoothDensity = smoothFog(previousDensity, targetDensity, 0.15f);
+
+        previousDensity = smoothDensity;
+        return smoothDensity;
+    }
+
+    private static float getFluidDensity(Fluid fluid) {
 
         if (BFluids.VISCERA.get().isSame(fluid)) {
             return 1 / 32f * BConfig.client().visceraTransparencyMultiplier.getF();
@@ -94,5 +109,21 @@ public class BClientCommon {
         }
 
         return -1;
+    }
+
+    private static float smoothFog(float from, float to, float alpha) {
+        if (from < 0) return to;
+        return from + (to - from) * alpha;
+    }
+
+    public static boolean isCustomFluid(Fluid fluid) {
+        return fluid != null
+                && (BFluids.BLOOD.get().isSame(fluid)
+                || BFluids.ENRICHED_BLOOD.get().isSame(fluid)
+                || BFluids.VISCERA.get().isSame(fluid)
+                || BFluids.OIL_ENRICHED_BLOOD.get().isSame(fluid)
+                || BFluids.GASOLINE_INFUSED_BLOOD.get().isSame(fluid)
+                || BFluids.DIESEL_INFUSED_BLOOD.get().isSame(fluid)
+        );
     }
 }

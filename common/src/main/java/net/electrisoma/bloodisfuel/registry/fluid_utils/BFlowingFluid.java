@@ -37,6 +37,12 @@ public abstract class BFlowingFluid extends FlowingFluid {
     private final int tickRate;
     private final float blastResistance;
 
+    private final boolean canExtinguish;
+    private final int temperature;
+    private final int lightLevel;
+    private final int density;
+    private final int viscosity;
+
     // Forge fluid attributes
     protected final ResourceLocation stillTex;
     protected final ResourceLocation flowingTex;
@@ -54,6 +60,12 @@ public abstract class BFlowingFluid extends FlowingFluid {
         this.flowspeed = properties.flowSpeed;
         this.tickRate = properties.tickRate;
         this.blastResistance = properties.blastResistance;
+
+        this.canExtinguish = properties.canExtinguish;
+        this.temperature = properties.temperature;
+        this.lightLevel = properties.lightLevel;
+        this.density = properties.density;
+        this.viscosity = properties.viscosity;
 
         this.stillTex = properties.stillTex;
         this.flowingTex = properties.flowingTex;
@@ -92,6 +104,25 @@ public abstract class BFlowingFluid extends FlowingFluid {
     @Override protected float getExplosionResistance() {
         return this.blastResistance;
     }
+
+    public boolean canExtinguish(FluidState state, BlockGetter getter, BlockPos pos) {
+        return this.canExtinguish;
+    }
+
+    protected int getTemperature() {
+        return this.temperature;
+    }
+
+    protected int lightLevel() {
+        return this.lightLevel;
+    }
+    protected int density() {
+        return this.density;
+    }
+    protected int viscosity() {
+        return this.viscosity;
+    }
+
 
     @Override
     protected BlockState createLegacyBlock(FluidState state) {
@@ -137,6 +168,12 @@ public abstract class BFlowingFluid extends FlowingFluid {
         private int levelDecreasePerBlock = 1;
         private float blastResistance = 1;
         private int tickRate = 5;
+
+        private boolean canExtinguish = false;
+        private int lightLevel = 0;
+        private int density = 1000;
+        private int temperature = 300;
+        private int viscosity = 1000;
 
         // Fluid attributes stuff deemed necessary
         private final ResourceLocation stillTex;
@@ -201,6 +238,31 @@ public abstract class BFlowingFluid extends FlowingFluid {
         public Properties sound(SoundEvent fill, SoundEvent empty) {
             this.fillSound = fill;
             this.emptySound = empty;
+            return this;
+        }
+
+        public Properties getTemperature(int temperature) {
+            this.temperature = temperature;
+            return this;
+        }
+
+        public Properties canExtinguish(boolean canExtinguish) {
+            this.canExtinguish = canExtinguish;
+            return this;
+        }
+
+        public Properties lightLevel(int lightLevel) {
+            this.lightLevel = lightLevel;
+            return this;
+        }
+
+        public Properties density(int density) {
+            this.density = density;
+            return this;
+        }
+
+        public Properties viscosity(int viscosity) {
+            this.viscosity = viscosity;
             return this;
         }
     }

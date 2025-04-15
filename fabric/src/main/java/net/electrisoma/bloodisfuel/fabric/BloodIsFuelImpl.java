@@ -12,7 +12,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import static net.electrisoma.bloodisfuel.base.utils.fuelBurnTimes.*;
 
 
-@SuppressWarnings({"unused"})
+@SuppressWarnings("unused")
 public class BloodIsFuelImpl implements ModInitializer {
 
     @Override

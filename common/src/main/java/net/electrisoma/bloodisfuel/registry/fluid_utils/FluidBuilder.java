@@ -118,7 +118,8 @@ public abstract class FluidBuilder<T
 
     protected BFlowingFluid.Properties makeProperties() {
         NonNullSupplier<? extends BFlowingFluid> source = this.source;
-        BFlowingFluid.Properties ret = new BFlowingFluid.Properties(source, asSupplier(), this.stillTexture, this.flowingTexture);
+        BFlowingFluid.Properties ret =
+                new BFlowingFluid.Properties(source, asSupplier(), this.stillTexture, this.flowingTexture);
         this.properties.accept(ret);
         return ret;
     }
@@ -145,6 +146,7 @@ public abstract class FluidBuilder<T
         if (this.defaultBlock == Boolean.FALSE) {
             throw new IllegalStateException("Only one call to block/noBlock per builder allowed");
         }
+
         this.defaultBlock = false;
         NonNullSupplier<T> supplier = asSupplier();
         return getOwner().<B, FluidBuilder<T, P>>block(this, sourceName, p -> factory.apply(supplier, p))

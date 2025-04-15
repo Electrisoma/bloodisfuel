@@ -44,7 +44,11 @@ public class FluidBuilderImpl<T
         FluidBuilder<T, P> ret = this.tag(ProviderType.FLUID_TAGS, tags);
         if (this.tags.isEmpty()) {
             ret.getOwner().<RegistrateTagsProvider<Fluid>, Fluid>setDataGenerator(ret.sourceName, getRegistryKey(), ProviderType.FLUID_TAGS,
-                    prov -> this.tags.stream().map(prov::addTag).forEach(p -> p.add(BuiltInRegistries.FLUID.getResourceKey(this.getSource()).orElseThrow())));
+                    prov -> this.tags.stream()
+                            .map(prov::addTag)
+                            .forEach(p -> p.add(BuiltInRegistries.FLUID.getResourceKey(this.getSource())
+                                    .orElseThrow())))
+            ;
         }
         this.tags.addAll(Arrays.asList(tags));
         return ret;

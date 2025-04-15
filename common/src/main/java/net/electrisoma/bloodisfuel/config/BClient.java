@@ -6,8 +6,9 @@ import net.createmod.catnip.config.ConfigBase;
 @SuppressWarnings("unused")
 public class BClient extends ConfigBase {
 
-    public final ConfigGroup client = group(0, "client",
-            Comments.client);
+    public final ConfigGroup client =
+            group(0, "client",
+                    Comments.client);
 
     // custom fluid fog
     public final ConfigGroup fluidFogSettings =

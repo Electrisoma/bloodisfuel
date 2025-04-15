@@ -2,10 +2,7 @@ package net.electrisoma.bloodisfuel.registry;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.multiloader.RegistryPlatform;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.BLiquidBlock;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.BFlowingFluid;
-import net.electrisoma.bloodisfuel.registry.fluid_utils.liquid_blocks.BloodLiquidBlock;
+import net.electrisoma.bloodisfuel.registry.fluid_utils.*;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
 
@@ -28,7 +25,8 @@ public class BFluids {
 
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
 
-    public static final RegistryEntry<BFlowingFluid.Flowing> VISCERA =
+    public static final RegistryEntry<BFlowingFluid.Flowing>
+            VISCERA =
             standardFluid("viscera")
                     .lang("Viscera")
                     .properties(p -> p
@@ -40,11 +38,13 @@ public class BFluids {
                             forgeTag("viscera"),
                             fabricTag("viscera")
                     )
-                    .block(BloodLiquidBlock::new).build()
+                    .block(BLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
-                    .register();
+                    .register()
+            ;
 
-    public static final RegistryEntry<BFlowingFluid.Flowing> BLOOD =
+    public static final RegistryEntry<BFlowingFluid.Flowing>
+            BLOOD =
             standardFluid("blood")
                     .lang("Blood")
                     .properties(p -> p
@@ -56,11 +56,13 @@ public class BFluids {
                             forgeTag("blood"),
                             fabricTag("blood")
                     )
-                    .block(BloodLiquidBlock::new).build()
+                    .block(BLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
-                    .register();
+                    .register()
+            ;
 
-    public static final RegistryEntry<BFlowingFluid.Flowing> ENRICHED_BLOOD =
+    public static final RegistryEntry<BFlowingFluid.Flowing>
+            ENRICHED_BLOOD =
             standardFluid("enriched_blood")
                     .lang("Enriched Blood")
                     .properties(p -> p
@@ -72,11 +74,13 @@ public class BFluids {
                             forgeTag("enriched_blood"),
                             fabricTag("enriched_blood")
                     )
-                    .block(BloodLiquidBlock::new).build()
+                    .block(BLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
-                    .register();
+                    .register()
+            ;
 
-    public static final RegistryEntry<BFlowingFluid.Flowing> OIL_ENRICHED_BLOOD =
+    public static final RegistryEntry<BFlowingFluid.Flowing>
+            OIL_ENRICHED_BLOOD =
             standardFluid("oil_enriched_blood")
                     .lang("Oil Enriched Blood")
                     .properties(p -> p
@@ -88,11 +92,13 @@ public class BFluids {
                             forgeTag("oil_enriched_blood"),
                             fabricTag("oil_enriched_blood")
                     )
-                    .block(BloodLiquidBlock::new).build()
+                    .block(HotLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
-                    .register();
+                    .register()
+            ;
 
-    public static final RegistryEntry<BFlowingFluid.Flowing> GASOLINE_INFUSED_BLOOD =
+    public static final RegistryEntry<BFlowingFluid.Flowing>
+            GASOLINE_INFUSED_BLOOD =
             standardFluid("gasoline_infused_blood")
                     .lang("Gasoline Infused Blood")
                     .properties(p -> p
@@ -104,11 +110,13 @@ public class BFluids {
                             forgeTag("gasoline_infused_blood"),
                             fabricTag("gasoline_infused_blood")
                     )
-                    .block(BloodLiquidBlock::new).build()
+                    .block(BLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
-                    .register();
+                    .register()
+            ;
 
-    public static final RegistryEntry<BFlowingFluid.Flowing> DIESEL_INFUSED_BLOOD =
+    public static final RegistryEntry<BFlowingFluid.Flowing>
+            DIESEL_INFUSED_BLOOD =
             standardFluid("diesel_infused_blood")
                     .lang("Diesel Infused Blood")
                     .properties(p -> p
@@ -120,9 +128,10 @@ public class BFluids {
                             forgeTag("diesel_infused_blood"),
                             fabricTag("diesel_infused_blood")
                     )
-                    .block(BloodLiquidBlock::new).build()
+                    .block(BLiquidBlock::new).build()
                     .transform(RegistryPlatform::doFluidBuilderTransforms)
-                    .register();
+                    .register()
+            ;
 
     // boiling blood
     // blazing stuff idk

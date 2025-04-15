@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.registry.fluid_utils;
 
+import com.simibubi.create.Create;
 import net.electrisoma.bloodisfuel.registry.fluid_utils.FluidBuilder.FluidGetter;
 
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
@@ -9,15 +10,18 @@ import dev.architectury.injectables.targets.ArchitecturyTarget;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
@@ -74,8 +78,7 @@ public class BLiquidBlock extends LiquidBlock implements FluidGetter {
         }
     }
 
-    protected boolean shouldSpreadLiquid(Level level, BlockPos pos,
-                                         BlockState state) {
+    protected boolean shouldSpreadLiquid(Level level, BlockPos pos, BlockState state) {
         return true;
     }
 
@@ -88,4 +91,19 @@ public class BLiquidBlock extends LiquidBlock implements FluidGetter {
         }
         return super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);
     }
+
+    public boolean move(FluidState state, LivingEntity entity, Vec3 movementVector, double gravity) {
+        return false;
+    }
+
+//    public boolean move(FluidState state, LivingEntity entity, Vec3 movementVector, double gravity) {
+//        entity.setDeltaMovement(entity.getDeltaMovement().scale(0.6d));
+//
+//        entity.setSecondsOnFire(10);
+//
+//        if(Create.RANDOM.nextInt(30)==27)
+//            entity.lavaHurt();
+//
+//        return true;
+//    }
 }

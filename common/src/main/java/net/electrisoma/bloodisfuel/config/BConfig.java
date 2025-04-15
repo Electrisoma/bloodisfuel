@@ -22,16 +22,16 @@ public class BConfig {
             new EnumMap<>(ModConfig.Type.class);
 
     private static BClient client;
-//    private static BCommon common;
+    private static BCommon common;
     private static BServer server;
 
     public static BClient client() {
         return client;
     }
 
-//    public static BCommon common() {
-//        return common;
-//    }
+    public static BCommon common() {
+        return common;
+    }
 
     public static BServer server() {
         return server;
@@ -58,7 +58,7 @@ public class BConfig {
     @ApiStatus.Internal
     public static void registerCommon() {
         client = register(BClient::new, ModConfig.Type.CLIENT);
-        //common = register(BCommon::new, ModConfig.Type.COMMON);
+        common = register(BCommon::new, ModConfig.Type.COMMON);
         server = register(BServer::new, ModConfig.Type.SERVER);
     }
 
