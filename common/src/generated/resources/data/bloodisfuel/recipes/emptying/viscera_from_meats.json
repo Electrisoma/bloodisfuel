@@ -1,0 +1,18 @@
+{
+  "type": "create:emptying",
+  "ingredients": [
+    {
+      "tag": "bloodisfuel:meats"
+    }
+  ],
+  "results": [
+    {
+      "chance": 0.4,
+      "item": "bloodisfuel:drained_meat"
+    },
+    {
+      "amount": 100,
+      "fluid": "bloodisfuel:viscera"
+    }
+  ]
+}

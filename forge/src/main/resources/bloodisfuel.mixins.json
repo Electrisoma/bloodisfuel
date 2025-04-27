@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.electrisoma.bloodisfuel.forge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+  ],
+  "mixins": [
+    "BFlowingFluidMixin",
+    "BLiquidBlockMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

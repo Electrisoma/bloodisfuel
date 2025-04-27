@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cod",
+    "minecraft:salmon",
+    "minecraft:pufferfish",
+    "minecraft:tropical_fish",
+    {
+      "id": "farmersdelight:cod_slice",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:salmon_slice",
+      "required": false
+    }
+  ]
+}

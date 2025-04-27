@@ -1,0 +1,31 @@
+{
+  "criteria": {
+    "0": {
+      "conditions": {},
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "bloodisfuel:textures/gui/advancements.png",
+    "description": {
+      "color": "#DBA213",
+      "translate": "advancement.bloodisfuel.root.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bloodisfuel:drained_meat"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bloodisfuel.root"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,40 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cake",
+    "minecraft:sugar",
+    "minecraft:apple",
+    "minecraft:cookie",
+    "minecraft:honeycomb",
+    "minecraft:cocoa_beans",
+    "minecraft:honey_block",
+    "minecraft:glow_berries",
+    "minecraft:honey_bottle",
+    "minecraft:sweet_berries",
+    "minecraft:honeycomb_block",
+    {
+      "id": "create:sweet_roll",
+      "required": false
+    },
+    {
+      "id": "create:honeyed_apple",
+      "required": false
+    },
+    {
+      "id": "create:bar_of_chocolate",
+      "required": false
+    },
+    {
+      "id": "create:chocolate_glazed_berries",
+      "required": false
+    },
+    {
+      "id": "biomancy:nutrient_bar",
+      "required": false
+    },
+    {
+      "id": "biomancy:nutrient_paste",
+      "required": false
+    }
+  ]
+}

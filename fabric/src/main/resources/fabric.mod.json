@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "${modId}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": [
+    "${authors}"
+  ],
+  "contact": {
+    "sources": "https://github.com/Electrisoma/bloodisfuel"
+  },
+  "license": "${license}",
+  "icon": "assets/bloodisfuel/icon.png",
+
+  "environment": "*",
+
+  "entrypoints": {
+    "main": [
+      "net.electrisoma.bloodisfuel.fabric.BloodIsFuelImpl"
+    ],
+    "client": [
+      "net.electrisoma.bloodisfuel.fabric.BClientFabric"
+    ],
+    "fabric-datagen": [
+      "net.electrisoma.bloodisfuel.fabric.BloodDataFabric"
+    ]
+  },
+  "mixins": [
+    "bloodisfuel.mixins.json",
+    "bloodisfuel-common.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "${minecraft_version}",
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": ">=${fabric_api_version}",
+    "create": "${create_fabric_version}"
+  }
+}

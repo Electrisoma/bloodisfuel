@@ -1,0 +1,57 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "create:tea",
+      "required": false
+    },
+    {
+      "id": "create:honey",
+      "required": false
+    },
+    {
+      "id": "create:chocolate",
+      "required": false
+    },
+    {
+      "id": "garnished:garnish",
+      "required": false
+    },
+    {
+      "id": "garnished:sweet_tea",
+      "required": false
+    },
+    {
+      "id": "garnished:apple_cider",
+      "required": false
+    },
+    {
+      "id": "create_confectionery:caramel",
+      "required": false
+    },
+    {
+      "id": "create_confectionery:hot_chocolate",
+      "required": false
+    },
+    {
+      "id": "create_confectionery:ruby_chocolate",
+      "required": false
+    },
+    {
+      "id": "create_confectionery:black_chocolate",
+      "required": false
+    },
+    {
+      "id": "create_confectionery:white_chocolate",
+      "required": false
+    },
+    {
+      "id": "create_confectionery:soothing_hot_chocolate",
+      "required": false
+    },
+    {
+      "id": "biofactory:nutrients_fluid",
+      "required": false
+    }
+  ]
+}

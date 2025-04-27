@@ -1,0 +1,34 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:beef",
+    "minecraft:mutton",
+    "minecraft:rabbit",
+    "minecraft:chicken",
+    "minecraft:porkchop",
+    "minecraft:spider_eye",
+    "minecraft:rotten_flesh",
+    "minecraft:fermented_spider_eye",
+    "bloodisfuel:drained_meat",
+    {
+      "id": "farmersdelight:ham",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:bacon",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:minced_beef",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:chicken_cuts",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:mutton_chops",
+      "required": false
+    }
+  ]
+}

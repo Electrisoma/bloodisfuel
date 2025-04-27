@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "bloodisfuel:flowing_viscera",
+    "bloodisfuel:flowing_blood",
+    "bloodisfuel:flowing_enriched_blood",
+    "bloodisfuel:flowing_oil_enriched_blood",
+    "bloodisfuel:flowing_diesel_infused_blood",
+    "bloodisfuel:flowing_gasoline_infused_blood"
+  ]
+}
