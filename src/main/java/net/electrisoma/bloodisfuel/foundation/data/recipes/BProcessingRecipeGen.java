@@ -120,7 +120,7 @@ public abstract class BProcessingRecipeGen extends BRecipeProvider {
 
     @Override
     public String getName() {
-        return BloodIsFuel.NAME + " Processing Recipes"
+        return BloodIsFuel.NAME + " Processing Recipes "
                 + getRecipeType()
                 .getId()
                 .getPath();

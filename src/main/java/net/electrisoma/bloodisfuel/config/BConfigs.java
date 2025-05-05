@@ -2,6 +2,7 @@ package net.electrisoma.bloodisfuel.config;
 
 import net.createmod.catnip.config.ConfigBase;
 
+import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -46,11 +47,14 @@ public class BConfigs {
     }
 
     public static void register(ModLoadingContext context) {
+
         client = register(BClient::new, ModConfig.Type.CLIENT);
         server = register(BServer::new, ModConfig.Type.SERVER);
 
         for (Map.Entry<ModConfig.Type, ConfigBase> pair : CONFIGS.entrySet())
             context.registerConfig(pair.getKey(), pair.getValue().specification);
+
+        BloodIsFuel.LOGGER.info("Registering configs for " + BloodIsFuel.NAME);
     }
 
     @SubscribeEvent

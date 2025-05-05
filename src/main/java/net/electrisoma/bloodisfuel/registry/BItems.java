@@ -1,8 +1,6 @@
-package net.electrisoma.bloodisfuel.registry.items;
+package net.electrisoma.bloodisfuel.registry;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.registry.BTags;
-import net.electrisoma.bloodisfuel.registry.BModTabs;
 import net.electrisoma.bloodisfuel.registry.items.syringe_blade.SyringeBladeItem;
 
 import com.simibubi.create.foundation.data.AssetLookup;
@@ -10,19 +8,23 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.effect.MobEffectInstance;
 
 
 @SuppressWarnings({"all"})
 public class BItems {
+
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
 
-    static {
-        REGISTRATE.setCreativeTab(BModTabs.BASE_CREATIVE_TAB);
+    static {REGISTRATE.setCreativeTab(BModTabs.BASE_CREATIVE_TAB);}
+
+    public static void register() {
+
+        BloodIsFuel.LOGGER.info("Registering items for " + BloodIsFuel.NAME);
     }
 
     public static final ItemEntry<Item> DRAINED_MEAT =
@@ -35,15 +37,14 @@ public class BItems {
                                     .effect(new MobEffectInstance(MobEffects.HUNGER, 600, 0),0.8f)
                                     .effect(new MobEffectInstance(MobEffects.POISON, 300, 2),0.8f)
                                     .build()))
-                    .register();
+                    .register()
+            ;
 
     public static final ItemEntry<SyringeBladeItem> SYRINGE_BLADE =
             REGISTRATE.item("syringe_blade", p ->
-                    new SyringeBladeItem(Tiers.IRON,3,-2.4f,p))
-            .model(AssetLookup.itemModelWithPartials())
-            .tag(BTags.BItemTags.SYRINGE_BLADE.tag)
-            .register();
-
-    public static void register() {
-    }
+                            new SyringeBladeItem(Tiers.IRON,3,-2.4f,p))
+                    .model(AssetLookup.itemModelWithPartials())
+                    .tag(BTags.BItemTags.SYRINGE_BLADE.tag)
+                    .register()
+            ;
 }

@@ -32,9 +32,12 @@ import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nullable;
 import java.util.List;
 
+
 //all these methods are really giving me a headache lol
 @SuppressWarnings("all")
-public class SyringeBladeItem extends SwordItem implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable, ItemUtils {
+public class SyringeBladeItem extends SwordItem
+        implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable, ItemUtils {
+
     boolean isOnCooldown;
     boolean offHandPower;
 

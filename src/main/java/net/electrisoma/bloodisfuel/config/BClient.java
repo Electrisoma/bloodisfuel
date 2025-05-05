@@ -33,6 +33,9 @@ public class BClient extends ConfigBase {
     public final ConfigFloat gasolineInfusedBloodTransparencyMultiplier =
             f(1,.125f,128,"gasoline_infused_blood",
                     Comments.gasolineInfusedBloodTransparencyMultiplier);
+    public final ConfigFloat boilingBloodTransparencyMultiplier =
+            f(1,.125f,128,"boiling_blood",
+                    Comments.boilingBloodTransparencyMultiplier);
 
     @Override
     public String getName() {return "client";}
@@ -57,6 +60,8 @@ public class BClient extends ConfigBase {
                 "The vision range through diesel infused blood will be multiplied by this factor";
         static String gasolineInfusedBloodTransparencyMultiplier =
                 "The vision range through gasoline infused blood will be multiplied by this factor";
+        static String boilingBloodTransparencyMultiplier =
+                "The vision range through boiling blood will be multiplied by this factor";
     }
 
 }

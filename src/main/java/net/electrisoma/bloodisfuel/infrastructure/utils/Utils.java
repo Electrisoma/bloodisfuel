@@ -14,6 +14,5 @@ public class Utils {
         return new ResourceLocation(location);
     }
 
-    private Utils() {
-    }
+    private Utils() {}
 }

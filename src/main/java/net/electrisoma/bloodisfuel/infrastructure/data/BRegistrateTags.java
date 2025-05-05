@@ -1,21 +1,19 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
+import net.electrisoma.bloodisfuel.registry.*;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.infrastructure.utils.Utils;
-import net.electrisoma.bloodisfuel.registry.fluids.BFluids;
-import net.electrisoma.bloodisfuel.registry.items.BItems;
-import net.electrisoma.bloodisfuel.registry.BTags;
 
-import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.TagGen;
+import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
 import net.minecraft.tags.TagEntry;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
@@ -23,9 +21,11 @@ import net.minecraft.world.level.material.Fluid;
 //tw: this file contains horrors beyond human comprehension, you will be scarred
 @SuppressWarnings({"unused", "deprecation"})
 public class BRegistrateTags {
+
 	private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
 
 	public static void addGenerators() {
+
 		REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, BRegistrateTags::genItemTags);
 		REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, BRegistrateTags::genBlockTags);
 		REGISTRATE.addDataGenerator(ProviderType.FLUID_TAGS, BRegistrateTags::genFluidTags);
@@ -33,10 +33,11 @@ public class BRegistrateTags {
 	}
 
 	private static void genItemTags(RegistrateTagsProvider<Item> provIn) {
-		TagGen.CreateTagsProvider<Item> prov =
-				new TagGen.CreateTagsProvider<>(provIn, Item::builtInRegistryHolder);
+
+		TagGen.CreateTagsProvider<Item> prov = new TagGen.CreateTagsProvider<>(provIn, Item::builtInRegistryHolder);
 
 		prov.tag(BTags.BItemTags.CARBOHYDRATES.tag)
+
 				//Vanilla
 				.add(
 						Items.SUGAR,
@@ -130,6 +131,7 @@ public class BRegistrateTags {
 		;
 
 		prov.tag(BTags.BItemTags.MEATS.tag)
+
 				//Vanilla
 				.add(
 						Items.BEEF,
@@ -140,7 +142,7 @@ public class BRegistrateTags {
 						Items.ROTTEN_FLESH,
 						Items.SPIDER_EYE,
 						Items.FERMENTED_SPIDER_EYE
-						)
+				)
 
 				//BIF
 				.add(TagEntry.element(BItems.DRAINED_MEAT.getId()))
@@ -160,6 +162,7 @@ public class BRegistrateTags {
 		;
 
 		prov.tag(BTags.BItemTags.FISHES.tag)
+
 				//Vanilla
 				.add(
 						Items.COD,
@@ -167,6 +170,7 @@ public class BRegistrateTags {
 						Items.TROPICAL_FISH,
 						Items.PUFFERFISH
 				)
+
 				//Farmer's Delight
 				.addOptional(Utils.location("farmersdelight:cod_slice"))
 				.addOptional(Utils.location("farmersdelight:salmon_slice"))
@@ -183,8 +187,8 @@ public class BRegistrateTags {
 	}
 
 	private static void genBlockTags(RegistrateTagsProvider<Block> provIn) {
-		TagGen.CreateTagsProvider<Block> prov =
-				new TagGen.CreateTagsProvider<>(provIn, Block::builtInRegistryHolder);
+
+		TagGen.CreateTagsProvider<Block> prov = new TagGen.CreateTagsProvider<>(provIn, Block::builtInRegistryHolder);
 
 		prov.tag(BTags.BBlockTags.CARBOHYDRATES.tag)
 
@@ -206,15 +210,16 @@ public class BRegistrateTags {
 	}
 
 	private static void genEntityTags(RegistrateTagsProvider<EntityType<?>> provIn) {
-		TagGen.CreateTagsProvider<EntityType<?>> prov =
-				new TagGen.CreateTagsProvider<>(provIn, EntityType::builtInRegistryHolder);
+
+		TagGen.CreateTagsProvider<EntityType<?>> prov = new TagGen.CreateTagsProvider<>(provIn, EntityType::builtInRegistryHolder);
 	}
 
 	private static void genFluidTags(RegistrateTagsProvider<Fluid> provIn) {
-		TagGen.CreateTagsProvider<Fluid> prov =
-				new TagGen.CreateTagsProvider<>(provIn, Fluid::builtInRegistryHolder);
+
+		TagGen.CreateTagsProvider<Fluid> prov = new TagGen.CreateTagsProvider<>(provIn, Fluid::builtInRegistryHolder);
 
 		prov.tag(BTags.BFluidTags.VISCERA.tag)
+
 				//BoP
 				.addOptional(Utils.location("biomesoplenty:blood"))
 
@@ -223,6 +228,7 @@ public class BRegistrateTags {
 		;
 
 		prov.tag(BTags.BFluidTags.FUEL.tag)
+
 				//BIF
 				.add(TagEntry.element(BFluids.VISCERA.getId()))
 				.add(TagEntry.element(BFluids.BLOOD.getId()))
@@ -233,6 +239,7 @@ public class BRegistrateTags {
 		;
 
 		prov.tag(BTags.BFluidTags.LIQUID_CARBOHYDRATES.tag)
+
 				//Create
 				.addOptional(Utils.location("create:honey"))
 				.addOptional(Utils.location("create:chocolate"))

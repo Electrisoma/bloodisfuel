@@ -3,42 +3,40 @@ package net.electrisoma.bloodisfuel.registry;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
+
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 
 import it.unimi.dsi.fastutil.objects.*;
 
-import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
-import net.minecraft.world.item.CreativeModeTab.TabVisibility;
-
-import net.minecraft.world.item.CreativeModeTab.DisplayItemsGenerator;
-import net.electrisoma.bloodisfuel.registry.items.BItems;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.BlockItem;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.item.CreativeModeTab.Output;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.world.item.CreativeModeTab.TabVisibility;
+import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
+import net.minecraft.world.item.CreativeModeTab.DisplayItemsGenerator;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.CreativeModeTab.Output;
 
 
 @SuppressWarnings({"unused","MismatchedQueryAndUpdateOfCollection"})
@@ -55,15 +53,19 @@ public class BModTabs {
                     .displayItems(new RegistrateDisplayItemsGenerator(true, BModTabs.BASE_CREATIVE_TAB))
                     .build());
 
+
     public static void register(IEventBus modEventBus) {
+
         REGISTER.register(modEventBus);
+
+        BloodIsFuel.LOGGER.info("Registering tabs for " + BloodIsFuel.NAME);
     }
 
     private record RegistrateDisplayItemsGenerator(boolean addItems,
                                                    RegistryObject<CreativeModeTab> tabFilter) implements DisplayItemsGenerator {
-            private static final Predicate<Item> IS_ITEM_3D_PREDICATE;
+        private static final Predicate<Item> IS_ITEM_3D_PREDICATE;
 
-            static {
+        static {
                 MutableObject<Predicate<Item>> isItem3d = new MutableObject<>(item -> false);
                 DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                     isItem3d.setValue(item -> {
@@ -76,8 +78,7 @@ public class BModTabs {
                 IS_ITEM_3D_PREDICATE = isItem3d.getValue();
             }
 
-            @OnlyIn(Dist.CLIENT)
-            private static Predicate<Item> makeClient3dItemPredicate() {
+            @OnlyIn(Dist.CLIENT) private static Predicate<Item> makeClient3dItemPredicate() {
                 return item -> {
                     ItemRenderer itemRenderer = Minecraft.getInstance()
                             .getItemRenderer();
@@ -86,7 +87,7 @@ public class BModTabs {
                 };
             }
 
-        private static Predicate<Item> makeExclusionPredicate() {
+            private static Predicate<Item> makeExclusionPredicate() {
                 Set<Item> exclusions = new ReferenceOpenHashSet<>();
 
                 List<ItemProviderEntry<?>> simpleExclusions = List.of(
@@ -99,7 +100,7 @@ public class BModTabs {
                 return exclusions::contains;
         }
 
-            private static List<ItemOrdering> makeOrderings() {
+        private static List<ItemOrdering> makeOrderings() {
                 return new ReferenceArrayList<>();
             }
 

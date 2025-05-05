@@ -1,7 +1,7 @@
 {
   "parent": "bloodisfuel:root",
   "criteria": {
-    "0": {
+    "viscera_bucket": {
       "conditions": {
         "items": [
           {
@@ -17,7 +17,7 @@
   "display": {
     "announce_to_chat": false,
     "description": {
-      "color": "#DBA213",
+      "color": "#FFFFFF",
       "translate": "advancement.bloodisfuel.viscera.desc"
     },
     "frame": "task",
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "0"
+      "viscera_bucket"
     ]
   ],
   "sends_telemetry_event": true

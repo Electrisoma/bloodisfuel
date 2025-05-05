@@ -1,7 +1,7 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.registry.items.BItems;
+import net.electrisoma.bloodisfuel.registry.BItems;
 
 import net.createmod.catnip.platform.CatnipServices;
 

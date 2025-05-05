@@ -1,16 +1,33 @@
+import dev.ithundxr.silk.ChangelogText
+
 plugins {
-    id 'idea'
-    id 'maven-publish'
+    id "idea"
+    id "eclipse"
+    id "maven-publish"
+    id "dev.ithundxr.silk" version "0.11.15"
+    id "me.modmuss50.mod-publish-plugin" version "0.8.3"
     id "net.neoforged.moddev.legacyforge" version "2.0.74"
+    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.8" // https://github.com/JetBrains/gradle-idea-ext-plugin
 }
+
+apply from: "./gradle/java.gradle"
+apply from: "gradle/property_loader.gradle"
+
+boolean dev=System.getenv('RELEASE') == null || System.getenv('RELEASE').equals('false')
+ext.buildNumber=System.getenv('BUILD_NUMBER')
+String gitHash="${calculateGitHash() + (hasUnstaged() ? "-modified" : "")}"
 
 base {
-    archivesName = mod_id
-    group = mod_group_id
-    version = mod_version
+    archivesName="$mod_id-${minecraft_version}"
+    group="${mod_group_id}"
+    version=mod_version + (dev && buildNumber != null ? "-${buildNumber}" : '')
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+def refmap
+mixin {
+    refmap=add sourceSets.main, 'bloodisfuel.refmap.json'
+    config 'bloodisfuel.mixins.json'
+}
 
 println "Java: ${System.getProperty 'java.version'}, " +
         "JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), " +
@@ -18,23 +35,24 @@ println "Java: ${System.getProperty 'java.version'}, " +
 
 idea {
     module {
-        downloadJavadoc = true
-        downloadSources = true
+        downloadJavadoc=true
+        downloadSources=true
     }
 }
 
-legacyForge {
-    version = "$minecraft_version-$forge_version"
 
-    validateAccessTransformers = false
+legacyForge {
+    version="$minecraft_version-$forge_version"
+
+    validateAccessTransformers=false
 
     if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
         accessTransformers.from "src/main/resources/META-INF/accesstransformer.cfg"
     }
 
     parchment {
-        minecraftVersion = minecraft_version
-        mappingsVersion = parchment_version
+        minecraftVersion=minecraft_version
+        mappingsVersion=parchment_version
     }
 
     mods {
@@ -48,7 +66,7 @@ legacyForge {
         configureEach {
             systemProperty 'forge.logging.markers', ''
             systemProperty 'forge.logging.console.level', 'info'
-            jvmArguments = ["-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition"]
+            jvmArguments=["-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition"]
             //jvmArgs("-XX:-OmitStackTraceInFastThrow") // uncomment when you get exceptions with null messages etc
             //jvmArgs '-XX:+UnlockCommercialFeatures' // uncomment for profiling
 
@@ -61,19 +79,19 @@ legacyForge {
         client {
             client()
 
-            gameDirectory = project.file('run')
+            gameDirectory=project.file('run')
         }
 
         server {
             server()
 
-            gameDirectory = project.file('run/server')
+            gameDirectory=project.file('run/server')
         }
 
         data {
             data()
 
-            gameDirectory = project.file('run')
+            gameDirectory=project.file('run')
             systemProperty 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
             systemProperty 'forge.logging.console.level', 'debug'
             programArguments.addAll("--mod", mod_id as String, "--all", "--output",
@@ -82,53 +100,36 @@ legacyForge {
         }
 
         gameTestServer {
-            type = "gameTestServer"
+            type="gameTestServer"
 
-            gameDirectory = project.file('run/gametest')
+            gameDirectory=project.file('run/gametest')
         }
     }
 }
 
 repositories {
-    maven {
-        url = "https://maven.createmod.net"
-    } // Create, Ponder, Flywheel
-    maven {
-        url = "https://maven.tterrag.com"
-    } // Registrate
+    maven {url="https://maven.createmod.net"} // Create, Ponder, Flywheel
+    maven {url="https://maven.tterrag.com"} // Registrate
 
-    maven {
-        url = "https://maven.blamejared.com"
-    } // JEI, Vazkii's Mods
-    maven {
-        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
-    } // ForgeConfigAPIPort
+    maven {url="https://maven.blamejared.com"} // JEI, Vazkii's Mods
+    maven {url="https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"} // ForgeConfigAPIPort
 
-    maven {
-        url = "https://www.cursemaven.com"
-    }
-    maven {
-        url = "https://api.modrinth.com/maven"
-    }
+    maven {url="https://www.cursemaven.com"}
+    maven {url="https://api.modrinth.com/maven"}
 
-    maven {
-        name = 'Geckolib'
-        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-        content {
-            includeGroupByRegex("software\\.bernie.*")
-        }
-    }
+//    maven {url='https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'}
+//        content {includeGroupByRegex("software\\.bernie.*")
+//        }
+//    }
 
     mavenCentral()
     mavenLocal()
-    flatDir {
-        dir "libs"
-    }
+    flatDir {dir "libs"}
 }
 
 dependencies {
     //Create, Flywheel, Registrate, Create Diesel Generators
-    modImplementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    modImplementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive=false }
     modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
     modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
     modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
@@ -146,9 +147,14 @@ dependencies {
     modImplementation("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //Biomancy
-    modRuntimeOnly("curse.maven:biomancy-492939:5886758")
-    modRuntimeOnly("curse.maven:bio-factory-1136762:6293100")
-    modRuntimeOnly("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+//    modImplementation("maven.modrinth:biomancy:${biomancy_version}")
+//    modImplementation("maven.modrinth:biofactory:${biofactory_version}")
+//    modRuntimeOnly("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+//    implementation(group: "com.h2database", name: "h2-mvstore", version: "2.2.224")
+
+    //Alex's Caves, Citadel
+    modRuntimeOnly("maven.modrinth:alexs-caves:2.0.2")
+    modRuntimeOnly("maven.modrinth:citadel:2.6.0")
 
     //TConstruct, Mantle
     //implementation fg.deobf("curse.maven:mantle-74924:6041712")
@@ -160,7 +166,6 @@ dependencies {
 }
 
 sourceSets.main {
-    java{}
 
     resources {
         srcDir 'src/generated/resources'
@@ -168,30 +173,62 @@ sourceSets.main {
     }
 }
 
+processResources {
+    def buildProps=project.properties.clone()
+
+    // Replaces FML's magic file.jarVersion string with the correct version at build time.
+    buildProps.put('file', [jarVersion: project.version])
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand buildProps as Map<String, ?>
+    }
+}
+
+compileJava {
+    options.compilerArgs=['-Xdiags:verbose']
+}
+
 jar {
     from('LICENSE') {
         rename { "${it}_${archivesBaseName}" }
     }
-    manifest {
-        attributes([
-                "Specification-Title"     : mod_id,
-                "Specification-Vendor"    : mod_authors,
-                "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : mod_authors,
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
+
+    manifest.attributes([
+            "MixinConfigs": "bloodisfuel.mixins.json",
+            "Git-Hash"    : gitHash
+    ])
 }
 
-publishing {
+tasks.named("sourcesJar") {
+    manifest.attributes([
+            "Git-Hash": gitHash
+    ])
+}
+
+final slimJar=tasks.register("slimJar", Jar) {
+    archiveClassifier="slim"
+    from(sourceSets.main.output)
+    from(refmap)
+
+    manifest.attributes([
+            "MixinConfigs": "bloodisfuel.mixins.json",
+            "Git-Hash"    : gitHash
+    ])
+}
+obfuscation.reobfuscate(slimJar, sourceSets.main)
+
+project.publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId base.archivesName.get()
             from components.java
+
+            artifact(tasks.jar) {
+                classifier="all"
+            }
         }
     }
+
     repositories {
         maven {
             url "file://${project.projectDir}/mcmodsrepo"
@@ -199,6 +236,61 @@ publishing {
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+//def localProperties = getProperties()
+//def localPropertiesFile = rootProject.file("local.properties")
+//if (localPropertiesFile.exists()) {
+//    localProperties.load(localPropertiesFile.newObjectInputStream())
+//}
+
+//publishMods {
+//
+//    def curseforgeToken = localProperties.getProperty("curseforgeToken", "")
+//    def modrinthToken = localProperties.getProperty("modrinthToken", "")
+//
+//    file=reobfJar.archiveFile
+//    dryRun=modrinthToken == null || curseforgeToken == null
+//
+//    displayName="$mod_name $mod_version for mc$minecraft_version"
+//    version="$minecraft_version-$mod_version"
+//    changelog=ChangelogText.getChangelogText(project).toString()
+//    type=STABLE
+//
+//    modLoaders.addAll("forge", "neoforge")
+//
+//    curseforge {
+//        accessToken=curseforgeToken
+//        projectId="$curseforge_id"
+//        minecraftVersions.add(minecraft_version)
+//    }
+//
+//    modrinth {
+//        accessToken=modrinthToken
+//        projectId="$modrinth_id"
+//        minecraftVersions.add(minecraft_version)
+//    }
+//}
+
+String calculateGitHash() {
+    try {
+        def output=providers.exec {
+            commandLine("git", "rev-parse", "HEAD")
+        }
+        return output.standardOutput.asText.get().trim()
+    } catch (Throwable ignored) {
+        return "unknown"
+    }
+}
+
+boolean hasUnstaged() {
+    try {
+        def output=providers.exec {
+            commandLine("git", "status", "--porcelain")
+        }
+        String result=output.standardOutput.asText.get().replace("/M gradlew(\\.bat)?/", "").trim()
+        if (!result.isEmpty())
+            println("Found stageable results:\n ${result}\n")
+        return !result.isEmpty()
+    } catch (Throwable ignored) {
+        return false
+    }
 }

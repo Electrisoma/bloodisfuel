@@ -1,0 +1,22 @@
+{
+  "parent": "bloodisfuel:root",
+  "criteria": {},
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "color": "#FFFFFF",
+      "translate": "advancement.bloodisfuel.boiled.desc"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "item": "bloodisfuel:boiling_blood_bucket"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bloodisfuel.boiled"
+    }
+  },
+  "requirements": [],
+  "sends_telemetry_event": true
+}

@@ -5,7 +5,7 @@
 //import net.electrisoma.bloodisfuel.foundation.data.recipes.BProcessingRecipeGen;
 //import net.electrisoma.bloodisfuel.infrastructure.utils.Mods;
 //import net.electrisoma.bloodisfuel.infrastructure.utils.Utils;
-//import net.electrisoma.bloodisfuel.registry.fluids.BFluids;
+//import net.electrisoma.bloodisfuel.registry.BFluids;
 //
 //
 //import com.simibubi.create.content.processing.recipe.HeatCondition;

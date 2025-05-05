@@ -1,11 +1,10 @@
 package net.electrisoma.bloodisfuel.infrastructure.utils;
 
 import com.tterrag.registrate.builders.Builder;
-import net.createmod.catnip.lang.Lang;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.ModList;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Optional;
@@ -13,11 +12,13 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public enum Mods {
+
+    MC("minecraft"),
+
     TIC("tconstruct"),
     BOP("biomesoplenty"),
-    MC("minecraft"),
     CDG("createdieselgenerators"),
     BF("biofactory"),
     BM("biomancy")
@@ -34,7 +35,6 @@ public enum Mods {
     private Mods(String id, Consumer<Builder> props) {
         this.id = id;
     }
-
 
     public ResourceLocation rl(String path) {
         return new ResourceLocation(id, path);

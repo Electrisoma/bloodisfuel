@@ -4,27 +4,27 @@ import net.electrisoma.bloodisfuel.BloodIsFuel;
 
 import net.createmod.catnip.lang.Lang;
 
+import net.minecraft.tags.TagKey;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
-import java.util.Collections;
 import java.util.Objects;
+import java.util.Collections;
 
 import static net.electrisoma.bloodisfuel.registry.BTags.NameSpace.BM;
 import static net.electrisoma.bloodisfuel.registry.BTags.NameSpace.FORGE;
@@ -57,8 +57,10 @@ public class BTags {
     public enum NameSpace {
 
         MOD(BloodIsFuel.MOD_ID, false, true),
-        CREATE("create"),
+
         FORGE("forge"),
+
+        CREATE("create"),
         TIC("tconstruct"),
         BM("biomancy"),
         AC("alexscaves"),
@@ -82,8 +84,11 @@ public class BTags {
     }
 
     public enum BBlockTags {
+
         CARBOHYDRATES,
-        MEATS
+
+        MEATS,
+
         ;
 
         public final TagKey<Block> tag;
@@ -130,17 +135,23 @@ public class BTags {
         }
 
         private static void register() {}
-
     }
 
     public enum BItemTags {
+
+        SYRINGE_BLADE,
+
         CARBOHYDRATES,
+
         FISHES,
         MEATS,
+
         MODDED_FISHES,
         MODDED_MEATS,
+
         RAW_MEATS(BM),
-        SYRINGE_BLADE;
+
+        ;
 
         public final TagKey<Item> tag;
         public final boolean alwaysDatagen;
@@ -181,21 +192,27 @@ public class BTags {
             return stack.is(tag);
         }
 
-        private static void register() {
-        }
-
+        private static void register() {}
     }
 
     public enum BFluidTags {
+
+        VISCERA,
         BLOOD,
-        CRUDE_OIL(FORGE),
-        DIESEL_INFUSED_BLOOD,
         ENRICHED_BLOOD,
-        FUEL(FORGE),
-        GASOLINE_INFUSED_BLOOD,
-        LIQUID_CARBOHYDRATES,
         OIL_ENRICHED_BLOOD,
-        VISCERA;
+        DIESEL_INFUSED_BLOOD,
+        GASOLINE_INFUSED_BLOOD,
+        BOILING_BLOOD,
+
+        DIVING_FLUID,
+
+        LIQUID_CARBOHYDRATES,
+
+        CRUDE_OIL(FORGE),
+        FUEL(FORGE),
+
+        ;
 
         public final TagKey<Fluid> tag;
         public final boolean alwaysDatagen;
@@ -235,9 +252,7 @@ public class BTags {
             return state.is(tag);
         }
 
-        private static void register() {
-        }
-
+        private static void register() {}
     }
 
     public enum BEntityTags {
@@ -282,7 +297,6 @@ public class BTags {
         }
 
         private static void register() {}
-
     }
 
     public enum BRecipeSerializerTags {
@@ -326,10 +340,13 @@ public class BTags {
     }
 
     public static void register() {
+
         BBlockTags.register();
         BItemTags.register();
         BFluidTags.register();
         BEntityTags.register();
         BRecipeSerializerTags.register();
+
+        BloodIsFuel.LOGGER.info("Registering tags for " + BloodIsFuel.NAME);
     }
 }

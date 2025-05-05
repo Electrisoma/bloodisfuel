@@ -47,6 +47,14 @@
     {
       "type": "single",
       "resource": "bloodisfuel:fluid/gasoline_infused_blood_still"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/boiling_blood_flow"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/boiling_blood_still"
     }
   ]
 }

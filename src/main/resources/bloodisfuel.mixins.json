@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.electrisoma.bloodisfuel.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+  ],
+  "mixins": [
+    "DivingGearCountdownMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

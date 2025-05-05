@@ -1,6 +1,6 @@
 {
   "criteria": {
-    "0": {
+    "drained_meat": {
       "conditions": {},
       "trigger": "minecraft:inventory_changed"
     }
@@ -9,7 +9,7 @@
     "announce_to_chat": false,
     "background": "bloodisfuel:textures/gui/advancements.png",
     "description": {
-      "color": "#DBA213",
+      "color": "#FFFFFF",
       "translate": "advancement.bloodisfuel.root.desc"
     },
     "frame": "task",
@@ -24,7 +24,7 @@
   },
   "requirements": [
     [
-      "0"
+      "drained_meat"
     ]
   ],
   "sends_telemetry_event": true

@@ -1,7 +1,7 @@
 {
   "parent": "bloodisfuel:enriched_blood",
   "criteria": {
-    "0": {
+    "oil_enriched_blood_bucket": {
       "conditions": {
         "items": [
           {
@@ -17,7 +17,7 @@
   "display": {
     "announce_to_chat": true,
     "description": {
-      "color": "#DBA213",
+      "color": "#FFFFFF",
       "translate": "advancement.bloodisfuel.oil_enriched_blood.desc"
     },
     "frame": "task",
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "0"
+      "oil_enriched_blood_bucket"
     ]
   ],
   "sends_telemetry_event": true

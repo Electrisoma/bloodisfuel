@@ -1,0 +1,28 @@
+package net.electrisoma.bloodisfuel.registry;
+
+import net.electrisoma.bloodisfuel.BloodIsFuel;
+
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
+
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.DeferredRegister;
+
+
+public class BParticles {
+
+    public static final DeferredRegister<ParticleType<?>> PARTICLES =
+            DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, BloodIsFuel.MOD_ID);
+
+    public static final RegistryObject<SimpleParticleType> BOILING_BLOOD_DROP =
+            PARTICLES.register("boiling_blood_drop", () -> new SimpleParticleType(false));
+
+    public static void register(IEventBus modEventBus) {
+
+        PARTICLES.register(modEventBus);
+
+        BloodIsFuel.LOGGER.info("Registering particles for " + BloodIsFuel.NAME);
+    }
+}

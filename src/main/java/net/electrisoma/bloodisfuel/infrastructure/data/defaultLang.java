@@ -1,13 +1,16 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
-import net.electrisoma.bloodisfuel.registry.items.BItems;
+import net.electrisoma.bloodisfuel.registry.BItems;
+
 import net.minecraft.world.level.ItemLike;
 
 import java.util.function.BiConsumer;
 
 
 public class defaultLang {
+
     static String tab = "itemGroup";
+    static String dm = "death.attack";
 
     public static void provideLang(BiConsumer<String, String> consumer) {
         var syringe = BItems.SYRINGE_BLADE;
@@ -16,6 +19,7 @@ public class defaultLang {
         //interfaces
         consume(consumer, tab,"base", "Create: Blood is Fuel!");
 
+        consume(consumer, dm, "boiling", "%s died like a lobster");
 
         //tooltips
         tooltipCondition(consumer, syringe, "L-Click at Mob", 1);
@@ -34,7 +38,6 @@ public class defaultLang {
         boolean flag = type.isEmpty();
         consumer.accept((flag ? "bloodisfuel." : type + ".bloodisfuel.") + key, enUS);
     }
-
     private static void consume(BiConsumer<String, String> consumer, String key, String enUS) {
         consumer.accept(key, enUS);
     }

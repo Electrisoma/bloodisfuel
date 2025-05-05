@@ -1,7 +1,7 @@
 {
   "parent": "bloodisfuel:root",
   "criteria": {
-    "0": {
+    "drained_meat": {
       "conditions": {
         "items": [
           {
@@ -17,7 +17,7 @@
   "display": {
     "announce_to_chat": false,
     "description": {
-      "color": "#DBA213",
+      "color": "#FFFFFF",
       "translate": "advancement.bloodisfuel.drained_meat.desc"
     },
     "frame": "task",
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "0"
+      "drained_meat"
     ]
   ],
   "sends_telemetry_event": true

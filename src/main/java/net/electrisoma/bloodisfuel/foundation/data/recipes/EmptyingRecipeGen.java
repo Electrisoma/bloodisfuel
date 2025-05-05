@@ -1,7 +1,7 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
-import net.electrisoma.bloodisfuel.registry.fluids.BFluids;
-import net.electrisoma.bloodisfuel.registry.items.BItems;
+import net.electrisoma.bloodisfuel.registry.BFluids;
+import net.electrisoma.bloodisfuel.registry.BItems;
 import net.electrisoma.bloodisfuel.registry.BTags;
 
 import com.simibubi.create.AllRecipeTypes;
