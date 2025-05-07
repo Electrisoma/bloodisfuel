@@ -1,5 +1,7 @@
 package net.electrisoma.bloodisfuel.registry.items;
 
+import net.electrisoma.bloodisfuel.registry.BEnchantments;
+
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.utility.CreateLang;
 
@@ -9,12 +11,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.BiConsumer;
 
 
 @SuppressWarnings("all")
@@ -22,24 +25,36 @@ public interface ItemUtils {
 
     default int getBaseCapacity(ItemStack stack){
         return 1000;
-        //return BServer.BLOOD_CAPACITY.get();
     }
+
     default int getCapacityEnchantmentAddition(ItemStack stack){
         return 1000;
-        //return BServer.BLOOD_CAPACITY_ENCHANTMENT.get();
     }
+
     default int getCapacity(ItemStack stack){
-        return getBaseCapacity(stack) + (getCapacityEnchantmentAddition(stack) * stack.getEnchantmentLevel(AllEnchantments.CAPACITY.get()));
+        return getBaseCapacity(stack) + (getCapacityEnchantmentAddition(stack) *
+                stack.getEnchantmentLevel(AllEnchantments.CAPACITY.get()));
     }
+
+    default int getChargeCount(ItemStack stack) {
+        int baseCharges = 4;
+        int level = stack.getEnchantmentLevel(BEnchantments.BLADE_CHARGES.get());
+
+        return baseCharges + (level * 2);
+    }
+
     default FluidStack readFluid(ItemStack stack){
         return FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("Fluid"));
     }
+
     default void writeFluid(ItemStack stack, FluidStack fluid){
         stack.getOrCreateTag().put("Fluid", fluid.writeToNBT(new CompoundTag()));
     }
+
     default int getCurrentFillLevel(ItemStack stack){
         return readFluid(stack).getAmount();
     }
+
     default void tooltipMaker(List<Component> tooltip, ItemStack stack){
         if(stack.getTag() != null) {
             FluidStack fluid = readFluid(stack);
@@ -59,9 +74,11 @@ public interface ItemUtils {
         }
         tooltip.add(Component.translatable("bloodisfuel.tooltip.empty").withStyle(ChatFormatting.GRAY));
     }
+
     default FluidHandlerItemStack getFluidHandler(ItemStack stack){
         return new ToolItemFluidHandler(stack, getCapacity(stack), this::readFluid, this::writeFluid);
     }
+
     class ToolItemFluidHandler extends FluidHandlerItemStack{
         BiConsumer<ItemStack, FluidStack> write;
         Function<ItemStack, FluidStack> read;
@@ -80,7 +97,7 @@ public interface ItemUtils {
         }
     }
 
-    class FuelItems extends Item{
+    class FuelItems extends Item {
         private int burnTime = 0;
 
         public FuelItems(Item.Properties pProperties, int burnTime) {

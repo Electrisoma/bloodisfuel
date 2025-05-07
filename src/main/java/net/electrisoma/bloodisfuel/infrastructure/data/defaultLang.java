@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
+import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.BItems;
 
 import net.minecraft.world.level.ItemLike;
@@ -13,6 +14,7 @@ public class defaultLang {
     static String dm = "death.attack";
 
     public static void provideLang(BiConsumer<String, String> consumer) {
+
         var syringe = BItems.SYRINGE_BLADE;
         var meat = BItems.DRAINED_MEAT;
 
@@ -26,7 +28,7 @@ public class defaultLang {
         tooltipBehaviour(consumer, syringe, "Extract _blood_", 1);
         tooltipSummary(consumer, syringe, "Extract _blood_ from your _friends_ or _enemies_!");
 
-        tooltipCondition(consumer, meat, "Put in a basin with press or a drain", 1);
+        tooltipCondition(consumer, meat, "Put in a drain or a basin with press", 1);
         tooltipBehaviour(consumer, meat, "Extract _blood_", 1);
         tooltipSummary(consumer, meat, "Poor fella");
 

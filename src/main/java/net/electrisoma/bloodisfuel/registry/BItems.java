@@ -23,7 +23,6 @@ public class BItems {
     static {REGISTRATE.setCreativeTab(BModTabs.BASE_CREATIVE_TAB);}
 
     public static void register() {
-
         BloodIsFuel.LOGGER.info("Registering items for " + BloodIsFuel.NAME);
     }
 

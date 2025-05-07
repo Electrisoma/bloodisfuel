@@ -3,9 +3,9 @@ package net.electrisoma.bloodisfuel;
 import net.electrisoma.bloodisfuel.registry.BParticles;
 import net.electrisoma.bloodisfuel.registry.particles.*;
 
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 
 
 @SuppressWarnings("unused")
@@ -23,6 +23,7 @@ public class BClient {
 
     public static void setupParticles(RegisterParticleProvidersEvent registry) {
 
-        registry.registerSpriteSet(BParticles.BOILING_BLOOD_DROP.get(), BoilingBloodDropParticleData.Factory::new);
+        registry.registerSpriteSet(BParticles.BOILING_BLOOD_DROP.get(), BoilingBloodDropParticle.Factory::new);
+        registry.registerSpriteSet(BParticles.BLOOD_DROP.get(), BloodDropParticle.Factory::new);
     }
 }

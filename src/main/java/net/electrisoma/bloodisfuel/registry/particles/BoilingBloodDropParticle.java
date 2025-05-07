@@ -2,25 +2,26 @@ package net.electrisoma.bloodisfuel.registry.particles;
 
 import net.minecraft.util.Mth;
 import net.minecraft.client.particle.*;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 
 
-public class BoilingBloodDropParticleData extends TextureSheetParticle {
+public class BoilingBloodDropParticle extends TextureSheetParticle {
 
     private final SpriteSet sprites;
     private int onGroundTime;
+    public static final float particleSizeMin = 0.8F;
+    public static final float particleSizeMax = 1.0F;
 
-    protected BoilingBloodDropParticleData(ClientLevel level,
-                                           double x, double y, double z,
-                                           double xMotion, double yMotion, double zMotion,
-                                           SpriteSet sprites) {
+    protected BoilingBloodDropParticle(ClientLevel level, double x, double y, double z, SpriteSet sprites) {
 
         super(level, x, y, z,
                 0.0D,
                 0.0D,
-                0.0D);
+                0.0D
+        );
+
         this.friction = 0.96F;
         this.gravity = 0;
         this.speedUpWhenYMotionIsBlocked = true;
@@ -28,7 +29,8 @@ public class BoilingBloodDropParticleData extends TextureSheetParticle {
         this.xd = 0;
         this.yd = 0;
         this.zd = 0;
-        this.quadSize *= 1.2F + random.nextFloat();
+        float scale = particleSizeMin + random.nextFloat() * (particleSizeMax - particleSizeMin);
+        this.quadSize *= scale;
         this.lifetime = 100 + random.nextInt(40);
         this.lifetime = Math.max(this.lifetime, 1);
         this.setSpriteFromAge(sprites);
@@ -42,16 +44,13 @@ public class BoilingBloodDropParticleData extends TextureSheetParticle {
                 / (float) this.lifetime * 32.0F, 0.0F, 1.0F);
     }
 
+    @Override
     public void tick() {
 
-        if (this.age < this.lifetime * 0.25F) {
-            this.gravity = 0;
-        }
+        if (this.age < this.lifetime * 0.25F) this.gravity = 0;
         else {
             this.gravity = 1F;
-            if (onGround) {
-                onGroundTime++;
-            }
+            if (onGround) onGroundTime++;
         }
 
         int sprite = this.onGround ? 1 : 0;
@@ -62,7 +61,8 @@ public class BoilingBloodDropParticleData extends TextureSheetParticle {
             this.level.addParticle(ParticleTypes.SMOKE.getType(), x, y, z,
                     0,
                     0,
-                    0);
+                    0
+            );
         }
 
         super.tick();
@@ -89,8 +89,7 @@ public class BoilingBloodDropParticleData extends TextureSheetParticle {
                                        double x, double y, double z,
                                        double xSpeed, double ySpeed, double zSpeed) {
 
-            BoilingBloodDropParticleData particle = new BoilingBloodDropParticleData(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
-            return particle;
+            return new BoilingBloodDropParticle(worldIn, x, y, z, spriteSet);
         }
     }
 }

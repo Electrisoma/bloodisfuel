@@ -1,8 +1,8 @@
 package net.electrisoma.bloodisfuel;
 
-import net.electrisoma.bloodisfuel.config.BConfigs;
 import net.electrisoma.bloodisfuel.registry.*;
-import net.minecraftforge.common.MinecraftForge;
+import net.electrisoma.bloodisfuel.config.BConfigs;
+
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -24,5 +24,6 @@ public class ModSetup {
         BItems.register();
         BFluids.register();
         BTags.register();
+        BEnchantments.register();
     }
 }

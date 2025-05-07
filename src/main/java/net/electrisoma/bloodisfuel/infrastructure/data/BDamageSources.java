@@ -1,17 +1,18 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
-import net.electrisoma.bloodisfuel.registry.BDamageTypes;
+import net.electrisoma.bloodisfuel.infrastructure.data.entries.BDamageTypes;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageSource;
 
 
+@SuppressWarnings("unused")
 public class BDamageSources {
 
     public static DamageSource boiling(Level level) {
@@ -33,5 +34,4 @@ public class BDamageSources {
         Registry<DamageType> registry = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
         return new DamageSource(registry.getHolderOrThrow(key), causingEntity, directEntity);
     }
-
 }

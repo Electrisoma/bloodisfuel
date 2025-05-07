@@ -22,14 +22,13 @@ public class BFluids {
     static {REGISTRATE.setCreativeTab(BModTabs.BASE_CREATIVE_TAB);}
 
     public static void register() {
-
         BloodIsFuel.LOGGER.info("Registering fluids for " + BloodIsFuel.NAME);
     }
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> VISCERA =
             REGISTRATE.standardFluid("viscera",
                             BloodFluidType.create(0x650B0F,
-                                    () -> 1f / 32f * BConfigs.client().visceraTransparencyMultiplier.getF())
+                                    () -> 1f / 32f * BConfigs.client().visceraTransparencyMultiplier.getF(),"blood")
                     ).lang("Viscera")
                     .properties(b -> b
                             .viscosity(1500)
@@ -42,8 +41,8 @@ public class BFluids {
                     .tag(FluidTags.WATER)
                     .tag(BTags.BFluidTags.DIVING_FLUID.tag)
                     .tag(BTags.BFluidTags.VISCERA.tag)
-                            .source(BloodFluid.Source::new)
-                            .block(BloodBlock::new).build()
+                            .source(VisceraFluid.Source::new)
+                            .block(VisceraBlock::new).build()
                             .bucket()
                             .tag(BTags.forgeItemTag("buckets/viscera"))
                             .build()
@@ -53,7 +52,7 @@ public class BFluids {
     public static final FluidEntry<ForgeFlowingFluid.Flowing> BLOOD =
             REGISTRATE.standardFluid("blood",
                             BloodFluidType.create(0x570000,
-                                    () -> 1f / 16f * BConfigs.client().bloodTransparencyMultiplier.getF())
+                                    () -> 1f / 16f * BConfigs.client().bloodTransparencyMultiplier.getF(), "blood")
                     ).lang("Blood")
                     .properties(b -> b
                             .viscosity(1000)
@@ -77,7 +76,7 @@ public class BFluids {
     public static final FluidEntry<ForgeFlowingFluid.Flowing> ENRICHED_BLOOD =
             REGISTRATE.standardFluid("enriched_blood",
                             BloodFluidType.create(0x830000,
-                                () -> 1f / 8f * BConfigs.client().enrichedBloodTransparencyMultiplier.getF())
+                                () -> 1f / 8f * BConfigs.client().enrichedBloodTransparencyMultiplier.getF(), "blood")
                     ).lang("Enriched Blood")
                     .properties(b -> b
                             .viscosity(1250)
@@ -101,7 +100,7 @@ public class BFluids {
     public static final FluidEntry<ForgeFlowingFluid.Flowing> OIL_ENRICHED_BLOOD =
             REGISTRATE.standardFluid("oil_enriched_blood",
                             BloodFluidType.create(0x640000,
-                                    () -> 1f / 16f * BConfigs.client().oilEnrichedBloodTransparencyMultiplier.getF())
+                                    () -> 1f / 16f * BConfigs.client().oilEnrichedBloodTransparencyMultiplier.getF(),"blood")
                     ).lang("Oil Enriched Blood")
                     .properties(b -> b
                             .viscosity(1250)
@@ -125,7 +124,7 @@ public class BFluids {
     public static final FluidEntry<ForgeFlowingFluid.Flowing> DIESEL_INFUSED_BLOOD =
             REGISTRATE.standardFluid("diesel_infused_blood",
                             BloodFluidType.create(0x640000,
-                                    () -> 1f / 32f * BConfigs.client().dieselInfusedBloodTransparencyMultiplier.getF())
+                                    () -> 1f / 32f * BConfigs.client().dieselInfusedBloodTransparencyMultiplier.getF(),"blood")
                     ).lang("Diesel Infused Blood")
                     .properties(b -> b
                             .viscosity(1250)
@@ -149,7 +148,7 @@ public class BFluids {
     public static final FluidEntry<ForgeFlowingFluid.Flowing> GASOLINE_INFUSED_BLOOD =
             REGISTRATE.standardFluid("gasoline_infused_blood",
                             BloodFluidType.create(0x640000,
-                                    () -> 1f / 32f * BConfigs.client().gasolineInfusedBloodTransparencyMultiplier.getF())
+                                    () -> 1f / 32f * BConfigs.client().gasolineInfusedBloodTransparencyMultiplier.getF(),"blood")
                     ).lang("Gasoline Infused Blood")
                     .properties(b -> b
                             .viscosity(1250)
@@ -173,7 +172,7 @@ public class BFluids {
     public static final FluidEntry<ForgeFlowingFluid.Flowing> BOILING_BLOOD =
             REGISTRATE.standardFluid("boiling_blood",
                             BoilingBloodFluidType.create(0x640000,
-                                    () -> 1f / 32f * BConfigs.client().boilingBloodTransparencyMultiplier.getF())
+                                    () -> 1f / 32f * BConfigs.client().boilingBloodTransparencyMultiplier.getF(),"blood")
                     ).lang("Boiling Blood")
                     .properties(b -> b
                             .viscosity(1250)
@@ -195,6 +194,8 @@ public class BFluids {
                             .register()
             ;
 
+
+    // for later
     public enum FluidProperties {
 
         VISCERA(15,16,5),

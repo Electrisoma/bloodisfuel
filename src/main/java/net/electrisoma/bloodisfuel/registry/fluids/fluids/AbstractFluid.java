@@ -1,33 +1,45 @@
 package net.electrisoma.bloodisfuel.registry.fluids.fluids;
 
 import net.electrisoma.bloodisfuel.registry.BParticles;
-
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.block.state.StateDefinition;
 
+import net.minecraftforge.fluids.ForgeFlowingFluid;
+
 
 @SuppressWarnings("unused")
-public class BoilingBloodFluid extends AbstractFluid {
+public abstract class AbstractFluid extends ForgeFlowingFluid {
 
-    public BoilingBloodFluid(Properties properties) {
+    protected AbstractFluid(Properties properties) {
         super(properties);
     }
 
     @Override
-    public ParticleOptions getDripParticle() {
-        return BParticles.BOILING_BLOOD_DROP.orElse(null);
+    public boolean isSource(FluidState fluidState) {
+        return false;
     }
 
-    public static class Flowing extends BoilingBloodFluid {
+    @Override
+    public int getAmount(FluidState fluidState) {
+        return 8;
+    }
+
+    @Override
+    public ParticleOptions getDripParticle() {
+        return BParticles.BLOOD_DROP.orElse(null);
+    }
+
+    public static class Flowing extends AbstractFluid {
+
         public Flowing(Properties properties) {
             super(properties);
         }
 
-        protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> FluidState) {
-            super.createFluidStateDefinition(FluidState);
-            FluidState.add(LEVEL);
+        protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> fluidState) {
+            super.createFluidStateDefinition(fluidState);
+            fluidState.add(LEVEL);
         }
 
         public int getAmount(FluidState fluidState) {
@@ -35,7 +47,8 @@ public class BoilingBloodFluid extends AbstractFluid {
         }
     }
 
-    public static class Source extends BoilingBloodFluid {
+    public static class Source extends AbstractFluid {
+
         public Source(Properties properties) {
             super(properties);
         }

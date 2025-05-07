@@ -23,6 +23,7 @@ public class BDatagen {
 	private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
 
 	public static void gatherData(GatherDataEvent event) {
+
 		addExtraRegistrateData();
 
 		DataGenerator generator = event.getGenerator();

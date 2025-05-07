@@ -14,24 +14,34 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 import java.util.Collections;
 
-import static net.electrisoma.bloodisfuel.registry.BTags.NameSpace.BM;
-import static net.electrisoma.bloodisfuel.registry.BTags.NameSpace.FORGE;
+import static net.electrisoma.bloodisfuel.registry.BTags.NameSpace.*;
 
 
-@SuppressWarnings({"unused","DataFlowIssue"})
+@SuppressWarnings("all")
 public class BTags {
+
+    public static void register() {
+        BBlockTags.register();
+        BItemTags.register();
+        BFluidTags.register();
+        BEntityTags.register();
+        BRecipeSerializerTags.register();
+
+        BloodIsFuel.LOGGER.info("Registering tags for " + BloodIsFuel.NAME);
+    }
 
     public static <T> TagKey<T> optionalTag(IForgeRegistry<T> registry, ResourceLocation id) {
         return Objects.requireNonNull(registry.tags())
@@ -337,16 +347,5 @@ public class BTags {
         }
 
         private static void register() {}
-    }
-
-    public static void register() {
-
-        BBlockTags.register();
-        BItemTags.register();
-        BFluidTags.register();
-        BEntityTags.register();
-        BRecipeSerializerTags.register();
-
-        BloodIsFuel.LOGGER.info("Registering tags for " + BloodIsFuel.NAME);
     }
 }

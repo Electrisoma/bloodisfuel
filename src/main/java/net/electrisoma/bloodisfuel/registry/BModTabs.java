@@ -7,36 +7,37 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 
-import it.unimi.dsi.fastutil.objects.*;
-
+import net.minecraft.network.chat.Component;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.BlockItem;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.CreativeModeTab.Output;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.CreativeModeTab.TabVisibility;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.CreativeModeTab.DisplayItemsGenerator;
+
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import it.unimi.dsi.fastutil.objects.*;
 
 
 @SuppressWarnings({"unused","MismatchedQueryAndUpdateOfCollection"})
@@ -55,7 +56,6 @@ public class BModTabs {
 
 
     public static void register(IEventBus modEventBus) {
-
         REGISTER.register(modEventBus);
 
         BloodIsFuel.LOGGER.info("Registering tabs for " + BloodIsFuel.NAME);

@@ -1,8 +1,7 @@
 package net.electrisoma.bloodisfuel.registry.fluids.fluidtypes;
 
-import net.createmod.catnip.theme.Color;
-
 import com.tterrag.registrate.builders.FluidBuilder.FluidTypeFactory;
+import net.createmod.catnip.theme.Color;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -16,22 +15,22 @@ import org.joml.Vector3f;
 import java.util.function.Supplier;
 
 
-public class BloodFluidType extends BaseFluidType{
+public class BloodFluidType extends AbstractFluidType {
 
     private Vector3f fogColor;
     private Supplier<Float> fogDistance;
 
-    public static FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance) {
+    public static FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance, String overlayType) {
         return (p, s, f) -> {
-            BloodFluidType fluidType = new BloodFluidType(p, s, f);
+            BloodFluidType fluidType = new BloodFluidType(p, s, f, overlayType);
             fluidType.fogColor = new Color(fogColor, false).asVectorF();
             fluidType.fogDistance = fogDistance;
             return fluidType;
         };
     }
 
-    private BloodFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-        super(properties, stillTexture, flowingTexture);
+    private BloodFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, String overlayType) {
+        super(properties, stillTexture, flowingTexture, overlayType);
     }
 
     @Override

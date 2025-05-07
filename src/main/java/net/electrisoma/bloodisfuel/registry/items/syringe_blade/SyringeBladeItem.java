@@ -1,167 +1,201 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
+import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.registry.BTags;
+import net.electrisoma.bloodisfuel.registry.BFluids;
+import net.electrisoma.bloodisfuel.registry.enchantments.ChargesEnchantment;
 import net.electrisoma.bloodisfuel.registry.items.ItemUtils;
 
 import com.simibubi.create.AllEnchantments;
-import com.simibubi.create.content.equipment.armor.CapacityEnchantment;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
+import com.simibubi.create.content.equipment.armor.CapacityEnchantment;
 
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 
-
-//all these methods are really giving me a headache lol
 @SuppressWarnings("all")
 public class SyringeBladeItem extends SwordItem
-        implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable, ItemUtils {
+        implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable, ChargesEnchantment.ICapacityEnchantable, ItemUtils {
 
-    boolean isOnCooldown;
-    boolean offHandPower;
+    private boolean isOnCooldown;
+    private boolean offHandPower;
 
-    public SyringeBladeItem(Tier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
-        super(pTier, pAttackDamageModifier, pAttackSpeedModifier, pProperties);
+    public SyringeBladeItem(Tier tier, int attackDamageModifier, float attackSpeedModifier, Properties properties) {
+        super(tier, attackDamageModifier, attackSpeedModifier, properties);
     }
 
+    // we cant just have the item not have a cooldown or anything, that would be unbalanced
     @Override
-    public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) {
-        super.inventoryTick(pStack, pLevel, pEntity, pSlotId, pIsSelected);
-        if (BTags.BItemTags.SYRINGE_BLADE.matches(pStack)) {
-            if (pEntity instanceof Player pPlayer && pIsSelected) {
-                isOnCooldown = pPlayer.getCooldowns().isOnCooldown(pPlayer.getMainHandItem().getItem());
-                offHandPower = BTags.BItemTags.SYRINGE_BLADE.matches(pPlayer.getOffhandItem().getItem());
-            }
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        super.inventoryTick(stack, level, entity, slotId, isSelected);
+
+        if (BTags.BItemTags.SYRINGE_BLADE.matches(stack) && entity instanceof Player player && isSelected) {
+            isOnCooldown = player.getCooldowns().isOnCooldown(stack.getItem());
+            offHandPower = BTags.BItemTags.SYRINGE_BLADE.matches(player.getOffhandItem().getItem());
         }
     }
 
-    //enemy debuffs and cooldown trigger
-    public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
-        if (BTags.BItemTags.SYRINGE_BLADE.matches(pStack)) {
-            if (pAttacker instanceof Player pPlayer && !isOnCooldown) {
-                resetCooldown(pStack, pPlayer);
-                return true;
-            }
-            return false;
-        }
-        else if (pStack.getTag() != null) {
-            CompoundTag Blood = pStack.getTag().getCompound("Fluid");
+    // what happens when the player attacks mobs
+    @Override
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        if (!(attacker instanceof Player player)) return false;
 
-            FluidStack fStack = FluidStack.loadFluidStackFromNBT(Blood);
-            if (fStack.isEmpty()) {
-                MobEffectInstance poison = pTarget.getEffect(MobEffects.POISON);
-                if (poison != null) {
-                    pTarget.addEffect(new MobEffectInstance(MobEffects.POISON, 100 + poison.getDuration()));
-                    return false;
+        FluidStack fluidStack = readFluid(stack);
+        SyringeFluidTypeManager fluidType = SyringeFluidTypeManager.fromFluid(fluidStack);
+
+        int capacity = getCapacity(stack);
+        int charges = getChargeCount(stack);
+        int useAmount = getUseAmount(capacity, charges);
+
+        fluidStack.shrink(useAmount);
+        writeFluid(stack, fluidStack);
+
+        // grab blood if empty
+        if (fluidStack.isEmpty()) {
+            FluidStack newBlood = new FluidStack(BFluids.BLOOD.get(), capacity);
+            writeFluid(stack, newBlood);
+            target.hurt(player.damageSources().playerAttack(player), 2.0F);
+            return true;
+        }
+
+        // if not empty, use what it has to hurt the enemy
+        if (fluidStack.getAmount() < useAmount) {
+            stack.getOrCreateTag().remove("Fluid");
+            target.hurt(player.damageSources().playerAttack(player), 2.0F);
+            return true;
+        }
+
+        // effects
+        List<MobEffectInstance> effects = fluidType.getEffects(fluidStack);
+        for (MobEffectInstance effect : effects) {
+            target.addEffect(new MobEffectInstance(effect));
+        }
+
+        return super.hurtEnemy(stack, target, attacker);
+    }
+
+    // attributes and stuff
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        Multimap<Attribute, AttributeModifier> modifiers = super.getAttributeModifiers(slot, stack);
+
+        if (slot == EquipmentSlot.MAINHAND) {
+            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+
+            for (Map.Entry<Attribute, AttributeModifier> entry : modifiers.entries()) {
+                if (entry.getKey() != Attributes.ATTACK_DAMAGE) {
+                    builder.put(entry.getKey(), entry.getValue());
                 }
-                pTarget.addEffect(new MobEffectInstance(MobEffects.POISON, 100));
             }
+
+            int currentAmount = getCurrentFillLevel(stack);
+            int capacity = getCapacity(stack);
+            int charges = getChargeCount(stack);
+            int useAmount = getUseAmount(capacity, charges);
+
+            boolean isDepleted = currentAmount < useAmount;
+            double baseDamage = isDepleted ? 1.5 : 6.0;
+
+            builder.put(Attributes.ATTACK_DAMAGE,
+                    new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier",
+                            baseDamage, AttributeModifier.Operation.ADDITION));
+
+            return builder.build();
         }
-        return super.hurtEnemy(pStack, pTarget, pAttacker);
+
+        return modifiers;
     }
 
-    //cooldown reset
-    public void resetCooldown(ItemStack pStack, Player pPlayer) {
-        if (!pPlayer.getCooldowns().isOnCooldown(pPlayer.getMainHandItem().getItem())) {
-            pPlayer.getCooldowns().addCooldown(this, getUseDuration(pStack));
-        }
-        pStack.hurtAndBreak(2, pPlayer, (p_43276_) ->
-                p_43276_.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+    // helper method to assist with the charges
+    public static int getUseAmount(int capacity, int charges) {
+        return (int) Math.ceil((double) capacity / charges);
     }
 
-    //no attacking on cooldown >:(
+    // tooltip stuff, like the fluid counter
     @Override
-    public float getDamage() {
-        return isOnCooldown ? 0.0F :
-                super.getDamage();
-    }
-
-    //no attacking block >:(
-    @Override
-    public boolean canAttackBlock(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
-        return !isOnCooldown;
-    }
-
-    //tooltip for fluid amount
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, level, tooltip, tooltipFlag);
         tooltipMaker(tooltip, stack);
     }
 
-    //red bar if contains fluid
+    // bar color stuff based on fluid
     @Override
     public int getBarColor(ItemStack stack) {
-    return stack
-            .getOrCreateTag()
-            .getString("Fluid")
-            .isEmpty() ? 0xBD3228 : 0xFFFFFF;
+        FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("Fluid"));
+        SyringeFluidTypeManager fluidType = SyringeFluidTypeManager.fromFluid(fluidStack);
+
+        return fluidType.getColor(fluidStack);
     }
 
-    //bar visible based on if there is fluid
+    // bar visibility based on the presence of fluid
     @Override
     public boolean isBarVisible(ItemStack stack) {
         return getCurrentFillLevel(stack) > 0;
     }
 
-    //bar width based on how much fluid
+    // bar progress based on fluid amount
     @Override
     public int getBarWidth(ItemStack stack) {
         return Math.round(13 * (getCurrentFillLevel(stack) / (float) getCapacity(stack)));
     }
 
-    //valid enchantments
+    // valid enchantments
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        if(enchantment == AllEnchantments.CAPACITY.get())
-            return true;
-        if(enchantment == Enchantments.SHARPNESS)
-            return true;
-        if(enchantment == Enchantments.FIRE_ASPECT)
-            return true;
+
+         if (enchantment == AllEnchantments.CAPACITY.get()) return true;
+         if (enchantment == BEnchantments.BLADE_CHARGES.get()) return true;
+         if (enchantment == Enchantments.SHARPNESS) return true;
+         if (enchantment == Enchantments.FIRE_ASPECT) return true;
 
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
-    //enchantable
+    // is it enchantable? :shrug:
     @Override
     public boolean isEnchantable(ItemStack stack) {
         return true;
     }
 
-    //filling
+    // lets it be used as a fluid container
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
         return getFluidHandler(stack);
     }
 
-    //3rd person arm pose
+    // arm pose stuff, i want to mess with this later
+    // currently not doing anything
     @Override
     @Nullable
     public ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
-        if (!player.swinging) {
-            return ArmPose.ITEM;
-        }
+        if (!player.swinging) return ArmPose.ITEM;
         return null;
     }
 }

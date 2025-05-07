@@ -138,8 +138,8 @@ dependencies {
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
     implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
 
-    //modImplementation("curse.maven:create-diesel-generators-869316:6286179")
-    //modImplementation("curse.maven:createaddition-439890:5658602")
+    modRuntimeOnly("curse.maven:create-diesel-generators-869316:6286179")
+//    modImplementation("curse.maven:createaddition-439890:5658602")
 
     //JEI
     modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")

@@ -4,17 +4,17 @@ import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.foundation.data.advancements.BAdvancement;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.item.Items;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput.PathProvider;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.data.PackOutput.PathProvider;
 
+import java.nio.file.Path;
 import java.util.Set;
 import java.util.List;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.function.BiConsumer;
@@ -29,7 +29,6 @@ public class BAdvancements implements DataProvider {
     public static final List<BAdvancement> ENTRIES = new ArrayList<BAdvancement>();
 
     public static void register() {
-
         BloodIsFuel.LOGGER.info("Registering advancements for " + BloodIsFuel.NAME);
     }
 

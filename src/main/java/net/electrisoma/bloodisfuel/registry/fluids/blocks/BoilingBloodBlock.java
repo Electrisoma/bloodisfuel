@@ -3,7 +3,11 @@ package net.electrisoma.bloodisfuel.registry.fluids.blocks;
 import net.electrisoma.bloodisfuel.infrastructure.data.BDamageSources;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,24 +21,66 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import java.util.function.Supplier;
 
 
-public class BoilingBloodBlock extends BloodBlock {
+public class BoilingBloodBlock extends AbstractFluidBlock {
 
     public BoilingBloodBlock(Supplier<? extends FlowingFluid> fluid, Properties properties) {
         super(fluid, properties);
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    protected void entityInsideProxy(Level level, BlockPos pos, Entity entity) {
+        super.entityInsideProxy(level, pos, entity);
 
-        if (!entity.fireImmune()) {
+        if (!level.isClientSide()) {
 
-            entity.setRemainingFireTicks(entity.getRemainingFireTicks() + 1);
-            if (entity.getRemainingFireTicks() == 0) {
-                entity.setSecondsOnFire(8);
+            if (entity instanceof LivingEntity) {
+
+                if (!entity.fireImmune()) {
+
+                    entity.setRemainingFireTicks(entity.getRemainingFireTicks() + 1);
+                    if (entity.getRemainingFireTicks() <= 0) {
+
+                        int seconds = 6 + level.getRandom().nextInt(5);
+                        entity.setSecondsOnFire(seconds);
+
+                        entity.hurt(BDamageSources.boiling(level), 2.0F);
+                    }
+                }
             }
 
-            if(entity.isOnFire()){
-                entity.hurt(BDamageSources.boiling(level), 5);
+            if (entity instanceof ItemEntity item) {
+
+                level.playSound(
+                        null,
+                        item.getX(), item.getY(), item.getZ(),
+                        SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS,
+                        0.6F, 2.0F
+                );
+
+                ((ServerLevel) level).sendParticles(
+                        ParticleTypes.SMOKE,
+                        entity.getX(), entity.getY() + 0.2, entity.getZ(),
+                        5, 0.0D, 0.05D, 0.0D, 0.01D
+                );
+
+                item.discard();
+            }
+
+            if (entity instanceof ExperienceOrb) {
+                level.playSound(
+                        null,
+                        entity.getX(), entity.getY(), entity.getZ(),
+                        SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS,
+                        0.6F, 2.0F
+                );
+
+                ((ServerLevel) level).sendParticles(
+                        ParticleTypes.SMOKE,
+                        entity.getX(), entity.getY() + 0.2, entity.getZ(),
+                        5, 0.0D, 0.05D, 0.0D, 0.01D
+                );
+
+                entity.discard();
             }
         }
     }
@@ -52,16 +98,14 @@ public class BoilingBloodBlock extends BloodBlock {
                 double d2 = (double)pos.getZ() + random.nextDouble();
 
                 level.addParticle(ParticleTypes.LAVA, d0, d1, d2,
-                        0.0,
-                        0.0,
-                        0.0)
-                ;
+                        0.0, 0.0, 0.0
+                );
 
                 level.playLocalSound(d0, d1, d2, SoundEvents.LAVA_POP, SoundSource.BLOCKS,
                         0.2F + random.nextFloat() * 0.2F,
                         0.9F + random.nextFloat() * 0.15F,
-                        false)
-                ;
+                        false
+                );
             }
 
             if (random.nextInt(200) == 0) {
@@ -70,10 +114,15 @@ public class BoilingBloodBlock extends BloodBlock {
                         SoundEvents.LAVA_AMBIENT, SoundSource.BLOCKS,
                         0.2F + random.nextFloat() * 0.2F,
                         0.9F + random.nextFloat() * 0.15F,
-                        false)
-                ;
+                        false
+                );
             }
         }
+    }
+
+    @Override
+    protected boolean shouldExtinguishFire() {
+        return false;
     }
 
     @Override

@@ -16,22 +16,22 @@ import org.joml.Vector3f;
 import java.util.function.Supplier;
 
 
-public class BoilingBloodFluidType extends BaseFluidType {
+public class BoilingBloodFluidType extends AbstractFluidType {
 
     private Vector3f fogColor;
     private Supplier<Float> fogDistance;
 
-    public static FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance) {
+    public static FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance, String overlayType) {
         return (p, s, f) -> {
-            BoilingBloodFluidType fluidType = new BoilingBloodFluidType(p, s, f);
+            BoilingBloodFluidType fluidType = new BoilingBloodFluidType(p, s, f, overlayType);
             fluidType.fogColor = new Color(fogColor, false).asVectorF();
             fluidType.fogDistance = fogDistance;
             return fluidType;
         };
     }
 
-    private BoilingBloodFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-        super(properties, stillTexture, flowingTexture);
+    private BoilingBloodFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, String overlayType) {
+        super(properties, stillTexture, flowingTexture, overlayType);
     }
 
     @Override
