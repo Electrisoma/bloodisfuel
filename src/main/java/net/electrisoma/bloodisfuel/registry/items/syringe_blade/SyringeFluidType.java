@@ -56,4 +56,12 @@ public record SyringeFluidType(
             );
         }
     }
+
+    public boolean isPotionType() {
+        return fluids().stream().anyMatch(holder ->
+                holder.unwrapKey()
+                        .map(key -> key.location().getPath().equals("potion"))
+                        .orElse(false)
+        );
+    }
 }

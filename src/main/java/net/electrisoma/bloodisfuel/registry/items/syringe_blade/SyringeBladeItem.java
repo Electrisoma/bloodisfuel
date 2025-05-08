@@ -10,12 +10,12 @@ import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 import com.simibubi.create.content.equipment.armor.CapacityEnchantment;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
@@ -72,7 +72,7 @@ public class SyringeBladeItem extends SwordItem
         if (!(attacker instanceof Player player)) return false;
 
         FluidStack fluidStack = readFluid(stack);
-        SyringeFluidTypeManager fluidType = SyringeFluidTypeManager.fromFluid(fluidStack);
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, attacker.level().registryAccess());
 
         int capacity = getCapacity(stack);
         int charges = getChargeCount(stack);
@@ -97,7 +97,7 @@ public class SyringeBladeItem extends SwordItem
         writeFluid(stack, fluidStack);
 
         // effects
-        List<MobEffectInstance> effects = fluidType.getEffects(fluidStack);
+        List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluidStack);
         for (MobEffectInstance effect : effects)
             target.addEffect(new MobEffectInstance(effect));
 
@@ -119,14 +119,12 @@ public class SyringeBladeItem extends SwordItem
         boolean isDepleted = currentAmount < useAmount;
 
         if (!isDepleted) {
-
             builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(
                     BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 6.0, AttributeModifier.Operation.ADDITION));
             builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(
                     BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION));
-        } else {
-            // nothing
-        } return builder.build();
+        } else {}
+        return builder.build();
     }
 
     // helper method to assist with the charges
@@ -144,9 +142,18 @@ public class SyringeBladeItem extends SwordItem
     // bar color stuff based on fluids
     @Override
     public int getBarColor(ItemStack stack) {
-        FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("Fluid"));
-        SyringeFluidTypeManager fluidType = SyringeFluidTypeManager.fromFluid(fluidStack);
-        return fluidType.getColor(fluidStack);
+        FluidStack fluidStack = readFluid(stack);
+
+        Level level = null;
+        if (stack.getItem() instanceof SyringeBladeItem) {
+            Entity entity = Minecraft.getInstance().player;
+            if (entity != null) level = entity.level();
+        }
+
+        if (level == null) return 0xBD3228;
+
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, level.registryAccess());
+        return SyringeFluidTypeManager.getColor(type, fluidStack);
     }
 
     // bar visibility based on the presence of fluids

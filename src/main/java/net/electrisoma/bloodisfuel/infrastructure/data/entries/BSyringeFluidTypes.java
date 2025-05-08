@@ -24,21 +24,21 @@ public class BSyringeFluidTypes {
         register(ctx, "viscera", new SyringeFluidType.Builder()
                 .addFluids(BFluids.VISCERA.get())
                 .color(0xDF4416)
-                .onEntityHitEffect(new MobEffectInstance(MobEffects.POISON, 160, 1, false, true))
+                .onEntityHitEffect(new MobEffectInstance(MobEffects.POISON, 60, 1, false, true))
                 .build()
         );
 
         register(ctx, "blood", new SyringeFluidType.Builder()
                 .addFluids(BFluids.BLOOD.get())
                 .color(0xAA0000)
-                .onEntityHitEffect(new MobEffectInstance(MobEffects.WEAKNESS, 160, 1, false, true))
+                .onEntityHitEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60, 1, false, true))
                 .build()
         );
 
         register(ctx, "enriched_blood", new SyringeFluidType.Builder()
                 .addFluids(BFluids.ENRICHED_BLOOD.get())
                 .color(0xE11313)
-                .onEntityHitEffect(new MobEffectInstance(MobEffects.WEAKNESS, 160, 1, false, true))
+                .onEntityHitEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60, 1, false, true))
                 .build()
         );
     }
