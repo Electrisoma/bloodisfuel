@@ -115,7 +115,6 @@ public class SyringeBladeItem extends SwordItem
         boolean isDepleted = currentAmount < useAmount;
 
         if (!isDepleted) {
-
             builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(
                     BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 6.0, AttributeModifier.Operation.ADDITION));
             builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(
