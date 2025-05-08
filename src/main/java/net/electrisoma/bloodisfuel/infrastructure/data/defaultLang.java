@@ -18,12 +18,14 @@ public class defaultLang {
         var syringe = BItems.SYRINGE_BLADE;
         var meat = BItems.DRAINED_MEAT;
 
-        //interfaces
+        // interfaces
         consume(consumer, tab,"base", "Create: Blood is Fuel!");
 
         consume(consumer, dm, "boiling", "%s died like a lobster");
+        consume(consumer, dm, "syringe_blade", "%1$s was stabbed by %2$s's Syringe Blade");
+        consume(consumer, dm, "syringe_blade.item", "%1$s was stabbed by %2$s using %3$s");
 
-        //tooltips
+        // tooltips
         tooltipCondition(consumer, syringe, "L-Click at Mob", 1);
         tooltipBehaviour(consumer, syringe, "Extract _blood_", 1);
         tooltipSummary(consumer, syringe, "Extract _blood_ from your _friends_ or _enemies_!");

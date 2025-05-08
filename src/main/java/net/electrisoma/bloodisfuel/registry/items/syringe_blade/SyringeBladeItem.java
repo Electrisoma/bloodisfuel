@@ -15,6 +15,8 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -78,7 +80,9 @@ public class SyringeBladeItem extends SwordItem
 
         // grab blood if empty
         if (fluidStack.isEmpty()) {
-            writeFluid(stack, new FluidStack(BFluids.BLOOD.get(), capacity));
+            if (target instanceof Zombie) writeFluid(stack, new FluidStack(BFluids.VISCERA.get(), capacity));
+            else writeFluid(stack, new FluidStack(BFluids.BLOOD.get(), capacity));
+
             target.hurt(player.damageSources().playerAttack(player), 2.0F);
             return true;
         }
@@ -115,6 +119,7 @@ public class SyringeBladeItem extends SwordItem
         boolean isDepleted = currentAmount < useAmount;
 
         if (!isDepleted) {
+
             builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(
                     BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 6.0, AttributeModifier.Operation.ADDITION));
             builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(

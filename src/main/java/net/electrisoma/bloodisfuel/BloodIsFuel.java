@@ -11,6 +11,7 @@ import com.simibubi.create.foundation.item.TooltipModifier;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 
+import net.electrisoma.bloodisfuel.registry.items.syringe_blade.SyringeFluidTypeManager;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -71,7 +72,6 @@ public class BloodIsFuel {
     }
 
     public static void init(final FMLCommonSetupEvent event) {
-
         event.enqueueWork(() -> {
             BAdvancements.register();
         });

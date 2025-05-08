@@ -24,7 +24,7 @@ public class BSyringeFluidTypes {
         register(ctx, "viscera", new SyringeFluidType.Builder()
                 .addFluids(BFluids.VISCERA.get())
                 .color(0xDF4416)
-                .onEntityHitEffect(new MobEffectInstance(MobEffects.WEAKNESS, 160, 1, false, true))
+                .onEntityHitEffect(new MobEffectInstance(MobEffects.POISON, 160, 1, false, true))
                 .build()
         );
 

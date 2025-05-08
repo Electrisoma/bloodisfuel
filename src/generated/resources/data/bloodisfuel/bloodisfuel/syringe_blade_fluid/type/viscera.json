@@ -4,6 +4,6 @@
   "on_entity_hit": {
     "amplifier": 1,
     "duration": 160,
-    "effect": "minecraft:weakness"
+    "effect": "minecraft:poison"
   }
 }

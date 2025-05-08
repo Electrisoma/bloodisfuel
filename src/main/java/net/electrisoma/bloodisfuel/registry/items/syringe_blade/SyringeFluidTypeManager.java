@@ -3,7 +3,6 @@ package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 import com.simibubi.create.Create;
 import net.electrisoma.bloodisfuel.registry.BFluids;
 
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
@@ -42,8 +41,10 @@ public enum SyringeFluidTypeManager {
     public static SyringeFluidTypeManager fromFluid(FluidStack fluidStack) {
         if (fluidStack.isEmpty()) return EMPTY;
         Fluid fluid = fluidStack.getFluid();
+
         for (SyringeFluidTypeManager type : values())
             if (type.fluid != null && type.fluid.equals(fluid)) return type;
+
         return EMPTY;
     }
 

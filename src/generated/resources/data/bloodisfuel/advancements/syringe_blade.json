@@ -1,0 +1,40 @@
+{
+  "parent": "bloodisfuel:root",
+  "criteria": {
+    "syringe_blade": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "bloodisfuel:syringe_blade"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "color": "#FFFFFF",
+      "translate": "advancement.bloodisfuel.syringe_blade.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bloodisfuel:syringe_blade",
+      "nbt": "{Damage:0}"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bloodisfuel.syringe_blade"
+    }
+  },
+  "requirements": [
+    [
+      "syringe_blade"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

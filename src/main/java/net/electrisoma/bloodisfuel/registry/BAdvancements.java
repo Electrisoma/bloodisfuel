@@ -65,6 +65,14 @@ public class BAdvancements implements DataProvider {
             .onIconCollected()
             .build(),
 
+    SYRINGE_BLADE = create("syringe_blade", BItems.SYRINGE_BLADE)
+            .name("Let's practice medicine")
+            .description("Obtain the Syringe Blade")
+            .after(ROOT)
+            .onIconCollected()
+            .announce()
+            .build(),
+
     // Blood - Enrichment
 
     ENRICHED_BLOOD = create("enriched_blood", BFluids.ENRICHED_BLOOD.getBucket().get().getDefaultInstance().getItem())

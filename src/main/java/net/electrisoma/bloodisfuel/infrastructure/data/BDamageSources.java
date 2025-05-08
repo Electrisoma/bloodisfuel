@@ -19,6 +19,9 @@ public class BDamageSources {
         return source(BDamageTypes.BOILING, level);
     }
 
+    public static DamageSource syringeBlade(Level level, Entity causingEntity, Entity directEntity) {
+        return source(BDamageTypes.SYRINGE_BLADE, level, causingEntity, directEntity);
+    }
 
     private static DamageSource source(ResourceKey<DamageType> key, LevelReader level) {
         Registry<DamageType> registry = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
