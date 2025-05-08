@@ -32,7 +32,7 @@ public class defaultLang {
         tooltipBehaviour(consumer, meat, "Extract _blood_", 1);
         tooltipSummary(consumer, meat, "Poor fella");
 
-        consume(consumer, "bloodisfuel.tooltip.empty", "Empty :3");
+        tooltipMisc(consumer,"empty", "Empty :3");
     }
 
     //capitalism!! (consumers)
@@ -56,5 +56,8 @@ public class defaultLang {
     }
     private static void tooltipSummary(BiConsumer<String, String> consumer, ItemLike item, String desc) {
         consume(consumer, ItemName(item) + ".tooltip.summary", desc);
+    }
+    private static void tooltipMisc(BiConsumer<String, String> consumer, String key, String desc) {
+        consume(consumer, BloodIsFuel.MOD_ID + ".tooltip." + key, desc);
     }
 }

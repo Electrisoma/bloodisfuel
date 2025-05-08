@@ -37,5 +37,4 @@ public class BServer extends ConfigBase {
         static String blood_capacity_enchanting =
                 "Capacity Addition of Tools with Capacity Enchantment";
     }
-
 }

@@ -23,6 +23,7 @@ public enum SyringeFluidTypeManager {
     VISCERA(BFluids.VISCERA.get(), 0xDF4416, new MobEffectInstance(MobEffects.WEAKNESS, 60, 1)),
     BLOOD(BFluids.BLOOD.get(), 0xAA0000, new MobEffectInstance(MobEffects.WEAKNESS, 60, 1)),
     ENRICHED_BLOOD(BFluids.ENRICHED_BLOOD.get(), 0xE11313, new MobEffectInstance(MobEffects.WEAKNESS, 60, 1)),
+
     POTION(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(Create.ID, "potion")), 0x9966FF, null),
     EMPTY(null, 0xBD3228, null);
 

@@ -38,7 +38,7 @@ public interface ItemUtils {
 
     default int getChargeCount(ItemStack stack) {
         int baseCharges = 4;
-        int level = stack.getEnchantmentLevel(BEnchantments.BLADE_CHARGES.get());
+        int level = stack.getEnchantmentLevel(BEnchantments.EXTRA_VIALS.get());
 
         return baseCharges + (level * 2);
     }

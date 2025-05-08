@@ -32,9 +32,7 @@ public class BDatagen {
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
 		BEntriesProvider bEntriesProvider = new BEntriesProvider(output, lookupProvider);
-		lookupProvider = bEntriesProvider.getRegistryProvider();
 		generator.addProvider(event.includeServer(), bEntriesProvider);
-
 
 		if (event.includeServer()) {
 			generator.addProvider(true, new BAdvancements(output));

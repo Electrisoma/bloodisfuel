@@ -16,3 +16,8 @@
 -new recipe type for centrifuge
 -iron nugget (40% chance of dropping)
 -gold nugget (1% chance of dropping)
+
+-uber fluid (blood + healing stuff + lightning):
+grants incredibly strength and durability
+
+-data driven syringe blade fluids

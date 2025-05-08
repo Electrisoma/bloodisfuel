@@ -2,8 +2,10 @@ package net.electrisoma.bloodisfuel.infrastructure.data;
 
 import com.simibubi.create.api.registry.CreateRegistries;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
+import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.infrastructure.data.entries.BDamageTypes;
 import net.electrisoma.bloodisfuel.infrastructure.data.entries.BPotatoCannonProjectiles;
+import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -19,7 +21,9 @@ public class BEntriesProvider extends DatapackBuiltinEntriesProvider {
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(Registries.DAMAGE_TYPE, BDamageTypes::bootstrap)
             .add(CreateRegistries.POTATO_PROJECTILE_TYPE, BPotatoCannonProjectiles::bootstrap)
-            ;
+            .add(BRegistries.SYRINGE_BLADE_FLUID_TYPE, BSyringeFluidTypes::bootstrap);
+
+    ;
 
     public BEntriesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, BUILDER, Set.of(BloodIsFuel.MOD_ID));

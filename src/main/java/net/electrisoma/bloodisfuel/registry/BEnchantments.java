@@ -16,11 +16,11 @@ public class BEnchantments {
         BloodIsFuel.LOGGER.info("Registering enchantments for " + BloodIsFuel.NAME);
     }
 
-    public static final RegistryEntry<ChargesEnchantment> BLADE_CHARGES =
-            REGISTRATE.object("blade_charges")
+    public static final RegistryEntry<ChargesEnchantment> EXTRA_VIALS =
+            REGISTRATE.object("extra_vials")
                     .enchantment(EnchantmentCategory.WEAPON, ChargesEnchantment::new)
                     .addSlots(EquipmentSlot.MAINHAND)
-                    .lang("Blade Charges")
+                    .lang("Extra Vials")
                     .rarity(Enchantment.Rarity.UNCOMMON)
                     .register()
             ;

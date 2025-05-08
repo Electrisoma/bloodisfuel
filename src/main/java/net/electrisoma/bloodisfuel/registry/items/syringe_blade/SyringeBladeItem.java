@@ -42,7 +42,8 @@ import java.util.Map;
 
 @SuppressWarnings("all")
 public class SyringeBladeItem extends SwordItem
-        implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable, ChargesEnchantment.ICapacityEnchantable, ItemUtils {
+        implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable,
+        ChargesEnchantment.ICapacityEnchantable, ItemUtils {
 
     private boolean isOnCooldown;
     private boolean offHandPower;
@@ -74,23 +75,21 @@ public class SyringeBladeItem extends SwordItem
         int charges = getChargeCount(stack);
         int useAmount = getUseAmount(capacity, charges);
 
-        fluidStack.shrink(useAmount);
-        writeFluid(stack, fluidStack);
-
         // grab blood if empty
         if (fluidStack.isEmpty()) {
-            FluidStack newBlood = new FluidStack(BFluids.BLOOD.get(), capacity);
-            writeFluid(stack, newBlood);
+            writeFluid(stack, new FluidStack(BFluids.BLOOD.get(), capacity));
             target.hurt(player.damageSources().playerAttack(player), 2.0F);
             return true;
         }
 
         // if not empty, use what it has to hurt the enemy
         if (fluidStack.getAmount() < useAmount) {
-            stack.getOrCreateTag().remove("Fluid");
             target.hurt(player.damageSources().playerAttack(player), 2.0F);
             return true;
         }
+
+        fluidStack.shrink(useAmount);
+        writeFluid(stack, fluidStack);
 
         // effects
         List<MobEffectInstance> effects = fluidType.getEffects(fluidStack);
@@ -104,33 +103,30 @@ public class SyringeBladeItem extends SwordItem
     // attributes and stuff
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> modifiers = super.getAttributeModifiers(slot, stack);
-
-        if (slot == EquipmentSlot.MAINHAND) {
-            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-
-            for (Map.Entry<Attribute, AttributeModifier> entry : modifiers.entries()) {
-                if (entry.getKey() != Attributes.ATTACK_DAMAGE) {
-                    builder.put(entry.getKey(), entry.getValue());
-                }
-            }
-
-            int currentAmount = getCurrentFillLevel(stack);
-            int capacity = getCapacity(stack);
-            int charges = getChargeCount(stack);
-            int useAmount = getUseAmount(capacity, charges);
-
-            boolean isDepleted = currentAmount < useAmount;
-            double baseDamage = isDepleted ? 1.5 : 6.0;
-
-            builder.put(Attributes.ATTACK_DAMAGE,
-                    new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier",
-                            baseDamage, AttributeModifier.Operation.ADDITION));
-
-            return builder.build();
+        if (slot != EquipmentSlot.MAINHAND) {
+            return super.getAttributeModifiers(slot, stack);
         }
 
-        return modifiers;
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+
+        int currentAmount = getCurrentFillLevel(stack);
+        int capacity = getCapacity(stack);
+        int charges = getChargeCount(stack);
+        int useAmount = getUseAmount(capacity, charges);
+
+        boolean isDepleted = currentAmount < useAmount;
+
+        if (!isDepleted) {
+
+            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(
+                    BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 6.0, AttributeModifier.Operation.ADDITION));
+            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(
+                    BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION));
+        } else {
+            // nothing
+        }
+
+        return builder.build();
     }
 
     // helper method to assist with the charges
@@ -138,14 +134,14 @@ public class SyringeBladeItem extends SwordItem
         return (int) Math.ceil((double) capacity / charges);
     }
 
-    // tooltip stuff, like the fluid counter
+    // tooltip stuff, like the fluids counter
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, level, tooltip, tooltipFlag);
         tooltipMaker(tooltip, stack);
     }
 
-    // bar color stuff based on fluid
+    // bar color stuff based on fluids
     @Override
     public int getBarColor(ItemStack stack) {
         FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("Fluid"));
@@ -154,13 +150,13 @@ public class SyringeBladeItem extends SwordItem
         return fluidType.getColor(fluidStack);
     }
 
-    // bar visibility based on the presence of fluid
+    // bar visibility based on the presence of fluids
     @Override
     public boolean isBarVisible(ItemStack stack) {
         return getCurrentFillLevel(stack) > 0;
     }
 
-    // bar progress based on fluid amount
+    // bar progress based on fluids amount
     @Override
     public int getBarWidth(ItemStack stack) {
         return Math.round(13 * (getCurrentFillLevel(stack) / (float) getCapacity(stack)));
@@ -169,11 +165,10 @@ public class SyringeBladeItem extends SwordItem
     // valid enchantments
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-
-         if (enchantment == AllEnchantments.CAPACITY.get()) return true;
-         if (enchantment == BEnchantments.BLADE_CHARGES.get()) return true;
-         if (enchantment == Enchantments.SHARPNESS) return true;
-         if (enchantment == Enchantments.FIRE_ASPECT) return true;
+        if (enchantment == BEnchantments.EXTRA_VIALS.get()) return true;
+        if (enchantment == AllEnchantments.CAPACITY.get()) return true;
+        if (enchantment == Enchantments.SHARPNESS) return true;
+        if (enchantment == Enchantments.FIRE_ASPECT) return true;
 
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }
@@ -184,7 +179,7 @@ public class SyringeBladeItem extends SwordItem
         return true;
     }
 
-    // lets it be used as a fluid container
+    // lets it be used as a fluids container
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
         return getFluidHandler(stack);

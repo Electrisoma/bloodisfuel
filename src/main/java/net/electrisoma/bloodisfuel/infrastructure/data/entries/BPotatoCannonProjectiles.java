@@ -11,7 +11,8 @@ import net.minecraft.world.effect.MobEffects;
 
 public class BPotatoCannonProjectiles {
 
-    public static final ResourceKey<PotatoCannonProjectileType> FALLBACK = ResourceKey.create(CreateRegistries.POTATO_PROJECTILE_TYPE, BloodIsFuel.asResource("fallback"));
+    public static final ResourceKey<PotatoCannonProjectileType> FALLBACK =
+            ResourceKey.create(CreateRegistries.POTATO_PROJECTILE_TYPE, BloodIsFuel.asResource("fallback"));
 
     public static void bootstrap(BootstapContext<PotatoCannonProjectileType> ctx) {
         register(ctx, "fallback", new PotatoCannonProjectileType.Builder()

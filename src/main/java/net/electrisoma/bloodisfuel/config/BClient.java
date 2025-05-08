@@ -9,7 +9,7 @@ public class BClient extends ConfigBase {
     public final ConfigGroup client = group(0, "client",
             Comments.client);
 
-    // custom fluid fog
+    // custom fluids fog
     public final ConfigGroup fluidFogSettings =
             group(1, "fluidFogSettings",
                     Comments.fluidFogSettings);
@@ -63,5 +63,4 @@ public class BClient extends ConfigBase {
         static String boilingBloodTransparencyMultiplier =
                 "The vision range through boiling blood will be multiplied by this factor";
     }
-
 }

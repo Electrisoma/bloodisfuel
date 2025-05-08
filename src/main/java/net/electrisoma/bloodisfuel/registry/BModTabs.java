@@ -52,8 +52,8 @@ public class BModTabs {
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
                     .icon(BItems.DRAINED_MEAT::asStack)
                     .displayItems(new RegistrateDisplayItemsGenerator(true, BModTabs.BASE_CREATIVE_TAB))
-                    .build());
-
+                    .build()
+    );
 
     public static void register(IEventBus modEventBus) {
         REGISTER.register(modEventBus);

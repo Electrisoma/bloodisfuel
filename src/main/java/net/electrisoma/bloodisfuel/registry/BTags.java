@@ -43,27 +43,6 @@ public class BTags {
         BloodIsFuel.LOGGER.info("Registering tags for " + BloodIsFuel.NAME);
     }
 
-    public static <T> TagKey<T> optionalTag(IForgeRegistry<T> registry, ResourceLocation id) {
-        return Objects.requireNonNull(registry.tags())
-                .createOptionalTagKey(id, Collections.emptySet());
-    }
-
-    public static <T> TagKey<T> forgeTag(IForgeRegistry<T> registry, String path) {
-        return optionalTag(registry, new ResourceLocation("forge", path));
-    }
-
-    public static TagKey<Block> forgeBlockTag(String path) {
-        return forgeTag(ForgeRegistries.BLOCKS, path);
-    }
-
-    public static TagKey<Item> forgeItemTag(String path) {
-        return forgeTag(ForgeRegistries.ITEMS, path);
-    }
-
-    public static TagKey<Fluid> forgeFluidTag(String path) {
-        return forgeTag(ForgeRegistries.FLUIDS, path);
-    }
-
     public enum NameSpace {
 
         MOD(BloodIsFuel.MOD_ID, false, true),
@@ -348,4 +327,22 @@ public class BTags {
 
         private static void register() {}
     }
+
+    public static <T> TagKey<T> optionalTag(IForgeRegistry<T> registry, ResourceLocation id) {
+        return Objects.requireNonNull(registry.tags())
+                .createOptionalTagKey(id, Collections.emptySet());
+    }
+    public static <T> TagKey<T> forgeTag(IForgeRegistry<T> registry, String path) {
+        return optionalTag(registry, new ResourceLocation("forge", path));
+    }
+    public static TagKey<Block> forgeBlockTag(String path) {
+        return forgeTag(ForgeRegistries.BLOCKS, path);
+    }
+    public static TagKey<Item> forgeItemTag(String path) {
+        return forgeTag(ForgeRegistries.ITEMS, path);
+    }
+    public static TagKey<Fluid> forgeFluidTag(String path) {
+        return forgeTag(ForgeRegistries.FLUIDS, path);
+    }
+
 }
