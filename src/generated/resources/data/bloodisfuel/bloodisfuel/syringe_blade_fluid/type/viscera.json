@@ -1,0 +1,9 @@
+{
+  "color": 14631958,
+  "fluids": "bloodisfuel:flowing_viscera",
+  "on_entity_hit": {
+    "amplifier": 1,
+    "duration": 160,
+    "effect": "minecraft:weakness"
+  }
+}

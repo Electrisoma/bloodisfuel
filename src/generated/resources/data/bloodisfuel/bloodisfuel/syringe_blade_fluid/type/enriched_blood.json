@@ -1,0 +1,9 @@
+{
+  "color": 14750483,
+  "fluids": "bloodisfuel:flowing_enriched_blood",
+  "on_entity_hit": {
+    "amplifier": 1,
+    "duration": 160,
+    "effect": "minecraft:weakness"
+  }
+}

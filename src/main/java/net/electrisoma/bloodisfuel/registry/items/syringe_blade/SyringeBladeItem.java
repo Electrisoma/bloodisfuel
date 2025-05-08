@@ -38,7 +38,7 @@ import com.google.common.collect.Multimap;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
+
 
 @SuppressWarnings("all")
 public class SyringeBladeItem extends SwordItem
@@ -93,9 +93,8 @@ public class SyringeBladeItem extends SwordItem
 
         // effects
         List<MobEffectInstance> effects = fluidType.getEffects(fluidStack);
-        for (MobEffectInstance effect : effects) {
+        for (MobEffectInstance effect : effects)
             target.addEffect(new MobEffectInstance(effect));
-        }
 
         return super.hurtEnemy(stack, target, attacker);
     }
@@ -103,9 +102,7 @@ public class SyringeBladeItem extends SwordItem
     // attributes and stuff
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot != EquipmentSlot.MAINHAND) {
-            return super.getAttributeModifiers(slot, stack);
-        }
+        if (slot != EquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
 
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 
@@ -146,7 +143,6 @@ public class SyringeBladeItem extends SwordItem
     public int getBarColor(ItemStack stack) {
         FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("Fluid"));
         SyringeFluidTypeManager fluidType = SyringeFluidTypeManager.fromFluid(fluidStack);
-
         return fluidType.getColor(fluidStack);
     }
 

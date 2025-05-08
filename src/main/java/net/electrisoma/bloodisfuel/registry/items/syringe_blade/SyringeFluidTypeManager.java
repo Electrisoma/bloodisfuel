@@ -37,40 +37,37 @@ public enum SyringeFluidTypeManager {
         this.defaultEffect = defaultEffect;
     }
 
+    // fluid
     public static SyringeFluidTypeManager fromFluid(FluidStack fluidStack) {
         if (fluidStack.isEmpty()) return EMPTY;
         Fluid fluid = fluidStack.getFluid();
 
-        for (SyringeFluidTypeManager type : values()) {
+        for (SyringeFluidTypeManager type : values())
             if (type.fluid != null && type.fluid.equals(fluid)) return type;
-        }
 
         return EMPTY;
     }
 
+    // bar color
     public int getColor(FluidStack stack) {
-
         if (this == POTION) {
             CompoundTag tag = stack.getOrCreateTag();
             this.color = PotionUtils.getColor(PotionUtils.getAllEffects(tag)) | 0xff000000;
             return color;
-        }
-
-        return color;
+        } return color;
     }
 
+    // fluid effects
     public List<MobEffectInstance> getEffects(FluidStack fluidStack) {
         if (this == POTION && fluidStack.hasTag()) {
             CompoundTag tag = fluidStack.getTag();
-
             return PotionUtils.getAllEffects(tag);
-        }
-
-        return defaultEffect == null
+        } return defaultEffect == null
                 ? Collections.emptyList()
                 : Collections.singletonList(new MobEffectInstance(defaultEffect));
     }
 
+    // potion type check
     public boolean isPotionType() {
         return this == POTION;
     }
