@@ -1,16 +1,16 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.electrisoma.bloodisfuel.api.BCodecs;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.level.material.Fluid;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,13 +55,5 @@ public record SyringeFluidType(
                     Optional.ofNullable(onEntityHitEffect)
             );
         }
-    }
-
-    public ResourceLocation getId() {
-        return fluids.iterator()
-                .next()
-                .unwrapKey()
-                .map(ResourceKey::location)
-                .orElse(new ResourceLocation("empty"));
     }
 }

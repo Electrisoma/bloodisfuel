@@ -1,10 +1,10 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
-import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.registry.BTags;
 import net.electrisoma.bloodisfuel.registry.BFluids;
-import net.electrisoma.bloodisfuel.registry.enchantments.ChargesEnchantment;
+import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.registry.items.ItemUtils;
+import net.electrisoma.bloodisfuel.registry.enchantments.ChargesEnchantment;
 
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
@@ -33,11 +33,12 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.ImmutableMultimap;
+
+import java.util.List;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 
 @SuppressWarnings("all")
@@ -121,9 +122,7 @@ public class SyringeBladeItem extends SwordItem
                     BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION));
         } else {
             // nothing
-        }
-
-        return builder.build();
+        } return builder.build();
     }
 
     // helper method to assist with the charges
