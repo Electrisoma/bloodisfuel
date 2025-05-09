@@ -13,10 +13,10 @@ import com.simibubi.create.content.equipment.armor.CapacityEnchantment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,6 +37,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.ImmutableMultimap;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
@@ -66,6 +67,20 @@ public class SyringeBladeItem extends SwordItem
         }
     }
 
+    // attributes and stuff
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        if (slot != EquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
+
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        int useAmount = getUseAmount(getCapacity(stack), getChargeCount(stack));
+        if (getCurrentFillLevel(stack) >= useAmount) {
+            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 6.0, AttributeModifier.Operation.ADDITION));
+            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION));
+        }
+        return builder.build();
+    }
+
     // what happens when the player attacks mobs
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
@@ -73,18 +88,24 @@ public class SyringeBladeItem extends SwordItem
 
         FluidStack fluidStack = readFluid(stack);
         SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, attacker.level().registryAccess());
+        RegistryAccess access = attacker.level().registryAccess();
 
         int capacity = getCapacity(stack);
         int charges = getChargeCount(stack);
         int useAmount = getUseAmount(capacity, charges);
 
-        // grab blood if empty
+        // grab fluid if empty
         if (fluidStack.isEmpty()) {
-            if (target instanceof Zombie) writeFluid(stack, new FluidStack(BFluids.VISCERA.get(), capacity));
-            else writeFluid(stack, new FluidStack(BFluids.BLOOD.get(), capacity));
+            SyringeFluidType fluidType = getMatchingFluidType(target, access);
+            if (fluidType == null) {
+                fluidType = getBloodTypeFromDatapack(SyringeFluidTypeManager.getAll(access));
+            }
 
-            target.hurt(player.damageSources().playerAttack(player), 2.0F);
-            return true;
+            if (fluidType != null) {
+                writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(fluidType), capacity));
+                target.hurt(player.damageSources().playerAttack(player), 2.0F);
+                return true;
+            }
         }
 
         // if not empty, use what it has to hurt the enemy
@@ -98,33 +119,28 @@ public class SyringeBladeItem extends SwordItem
 
         // effects
         List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluidStack);
-        for (MobEffectInstance effect : effects)
-            target.addEffect(new MobEffectInstance(effect));
+        effects.forEach(effect -> target.addEffect(new MobEffectInstance(effect)));
 
         return super.hurtEnemy(stack, target, attacker);
     }
 
-    // attributes and stuff
-    @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot != EquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
+    private SyringeFluidType getMatchingFluidType(LivingEntity target, RegistryAccess access) {
+        return SyringeFluidTypeManager.getAll(access).stream()
+                .filter(type -> ForgeRegistries.ENTITY_TYPES.getHolder(target.getType())
+                        .map(holder -> type.mobs().contains(holder))
+                        .orElse(false))
+                .findFirst().orElse(null);
+    }
 
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-
-        int currentAmount = getCurrentFillLevel(stack);
-        int capacity = getCapacity(stack);
-        int charges = getChargeCount(stack);
-        int useAmount = getUseAmount(capacity, charges);
-
-        boolean isDepleted = currentAmount < useAmount;
-
-        if (!isDepleted) {
-            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(
-                    BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 6.0, AttributeModifier.Operation.ADDITION));
-            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(
-                    BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION));
-        } else {}
-        return builder.build();
+    private SyringeFluidType getBloodTypeFromDatapack(List<SyringeFluidType> types) {
+        for (SyringeFluidType type : types) {
+            boolean isBlood = type.fluids().stream()
+                    .anyMatch(holder -> holder.value().isSame(BFluids.BLOOD.get()));
+            if (isBlood) {
+                return type;
+            }
+        }
+        return null;
     }
 
     // helper method to assist with the charges
@@ -134,25 +150,20 @@ public class SyringeBladeItem extends SwordItem
 
     // tooltip stuff, like the fluids counter
     @Override
-    public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, level, tooltip, tooltipFlag);
-        tooltipMaker(tooltip, stack);
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        RegistryAccess access = level != null ? level.registryAccess() : null;
+        tooltipMaker(tooltip, stack, access);
     }
 
     // bar color stuff based on fluids
     @Override
     public int getBarColor(ItemStack stack) {
+        return getBarColorOrDefault(stack, Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null);
+    }
+
+    private int getBarColorOrDefault(ItemStack stack, Level level) {
         FluidStack fluidStack = readFluid(stack);
-
-        Level level = null;
-        if (stack.getItem() instanceof SyringeBladeItem) {
-            Entity entity = Minecraft.getInstance().player;
-            if (entity != null) level = entity.level();
-        }
-
-        if (level == null) return 0xBD3228;
-
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, level.registryAccess());
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, level != null ? level.registryAccess() : null);
         return SyringeFluidTypeManager.getColor(type, fluidStack);
     }
 

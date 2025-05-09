@@ -4,6 +4,8 @@ import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 
 import com.simibubi.create.Create;
 
+import net.electrisoma.bloodisfuel.registry.BFluids;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -18,8 +20,28 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.*;
 
 
-@SuppressWarnings("unused")
+//@SuppressWarnings("unused")
 public class SyringeFluidTypeManager {
+
+    /**
+     * accepted datapack formatting
+     * ------------------------------------------------------------------
+     * in data/MOD_ID/bloodisfuel/types/fluidtype.json
+     * {
+     *   "color": COLOR,
+     *   "fluids": "FLUIDS",
+     *   "on_entity_hit": {
+     *     "amplifier": AMPLIFIER,
+     *     "duration": DURATION,
+     *     "effect": "EFFECT"
+     *   }
+     * }
+     * ------------------------------------------------------------------
+     * "color" refers to the bar color of the item to identify the fluid
+     * "fluids" refers to the actual fluid that it applies to
+     * "on_entity_hit" refers to the effects of hitting an entity
+    */
+
 
     // hardcoded values
     public static final SyringeFluidType POTION = new SyringeFluidType.Builder()
@@ -67,6 +89,17 @@ public class SyringeFluidTypeManager {
         return type.onEntityHitEffect()
                 .map(effect -> List.of(new MobEffectInstance(effect)))
                 .orElse(List.of());
+    }
+
+    public static List<SyringeFluidType> getAll(RegistryAccess access) {
+        Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUID_TYPE);
+        return registry.stream().toList();
+    }
+
+    public static Fluid getFluidFor(SyringeFluidType type) {
+        return type.fluids().stream().findFirst()
+                .map(Holder::value)
+                .orElse(BFluids.BLOOD.get());
     }
 
     // potion type check

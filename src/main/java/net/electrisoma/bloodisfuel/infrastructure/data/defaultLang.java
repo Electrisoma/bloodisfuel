@@ -35,6 +35,7 @@ public class defaultLang {
         tooltipSummary(consumer, meat, "Poor fella");
 
         tooltipMisc(consumer,"empty", "Empty :3");
+        tooltipMisc(consumer,"effect", "Effect");
     }
 
     //capitalism!! (consumers)

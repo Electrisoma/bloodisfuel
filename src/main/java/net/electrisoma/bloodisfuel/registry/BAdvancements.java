@@ -53,7 +53,7 @@ public class BAdvancements implements DataProvider {
 
     DRAINED_MEAT = create("drained_meat", Items.BEEF)
             .name("Poor fella")
-            .description("Obtain the drained remains of a mob")
+            .description("Obtain the drained remains of a mobs")
             .after(ROOT)
             .onItemCollected(BItems.DRAINED_MEAT)
             .build(),

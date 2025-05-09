@@ -1,0 +1,13 @@
+{
+  "color": 8190976,
+  "fluids": [
+    "alexscaves:acid",
+    "alexscaves:purple_soda"
+  ],
+  "mobs": [],
+  "on_entity_hit": {
+    "amplifier": 4,
+    "duration": 300,
+    "effect": "minecraft:glowing"
+  }
+}
