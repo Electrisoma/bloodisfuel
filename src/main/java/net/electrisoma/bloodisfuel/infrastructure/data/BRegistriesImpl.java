@@ -12,7 +12,7 @@ public class BRegistriesImpl {
     @SubscribeEvent
     public static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(
-                BRegistries.SYRINGE_BLADE_FLUID_TYPE,
+                BRegistries.SYRINGE_BLADE_FLUIDS,
                 SyringeFluidType.CODEC,
                 SyringeFluidType.CODEC
         );

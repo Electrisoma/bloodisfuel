@@ -1,7 +1,6 @@
 {
-  "color": 15797003,
-  "fluids": "bloodisfuel:blood",
-  "mobs": [],
+  "color": 14750483,
+  "fluids": "bloodisfuel:enriched_blood",
   "on_entity_hit": {
     "amplifier": 1,
     "duration": 500,

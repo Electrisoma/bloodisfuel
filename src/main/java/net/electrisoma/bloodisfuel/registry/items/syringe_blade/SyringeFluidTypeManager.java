@@ -26,10 +26,11 @@ public class SyringeFluidTypeManager {
     /**
      * accepted datapack formatting
      * ------------------------------------------------------------------
-     * in data/MOD_ID/bloodisfuel/types/fluidtype.json
+     * in data/MOD_ID/bloodisfuel/syringe_blade_fluids/FLUIDTYPE.json
      * {
      *   "color": COLOR,
      *   "fluids": "FLUIDS",
+     *   "mobs": ["MOBS"],
      *   "on_entity_hit": {
      *     "amplifier": AMPLIFIER,
      *     "duration": DURATION,
@@ -40,7 +41,7 @@ public class SyringeFluidTypeManager {
      * "color" refers to the bar color of the item to identify the fluid
      * "fluids" refers to the actual fluid that it applies to
      * "on_entity_hit" refers to the effects of hitting an entity
-    */
+     */
 
 
     // hardcoded values
@@ -63,7 +64,7 @@ public class SyringeFluidTypeManager {
         if (stack.isEmpty()) return EMPTY;
         Fluid fluid = stack.getFluid();
 
-        Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUID_TYPE);
+        Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUIDS);
         Optional<SyringeFluidType> dynamic = registry.stream()
                 .filter(type -> type.fluids().stream().anyMatch(holder -> holder.value() == fluid))
                 .findFirst();
@@ -92,7 +93,7 @@ public class SyringeFluidTypeManager {
     }
 
     public static List<SyringeFluidType> getAll(RegistryAccess access) {
-        Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUID_TYPE);
+        Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUIDS);
         return registry.stream().toList();
     }
 

@@ -1,22 +1,24 @@
 package net.electrisoma.bloodisfuel.infrastructure.data.entries;
 
-import com.github.alexmodguy.alexscaves.server.block.fluid.ACFluidRegistry;
+import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
+import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.registry.items.syringe_blade.SyringeFluidType;
+
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.common.Tags;
 
+import com.github.alexmodguy.alexscaves.server.block.fluid.ACFluidRegistry;
 
 public class BSyringeFluidTypes {
 
     public static final ResourceKey<SyringeFluidType> FALLBACK =
-            ResourceKey.create(BRegistries.SYRINGE_BLADE_FLUID_TYPE, BloodIsFuel.asResource("fallback"));
+            ResourceKey.create(BRegistries.SYRINGE_BLADE_FLUIDS, BloodIsFuel.asResource("fallback"));
 
     public static void bootstrap(BootstapContext<SyringeFluidType> ctx) {
         register(ctx, "fallback", new SyringeFluidType.Builder()
@@ -46,15 +48,16 @@ public class BSyringeFluidTypes {
                 .build()
         );
 
-        register(ctx, "alexs_caves_juice", new SyringeFluidType.Builder()
-                .addFluids(ACFluidRegistry.ACID_FLUID_SOURCE.get(), ACFluidRegistry.PURPLE_SODA_FLUID_SOURCE.get())
-                .color(0x7CFC00)
-                .onEntityHitEffect(new MobEffectInstance(MobEffects.GLOWING, 300, 4, false, true))
+        register(ctx, "purple_soda_from_fishes", new SyringeFluidType.Builder()
+                .addFluids(ACFluidRegistry.PURPLE_SODA_FLUID_SOURCE.get())
+                .addMobs(ACEntityRegistry.SWEETISH_FISH.get())
+                .color(0x7F00FF)
+                .onEntityHitEffect(new MobEffectInstance(ACEffectRegistry.SUGAR_RUSH.get(), 500, 1, false, true))
                 .build()
         );
     }
 
     private static void register(BootstapContext<SyringeFluidType> ctx, String name, SyringeFluidType type) {
-        ctx.register(ResourceKey.create(BRegistries.SYRINGE_BLADE_FLUID_TYPE, BloodIsFuel.asResource(name)), type);
+        ctx.register(ResourceKey.create(BRegistries.SYRINGE_BLADE_FLUIDS, BloodIsFuel.asResource(name)), type);
     }
 }

@@ -19,10 +19,10 @@ import java.util.concurrent.CompletableFuture;
 public class BEntriesProvider extends DatapackBuiltinEntriesProvider {
 
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-            .add(Registries.DAMAGE_TYPE, BDamageTypes::bootstrap)
             .add(CreateRegistries.POTATO_PROJECTILE_TYPE, BPotatoCannonProjectiles::bootstrap)
-            .add(BRegistries.SYRINGE_BLADE_FLUID_TYPE, BSyringeFluidTypes::bootstrap);
 
+            .add(Registries.DAMAGE_TYPE, BDamageTypes::bootstrap)
+            .add(BRegistries.SYRINGE_BLADE_FLUIDS, BSyringeFluidTypes::bootstrap);
     ;
 
     public BEntriesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {

@@ -7,8 +7,8 @@ import net.minecraft.resources.ResourceKey;
 
 public class BRegistries {
 
-    public static final ResourceKey<Registry<SyringeFluidType>> SYRINGE_BLADE_FLUID_TYPE =
-            key("syringe_blade_fluid/type");
+    public static final ResourceKey<Registry<SyringeFluidType>> SYRINGE_BLADE_FLUIDS =
+            key("syringe_blade_fluids");
 
     private static <T> ResourceKey<Registry<T>> key(String name) {
         return ResourceKey.createRegistryKey(BloodIsFuel.asResource(name));

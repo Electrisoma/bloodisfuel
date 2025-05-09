@@ -72,54 +72,50 @@ public class SyringeBladeItem extends SwordItem
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         if (slot != EquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
 
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        int useAmount = getUseAmount(getCapacity(stack), getChargeCount(stack));
-        if (getCurrentFillLevel(stack) >= useAmount) {
-            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 6.0, AttributeModifier.Operation.ADDITION));
-            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION));
-        }
-        return builder.build();
+        RegistryAccess access = Minecraft.getInstance().level != null ? Minecraft.getInstance().level.registryAccess() : null;
+        CombatContext ctx = getFluidCombatContext(stack, access);
+
+        if (!ctx.canAttack()) return ImmutableMultimap.of();
+        return ImmutableMultimap.<Attribute, AttributeModifier>builder()
+                .put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 6.0,
+                        AttributeModifier.Operation.ADDITION))
+                .put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4,
+                        AttributeModifier.Operation.ADDITION))
+                .build();
     }
+
 
     // what happens when the player attacks mobs
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (!(attacker instanceof Player player)) return false;
 
-        FluidStack fluidStack = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, attacker.level().registryAccess());
         RegistryAccess access = attacker.level().registryAccess();
-
-        int capacity = getCapacity(stack);
-        int charges = getChargeCount(stack);
-        int useAmount = getUseAmount(capacity, charges);
+        CombatContext ctx = getFluidCombatContext(stack, access);
 
         // grab fluid if empty
-        if (fluidStack.isEmpty()) {
-            SyringeFluidType fluidType = getMatchingFluidType(target, access);
-            if (fluidType == null) {
-                fluidType = getBloodTypeFromDatapack(SyringeFluidTypeManager.getAll(access));
-            }
-
-            if (fluidType != null) {
-                writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(fluidType), capacity));
+        if (ctx.fluid().isEmpty()) {
+            SyringeFluidType matchedType = getMatchingFluidType(target, access);
+            if (matchedType == null) matchedType = getFallbackBloodType(access);
+            if (matchedType != null) {
+                writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(matchedType), getCapacity(stack)));
                 target.hurt(player.damageSources().playerAttack(player), 2.0F);
                 return true;
             }
         }
 
         // if not empty, use what it has to hurt the enemy
-        if (fluidStack.getAmount() < useAmount) {
+        if (ctx.fluid().getAmount() < ctx.useAmount()) {
             target.hurt(player.damageSources().playerAttack(player), 2.0F);
             return true;
         }
 
-        fluidStack.shrink(useAmount);
-        writeFluid(stack, fluidStack);
+        ctx.fluid().shrink(ctx.useAmount());
+        writeFluid(stack, ctx.fluid());
 
         // effects
-        List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluidStack);
-        effects.forEach(effect -> target.addEffect(new MobEffectInstance(effect)));
+        SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid())
+                .forEach(effect -> target.addEffect(new MobEffectInstance(effect)));
 
         return super.hurtEnemy(stack, target, attacker);
     }
@@ -127,20 +123,16 @@ public class SyringeBladeItem extends SwordItem
     private SyringeFluidType getMatchingFluidType(LivingEntity target, RegistryAccess access) {
         return SyringeFluidTypeManager.getAll(access).stream()
                 .filter(type -> ForgeRegistries.ENTITY_TYPES.getHolder(target.getType())
-                        .map(holder -> type.mobs().contains(holder))
+                        .map(holder -> type.mobs().map(mobSet -> mobSet.contains(holder)).orElse(false))
                         .orElse(false))
                 .findFirst().orElse(null);
     }
 
-    private SyringeFluidType getBloodTypeFromDatapack(List<SyringeFluidType> types) {
-        for (SyringeFluidType type : types) {
-            boolean isBlood = type.fluids().stream()
-                    .anyMatch(holder -> holder.value().isSame(BFluids.BLOOD.get()));
-            if (isBlood) {
-                return type;
-            }
-        }
-        return null;
+    private SyringeFluidType getFallbackBloodType(RegistryAccess access) {
+        return SyringeFluidTypeManager.getAll(access).stream()
+                .filter(type -> type.fluids().stream()
+                        .anyMatch(holder -> holder.value().isSame(BFluids.BLOOD.get())))
+                .findFirst().orElse(null);
     }
 
     // helper method to assist with the charges
@@ -151,20 +143,16 @@ public class SyringeBladeItem extends SwordItem
     // tooltip stuff, like the fluids counter
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        RegistryAccess access = level != null ? level.registryAccess() : null;
-        tooltipMaker(tooltip, stack, access);
+        tooltipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
     }
 
     // bar color stuff based on fluids
     @Override
     public int getBarColor(ItemStack stack) {
-        return getBarColorOrDefault(stack, Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null);
-    }
-
-    private int getBarColorOrDefault(ItemStack stack, Level level) {
-        FluidStack fluidStack = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, level != null ? level.registryAccess() : null);
-        return SyringeFluidTypeManager.getColor(type, fluidStack);
+        Level level = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null;
+        return SyringeFluidTypeManager.getColor(
+                SyringeFluidTypeManager.fromFluid(readFluid(stack), level != null ? level.registryAccess() : null),
+                readFluid(stack));
     }
 
     // bar visibility based on the presence of fluids
@@ -209,5 +197,22 @@ public class SyringeBladeItem extends SwordItem
     public ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
         if (!player.swinging) return ArmPose.ITEM;
         return null;
+    }
+
+    // helper method and record for context to assist hurtEnemy and getAttributeModifiers
+    private record CombatContext(FluidStack fluid, SyringeFluidType type, int useAmount, boolean canAttack, boolean onlyBeneficial) {}
+    private CombatContext getFluidCombatContext(ItemStack stack, @Nullable RegistryAccess access) {
+        FluidStack fluidStack = readFluid(stack);
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
+        int capacity = getCapacity(stack);
+        int charges = getChargeCount(stack);
+        int useAmount = getUseAmount(capacity, charges);
+        int currentFill = getCurrentFillLevel(stack);
+
+        List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluidStack);
+        boolean onlyBeneficial = !effects.isEmpty() && effects.stream().allMatch(effect -> effect.getEffect().isBeneficial());
+        boolean canAttack = currentFill >= useAmount && !onlyBeneficial;
+
+        return new CombatContext(fluidStack, type, useAmount, canAttack, onlyBeneficial);
     }
 }
