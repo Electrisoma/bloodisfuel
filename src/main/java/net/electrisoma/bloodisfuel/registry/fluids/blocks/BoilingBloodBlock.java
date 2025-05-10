@@ -28,40 +28,29 @@ public class BoilingBloodBlock extends AbstractFluidBlock {
     }
 
     @Override
-    protected void entityInsideProxy(Level level, BlockPos pos, Entity entity) {
+    public void entityInsideProxy(Level level, BlockPos pos, Entity entity) {
         super.entityInsideProxy(level, pos, entity);
 
         if (!level.isClientSide()) {
 
-            if (entity instanceof LivingEntity) {
-
-                if (!entity.fireImmune()) {
-
-                    entity.setRemainingFireTicks(entity.getRemainingFireTicks() + 1);
-                    if (entity.getRemainingFireTicks() <= 0) {
-
+            if (entity instanceof LivingEntity livingEntity) {
+                if (!livingEntity.fireImmune()) {
+                    livingEntity.setRemainingFireTicks(livingEntity.getRemainingFireTicks() + 1);
+                    if (livingEntity.getRemainingFireTicks() <= 0) {
                         int seconds = 6 + level.getRandom().nextInt(5);
-                        entity.setSecondsOnFire(seconds);
-
-                        entity.hurt(BDamageSources.boiling(level), 2.0F);
+                        livingEntity.setSecondsOnFire(seconds);
+                        livingEntity.hurt(BDamageSources.boiling(level), 2.0F);
                     }
                 }
             }
 
             if (entity instanceof ItemEntity item) {
+                level.playSound(null, item.getX(), item.getY(), item.getZ(),
+                        SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.6F, 2.0F);
 
-                level.playSound(
-                        null,
-                        item.getX(), item.getY(), item.getZ(),
-                        SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS,
-                        0.6F, 2.0F
-                );
-
-                ((ServerLevel) level).sendParticles(
-                        ParticleTypes.SMOKE,
-                        entity.getX(), entity.getY() + 0.2, entity.getZ(),
-                        5, 0.0D, 0.05D, 0.0D, 0.01D
-                );
+                ((ServerLevel) level).sendParticles(ParticleTypes.SMOKE,
+                        item.getX(), item.getY() + 0.2, item.getZ(),
+                        5, 0.0D, 0.05D, 0.0D, 0.01D);
 
                 item.discard();
             }

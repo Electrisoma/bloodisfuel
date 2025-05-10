@@ -1,7 +1,8 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
+import net.electrisoma.bloodisfuel.api.registry.BRegistries;
+import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
 import net.electrisoma.bloodisfuel.registry.BTags;
-import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.registry.items.ItemUtils;
 import net.electrisoma.bloodisfuel.registry.enchantments.ChargesEnchantment;
@@ -17,7 +18,13 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -25,19 +32,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
 
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.ImmutableMultimap;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
@@ -84,7 +85,6 @@ public class SyringeBladeItem extends SwordItem
                 .build();
     }
 
-
     // what happens when the player attacks mobs
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
@@ -95,8 +95,8 @@ public class SyringeBladeItem extends SwordItem
 
         // grab fluid if empty
         if (ctx.fluid().isEmpty()) {
-            SyringeFluidType matchedType = getMatchingFluidType(target, access);
-            if (matchedType == null) matchedType = getFallbackBloodType(access);
+            SyringeFluidType matchedType = getMatchingFluid(target, access);
+            if (matchedType == null) matchedType = getFallback(access);
             if (matchedType != null) {
                 writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(matchedType), getCapacity(stack)));
                 target.hurt(player.damageSources().playerAttack(player), 2.0F);
@@ -120,7 +120,8 @@ public class SyringeBladeItem extends SwordItem
         return super.hurtEnemy(stack, target, attacker);
     }
 
-    private SyringeFluidType getMatchingFluidType(LivingEntity target, RegistryAccess access) {
+    // matching fluid for mobs
+    private SyringeFluidType getMatchingFluid(LivingEntity target, RegistryAccess access) {
         return SyringeFluidTypeManager.getAll(access).stream()
                 .filter(type -> ForgeRegistries.ENTITY_TYPES.getHolder(target.getType())
                         .map(holder -> type.mobs().map(mobSet -> mobSet.contains(holder)).orElse(false))
@@ -128,11 +129,11 @@ public class SyringeBladeItem extends SwordItem
                 .findFirst().orElse(null);
     }
 
-    private SyringeFluidType getFallbackBloodType(RegistryAccess access) {
-        return SyringeFluidTypeManager.getAll(access).stream()
-                .filter(type -> type.fluids().stream()
-                        .anyMatch(holder -> holder.value().isSame(BFluids.BLOOD.get())))
-                .findFirst().orElse(null);
+    // fallback fluid for mobs
+    private SyringeFluidType getFallback(RegistryAccess access) {
+        return access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUIDS)
+                .getOptional(BSyringeFluidTypes.FALLBACK)
+                .orElse(null);
     }
 
     // helper method to assist with the charges
@@ -140,7 +141,7 @@ public class SyringeBladeItem extends SwordItem
         return (int) Math.ceil((double) capacity / charges);
     }
 
-    // tooltip stuff, like the fluids counter
+    // tooltip stuff, like the amount counter
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         tooltipMaker(tooltip, stack, level != null ? level.registryAccess() : null);

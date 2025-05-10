@@ -55,6 +55,22 @@
     {
       "type": "single",
       "resource": "bloodisfuel:fluid/boiling_blood_still"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/bloody_concoction_flow"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/bloody_concoction_still"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/uber_fluid_flow"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/uber_fluid_still"
     }
   ]
 }

@@ -193,6 +193,7 @@ public class BTags {
         DIESEL_INFUSED_BLOOD,
         GASOLINE_INFUSED_BLOOD,
         BOILING_BLOOD,
+        UBER_FLUID,
 
         DIVING_FLUID,
 
@@ -344,5 +345,4 @@ public class BTags {
     public static TagKey<Fluid> forgeFluidTag(String path) {
         return forgeTag(ForgeRegistries.FLUIDS, path);
     }
-
 }

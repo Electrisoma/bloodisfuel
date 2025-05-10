@@ -16,6 +16,7 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.effect.MobEffectInstance;
 
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 
@@ -46,8 +47,8 @@ public class SyringeFluidTypeManager {
 
     // hardcoded values
     public static final SyringeFluidType POTION = new SyringeFluidType.Builder()
-            .addFluids(net.minecraftforge.registries.ForgeRegistries.FLUIDS.getValue(
-                    new net.minecraft.resources.ResourceLocation(Create.ID, "potion")))
+            .addFluids(ForgeRegistries.FLUIDS.getValue(
+                    new ResourceLocation(Create.ID, "potion")))
             .color(0x9966FF)
             .build();
 
@@ -101,14 +102,5 @@ public class SyringeFluidTypeManager {
         return type.fluids().stream().findFirst()
                 .map(Holder::value)
                 .orElse(BFluids.BLOOD.get());
-    }
-
-    // potion type check
-    public static boolean isPotionType(SyringeFluidType type) {
-        return type.fluids().stream().anyMatch(holder ->
-                holder.unwrapKey().map(ResourceKey::location)
-                        .map(ResourceLocation::getPath)
-                        .orElse("")
-                        .equals("potion"));
     }
 }

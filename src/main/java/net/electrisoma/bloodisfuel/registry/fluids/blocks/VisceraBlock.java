@@ -23,7 +23,7 @@ public class VisceraBlock extends AbstractFluidBlock {
     }
 
     @Override
-    protected void entityInsideProxy (Level level, BlockPos pos, Entity entity) {
+    public void entityInsideProxy(Level level, BlockPos pos, Entity entity) {
         super.entityInsideProxy(level, pos, entity);
 
         if (!level.isClientSide) {

@@ -101,9 +101,13 @@ public interface ItemUtils {
                         .withStyle(effect.getEffect().isBeneficial() ? ChatFormatting.GREEN : ChatFormatting.RED);
                 Component level = Component.literal(" " + toRoman(effect.getAmplifier() + 1))
                         .withStyle(ChatFormatting.GOLD);
-                Component duration = Component.literal(" (" + formatDuration(effect.getDuration()) + ")")
-                        .withStyle(ChatFormatting.GRAY);
+                Component duration = Component.empty();
+                if (effect.getDuration() > 1) {
+                    String formattedDuration = formatDuration(effect.getDuration());
+                    duration = Component.literal(" (" + formattedDuration + ")").withStyle(ChatFormatting.GRAY);
+                }
 
+                // builder
                 tooltip.add(Component.literal("• ").withStyle(ChatFormatting.GRAY)
                         .append(Component.translatable("bloodisfuel.tooltip.effect").withStyle(ChatFormatting.GRAY))
                         .append(": ")

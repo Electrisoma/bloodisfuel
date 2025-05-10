@@ -103,6 +103,15 @@ public class BAdvancements implements DataProvider {
             .announce()
             .build()
 
+//    KILL_ME = create("kill_me", BFluids.UBER_FLUID.getBucket().get().getDefaultInstance().getItem())
+//            .name("Kill Me")
+//            .description("Create uber fluid")
+//            .after(ROOT)
+//            .secret()
+//            .challenge()
+//            .announce()
+//            .build()
+
 //    FLAMING_BLOOD_THROWER = create("flaming_blood_thrower", b -> b
 //            .icon(() -> BIF_Fluids.OIL_ENRICHED_BLOOD.getBucket().get().getDefaultInstance().getItem())
 //            .title("A One Machine Army")

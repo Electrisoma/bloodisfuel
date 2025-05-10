@@ -1,7 +1,5 @@
 package net.electrisoma.bloodisfuel.infrastructure.data.entries;
 
-import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
-import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.registry.BFluids;
@@ -13,7 +11,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 
-import com.github.alexmodguy.alexscaves.server.block.fluid.ACFluidRegistry;
 
 public class BSyringeFluidTypes {
 
@@ -22,7 +19,9 @@ public class BSyringeFluidTypes {
 
     public static void bootstrap(BootstapContext<SyringeFluidType> ctx) {
         register(ctx, "fallback", new SyringeFluidType.Builder()
-                .addFluids()
+                .addFluids(BFluids.BLOOD.getSource()) // default blood
+                .color(0xF10B0B)
+                .onEntityHitEffect(new MobEffectInstance(MobEffects.WEAKNESS, 500, 1, false, true))
                 .build()
         );
 
@@ -48,13 +47,13 @@ public class BSyringeFluidTypes {
                 .build()
         );
 
-        register(ctx, "purple_soda_from_fishes", new SyringeFluidType.Builder()
-                .addFluids(ACFluidRegistry.PURPLE_SODA_FLUID_SOURCE.get())
-                .addMobs(ACEntityRegistry.SWEETISH_FISH.get())
-                .color(0x7F00FF)
-                .onEntityHitEffect(new MobEffectInstance(ACEffectRegistry.SUGAR_RUSH.get(), 500, 1, false, true))
-                .build()
-        );
+//        register(ctx, "purple_soda_from_fishes", new SyringeFluidType.Builder()
+//                .addFluids(ACFluidRegistry.PURPLE_SODA_FLUID_SOURCE.get())
+//                .addMobs(ACEntityRegistry.SWEETISH_FISH.get())
+//                .color(0x7F00FF)
+//                .onEntityHitEffect(new MobEffectInstance(ACEffectRegistry.SUGAR_RUSH.get(), 500, 1, false, true))
+//                .build()
+//        );
     }
 
     private static void register(BootstapContext<SyringeFluidType> ctx, String name, SyringeFluidType type) {

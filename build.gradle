@@ -153,8 +153,8 @@ dependencies {
 //    implementation(group: "com.h2database", name: "h2-mvstore", version: "2.2.224")
 
     //Alex's Caves, Citadel
-    modImplementation("maven.modrinth:alexs-caves:2.0.2")
-    modRuntimeOnly("maven.modrinth:citadel:2.6.0")
+//    modImplementation("maven.modrinth:alexs-caves:2.0.2")
+//    modRuntimeOnly("maven.modrinth:citadel:2.6.0")
 
     //TConstruct, Mantle
     //implementation fg.deobf("curse.maven:mantle-74924:6041712")
