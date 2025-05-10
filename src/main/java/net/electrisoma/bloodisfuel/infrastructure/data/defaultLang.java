@@ -26,9 +26,13 @@ public class defaultLang {
         consume(consumer, dm, "syringe_blade.item", "%1$s was stabbed by %2$s using %3$s");
 
         // tooltips
-        tooltipCondition(consumer, syringe, "L-Click at Mob", 1);
-        tooltipBehaviour(consumer, syringe, "Extract _blood_", 1);
-        tooltipSummary(consumer, syringe, "Extract _blood_ from your _friends_ or _enemies_!");
+        tooltipCondition(consumer, syringe, "L-Click at Entity", 1);
+        tooltipBehaviour(consumer, syringe, "Extract _fluid_ while empty, Inject _fluid_ while full", 1);
+        tooltipCondition(consumer, syringe, "Hold R-Click", 2);
+        tooltipBehaviour(consumer, syringe, "Extract _fluid_ from self while empty, Inject _fluid_ in self while full", 2);
+        tooltipCondition(consumer, syringe, "R-Click while Sneaking", 3);
+        tooltipBehaviour(consumer, syringe, "Drain _fluid_", 3);
+        tooltipSummary(consumer, syringe, "Extract and inject the _fluid_ of your _friends_ or _enemies_!");
 
         tooltipCondition(consumer, meat, "Put in a drain or a basin with press", 1);
         tooltipBehaviour(consumer, meat, "Extract _blood_", 1);

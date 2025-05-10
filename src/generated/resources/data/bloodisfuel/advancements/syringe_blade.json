@@ -1,6 +1,10 @@
 {
   "parent": "bloodisfuel:root",
   "criteria": {
+    "0": {
+      "conditions": {},
+      "trigger": "bloodisfuel:syringe_blade_builtin"
+    },
     "syringe_blade": {
       "conditions": {
         "items": [
@@ -34,6 +38,9 @@
   "requirements": [
     [
       "syringe_blade"
+    ],
+    [
+      "0"
     ]
   ],
   "sends_telemetry_event": true

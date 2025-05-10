@@ -1,25 +1,25 @@
 {
-  "parent": "bloodisfuel:root",
+  "parent": "bloodisfuel:syringe_blade",
   "criteria": {
     "0": {
       "conditions": {},
-      "trigger": "bloodisfuel:boiled_builtin"
+      "trigger": "bloodisfuel:medical_malpractice_builtin"
     }
   },
   "display": {
     "announce_to_chat": true,
     "description": {
       "color": "#FFFFFF",
-      "translate": "advancement.bloodisfuel.boiled.desc"
+      "translate": "advancement.bloodisfuel.medical_malpractice.desc"
     },
     "frame": "challenge",
     "hidden": true,
     "icon": {
-      "item": "bloodisfuel:boiling_blood_bucket"
+      "item": "minecraft:potion"
     },
     "show_toast": true,
     "title": {
-      "translate": "advancement.bloodisfuel.boiled"
+      "translate": "advancement.bloodisfuel.medical_malpractice"
     }
   },
   "requirements": [

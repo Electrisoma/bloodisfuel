@@ -26,12 +26,8 @@ public class VisceraBlock extends AbstractFluidBlock {
     public void entityInsideProxy(Level level, BlockPos pos, Entity entity) {
         super.entityInsideProxy(level, pos, entity);
 
-        if (!level.isClientSide) {
-
-            if (entity instanceof LivingEntity livingEntity) {
-
-                livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 0));
-            }
+        if (!level.isClientSide && entity instanceof LivingEntity livingEntity) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 0));
         }
     }
 

@@ -1,0 +1,43 @@
+package net.electrisoma.bloodisfuel.foundation.data.advancements.triggers;
+
+import com.google.gson.JsonObject;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Supplier;
+
+public class BTrigger extends BCriterionTrigger<BTrigger.Instance>{
+    public BTrigger(String id) {
+        super(id);
+    }
+
+    @Override
+    public Instance createInstance(JsonObject jsonObject, DeserializationContext deserializationContext) {
+        return new Instance(getId());
+    }
+
+    public void trigger(ServerPlayer player) {
+        super.trigger(player, null);
+    }
+
+    public Instance instance() {
+        return new Instance(getId());
+    }
+
+    public static class Instance extends BCriterionTrigger.Instance {
+
+        public Instance(ResourceLocation idIn) {
+            super(idIn, ContextAwarePredicate.ANY);
+        }
+
+        @Override
+        protected boolean test(@Nullable List<Supplier<Object>> suppliers) {
+            return true;
+        }
+    }
+
+}

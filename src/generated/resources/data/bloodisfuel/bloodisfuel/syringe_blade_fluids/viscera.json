@@ -1,7 +1,10 @@
 {
   "color": 14631958,
   "fluids": "bloodisfuel:viscera",
-  "mobs": "minecraft:zombie",
+  "mobs": [
+    "minecraft:zombie",
+    "minecraft:player"
+  ],
   "on_entity_hit": {
     "amplifier": 1,
     "duration": 500,

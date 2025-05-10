@@ -1,16 +1,18 @@
 package net.electrisoma.bloodisfuel.foundation.data.advancements;
 
+import com.google.gson.JsonObject;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
+import net.electrisoma.bloodisfuel.foundation.data.advancements.triggers.BTrigger;
+import net.electrisoma.bloodisfuel.foundation.data.advancements.triggers.BTriggers;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
 
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.FrameType;
-import net.minecraft.advancements.critereon.ConsumeItemTrigger;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.*;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
@@ -23,29 +25,26 @@ import com.google.common.collect.Maps;
 
 public class BAdvancement {
 
-    static final String LANG = "advancement." + BloodIsFuel.MOD_ID + ".";
-    static final String SECRET_SUFFIX = "\n§7(Hidden Advancement)";
+    private static final String LANG = "advancement." + BloodIsFuel.MOD_ID + ".";
+    private static final String SECRET_SUFFIX = "\n§7(Hidden Advancement)";
 
     private final String id;
     private final ItemLike icon;
     private final FrameType frameType;
-
     private final Advancement.Builder builder;
+    private final BTrigger builtinTrigger;
     private final BAdvancement parent;
 
     private final boolean announces;
     private final boolean toasts;
     private final boolean hidden;
 
-    private String title;
-    private String description;
+    private final String title;
+    private final String description;
 
     Advancement datagenResult;
 
     public BAdvancement(Builder builder) {
-
-        this.builder = Advancement.Builder.advancement();
-
         this.id = builder.id;
         this.icon = builder.icon;
         this.parent = builder.parent;
@@ -53,25 +52,31 @@ public class BAdvancement {
         this.announces = builder.announces;
         this.toasts = builder.toasts;
         this.hidden = builder.hidden;
+        this.builtinTrigger = builder.builtinTrigger;
 
         this.title = builder.name;
-        this.description = builder.description;
+        this.description = builder.hidden
+                ? builder.description + SECRET_SUFFIX
+                : builder.description;
 
-        if (this.hidden) description += SECRET_SUFFIX;
-
-        this.builder.display(this.icon, (Component) Component.translatable(titleKey()),
-                Component.translatable(descriptionKey()).withStyle(s -> s.withColor(0xFFFFFF)),
-                id.equals("root") ? BAdvancements.getBackground() : null,
-                this.frameType, this.toasts, this.announces, this.hidden);
+        this.builder = Advancement.Builder.advancement()
+                .display(
+                        icon,
+                        Component.translatable(titleKey()),
+                        Component.translatable(descriptionKey()).withStyle(s -> s.withColor(0xFFFFFF)),
+                        id.equals("root") ? BAdvancements.getBackground() : null,
+                        frameType, toasts, announces, hidden
+                );
 
         builder.criteriaTriggers.forEach(this.builder::addCriterion);
-
         BAdvancements.ENTRIES.add(this);
     }
 
-    public void save(Consumer<Advancement> t) {
-        if (parent != null) builder.parent(parent.datagenResult);
-        datagenResult = this.builder.save(t, BloodIsFuel.asResource(this.id).toString());
+    public void save(Consumer<Advancement> output) {
+        if (parent != null) {
+            builder.parent(parent.datagenResult);
+        }
+        datagenResult = builder.save(output, BloodIsFuel.asResource(id).toString());
     }
 
     public String titleKey() {
@@ -87,30 +92,70 @@ public class BAdvancement {
         consumer.accept(descriptionKey(), description);
     }
 
+    public boolean isAlreadyAwardedTo(Player player) {
+        if (!(player instanceof ServerPlayer sp))
+            return true;
+        Advancement advancement = sp.getServer()
+                .getAdvancements()
+                .getAdvancement(BloodIsFuel.asResource(id));
+        if (advancement == null)
+            return true;
+        return sp.getAdvancements()
+                .getOrStartProgress(advancement)
+                .isDone();
+    }
+
+    /**
+     * Awards this advancement to the given player, if not already completed.
+     */
+    public void awardTo(Player player) {
+        if (!(player instanceof ServerPlayer sp))
+            return;
+        if (builtinTrigger == null)
+            throw new UnsupportedOperationException(
+                    "Advancement " + id + " uses external Triggers, it cannot be awarded directly");
+        builtinTrigger.trigger(sp);
+    }
+
     public static class Builder {
+        private final String id;
+        private final ItemLike icon;
 
-        public final String id;
-        public final ItemLike icon;
+        private String frame = "task";
+        private String name;
+        private String description;
 
-        public BAdvancement parent;
-
-        public boolean announces = false;
-        public boolean toasts = true;
-        public boolean hidden = false;
-
-        public String frame = "task";
-        public String name;
-        public String description;
+        private boolean announces = false;
+        private boolean toasts = true;
+        private boolean hidden = false;
 
         private final Map<String, CriterionTriggerInstance> criteriaTriggers = Maps.newLinkedHashMap();
+        private BAdvancement parent;
+
+        private BTrigger builtinTrigger;
+        private boolean externalTriggerAdded = false;
+        private int keyIndex = 0;
 
         public Builder(String id, ItemLike icon) {
             this.id = id;
             this.icon = icon;
         }
 
-        public Builder after(BAdvancement after) {
-            this.parent = after;
+        public Builder externalTrigger(CriterionTriggerInstance trigger) {
+            String externalKey = String.valueOf(keyIndex);
+            criteriaTriggers.put(externalKey, trigger);
+            externalTriggerAdded = true;
+            keyIndex++;
+            return this;
+        }
+
+        public Builder withBuiltinTrigger(BTrigger trigger) {
+            this.builtinTrigger = trigger;
+            return this;
+        }
+
+        public Builder after(BAdvancement parent) {
+            this.parent = parent;
             return this;
         }
 
@@ -124,16 +169,19 @@ public class BAdvancement {
             return this;
         }
 
+        public Builder frame(String frame) {
+            this.frame = frame;
+            return this;
+        }
+
         public Builder goal() {
             this.announce();
-            this.frame = "goal";
-            return this;
+            return frame("goal");
         }
 
         public Builder challenge() {
             this.announce();
-            this.frame = "challenge";
-            return this;
+            return frame("challenge");
         }
 
         public Builder silent() {
@@ -152,47 +200,50 @@ public class BAdvancement {
         }
 
         public Builder free() {
-            return this.criterion(this.icon.asItem().toString(), InventoryChangeTrigger.TriggerInstance.hasItems(new ItemLike[] {}));
+            return criterion(icon.asItem().toString(),
+                    InventoryChangeTrigger.TriggerInstance.hasItems(new ItemLike[] {}));
         }
 
         public Builder onItemCollected(TagKey<Item> tag) {
-            return this.criterion(tag.location().toString(),
+            return criterion(tag.location().toString(),
                     InventoryChangeTrigger.TriggerInstance.hasItems(
-                            ItemPredicate.Builder.item().of(tag).build()
-                    )
-            );
+                            ItemPredicate.Builder.item().of(tag).build()));
         }
 
         public Builder onItemCollected(ItemLike item) {
-            return this.criterion(item.asItem().toString(), InventoryChangeTrigger.TriggerInstance.hasItems(item));
+            return criterion(item.asItem().toString(),
+                    InventoryChangeTrigger.TriggerInstance.hasItems(item));
         }
 
         public Builder onIconCollected() {
-            return this.criterion(this.icon.asItem().toString(), InventoryChangeTrigger.TriggerInstance.hasItems(icon.asItem()));
+            return onItemCollected(icon);
         }
 
         public Builder onItemConsumed(TagKey<Item> tag) {
-            return this.criterion(tag.location().toString(),
+            return criterion(tag.location().toString(),
                     ConsumeItemTrigger.TriggerInstance.usedItem(
-                            ItemPredicate.Builder.item().of(tag).build()
-                    )
-            );
+                            ItemPredicate.Builder.item().of(tag).build()));
         }
 
         public Builder onItemConsumed(ItemLike item) {
-            return this.criterion(item.asItem().toString(), ConsumeItemTrigger.TriggerInstance.usedItem(item));
+            return criterion(item.asItem().toString(),
+                    ConsumeItemTrigger.TriggerInstance.usedItem(item));
         }
 
         public Builder onIconConsumed() {
-            return this.criterion(this.icon.asItem().toString(), ConsumeItemTrigger.TriggerInstance.usedItem(icon.asItem()));
+            return onItemConsumed(icon);
         }
 
         public Builder criterion(String key, CriterionTriggerInstance trigger) {
-            this.criteriaTriggers.put(key, trigger);
+            criteriaTriggers.put(key, trigger);
             return this;
         }
 
         public BAdvancement build() {
+            if (!externalTriggerAdded && builtinTrigger == null) {
+                builtinTrigger = BTriggers.addTrigger(id + "_builtin");
+                criteriaTriggers.put("0", builtinTrigger.instance());
+            }
             return new BAdvancement(this);
         }
     }

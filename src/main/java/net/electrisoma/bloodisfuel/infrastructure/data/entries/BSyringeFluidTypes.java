@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.common.ForgeMod;
 
 
 public class BSyringeFluidTypes {
@@ -25,11 +26,19 @@ public class BSyringeFluidTypes {
                 .build()
         );
 
+        register(ctx, "milk", new SyringeFluidType.Builder()
+                .addFluids(ForgeMod.MILK.get())
+                .addMobs(EntityType.COW)
+                .color(0xFFFFFF)
+                .onEntityHitEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 100, 0, false, true))
+                .build()
+        );
+
         register(ctx, "viscera", new SyringeFluidType.Builder()
                 .addFluids(BFluids.VISCERA.getSource())
+                .addMobs(EntityType.ZOMBIE)
                 .color(0xDF4416)
                 .onEntityHitEffect(new MobEffectInstance(MobEffects.POISON, 500, 1, false, true))
-                .addMobs(EntityType.ZOMBIE)
                 .build()
         );
 

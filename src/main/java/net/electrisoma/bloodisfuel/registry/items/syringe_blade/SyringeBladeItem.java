@@ -2,6 +2,7 @@ package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
+import net.electrisoma.bloodisfuel.registry.BAdvancements;
 import net.electrisoma.bloodisfuel.registry.BTags;
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.registry.items.ItemUtils;
@@ -15,8 +16,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.Level;
@@ -33,12 +42,14 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.ImmutableMultimap;
+import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -57,6 +68,21 @@ public class SyringeBladeItem extends SwordItem
         super(tier, attackDamageModifier, attackSpeedModifier, properties);
     }
 
+    // attributes and stuff
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        if (slot != EquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
+        CombatContext ctx = getFluidCombatContext(stack, Minecraft.getInstance().level != null ?
+                Minecraft.getInstance().level.registryAccess() : null);
+        if (!ctx.canAttack) return ImmutableMultimap.of();
+        return ImmutableMultimap.<Attribute, AttributeModifier>builder()
+                .put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,
+                        "Weapon modifier", 6.0, AttributeModifier.Operation.ADDITION))
+                .put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID,
+                        "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION))
+                .build();
+    }
+
     // we cant just have the item not have a cooldown or anything, that would be unbalanced
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
@@ -68,21 +94,65 @@ public class SyringeBladeItem extends SwordItem
         }
     }
 
-    // attributes and stuff
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot != EquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
 
-        RegistryAccess access = Minecraft.getInstance().level != null ? Minecraft.getInstance().level.registryAccess() : null;
+        if (player.isShiftKeyDown()) {
+            if (!level.isClientSide && !readFluid(stack).isEmpty()) {
+                writeFluid(stack, FluidStack.EMPTY);
+                playSound(level, player, SoundEvents.BOTTLE_EMPTY);
+                spawnDrainingParticles(level, player, stack, 5);
+                return InteractionResultHolder.sidedSuccess(stack, false);
+            } return InteractionResultHolder.pass(stack);
+        }
+        if (player.getCooldowns().isOnCooldown(this)) return InteractionResultHolder.pass(stack);
+        player.startUsingItem(hand);
+        return InteractionResultHolder.consume(stack);
+    }
+
+    // self inflicted charge
+    @Override
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
+        if (!(entityLiving instanceof Player player)) return;
+        int useDuration = getUseDuration(stack) - player.getUseItemRemainingTicks();
+        if (useDuration < 20) return;
+
+        RegistryAccess access = level.registryAccess();
         CombatContext ctx = getFluidCombatContext(stack, access);
 
-        if (!ctx.canAttack()) return ImmutableMultimap.of();
-        return ImmutableMultimap.<Attribute, AttributeModifier>builder()
-                .put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 6.0,
-                        AttributeModifier.Operation.ADDITION))
-                .put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4,
-                        AttributeModifier.Operation.ADDITION))
-                .build();
+        if (ctx.fluid().isEmpty()) {
+            SyringeFluidType selfType = getMatchingFluid(player, access);
+            if (selfType == null) selfType = getFallback(access);
+            if (selfType != null) {
+                writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(selfType), getCapacity(stack)));
+                player.hurt(player.damageSources().generic(), 2.0F);
+                playSound(level, player, SoundEvents.PLAYER_HURT);
+                spawnBloodParticles(level, player, stack);
+            } return;
+        }
+        if (ctx.fluid().getAmount() < ctx.useAmount()) return;
+
+        if (!level.isClientSide) {
+            Fluid fluid = ctx.fluid().getFluid();
+            boolean isMilk = SyringeFluidTypeManager.isMilk(fluid, access);
+            boolean isPotion = SyringeFluidTypeManager.isPotion(fluid, access);
+
+            if (isMilk) {
+                player.removeAllEffects();
+                BAdvancements.LACTOSE_TOLERANT.awardTo((ServerPlayer) player);
+            }
+
+            SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid())
+                    .forEach(effect -> player.addEffect(new MobEffectInstance(effect)));
+
+            ctx.fluid().shrink(ctx.useAmount());
+            writeFluid(stack, ctx.fluid());
+            playSound(level, player, SoundEvents.PLAYER_ATTACK_CRIT);
+            player.getCooldowns().addCooldown(this, 40);
+        }
+
+        isOnCooldown = false;
     }
 
     // what happens when the player attacks mobs
@@ -100,6 +170,7 @@ public class SyringeBladeItem extends SwordItem
             if (matchedType != null) {
                 writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(matchedType), getCapacity(stack)));
                 target.hurt(player.damageSources().playerAttack(player), 2.0F);
+                spawnBloodParticles(attacker.level(), target, stack);
                 return true;
             }
         }
@@ -110,12 +181,22 @@ public class SyringeBladeItem extends SwordItem
             return true;
         }
 
-        ctx.fluid().shrink(ctx.useAmount());
-        writeFluid(stack, ctx.fluid());
+        Fluid fluid = ctx.fluid().getFluid();
+        boolean isMilk = SyringeFluidTypeManager.isMilk(fluid, access);
 
         // effects
+        if (isMilk) target.removeAllEffects();
+
+        if (target instanceof Player targetPlayer) {
+            if (ctx.onlyBeneficial) BAdvancements.DOCTOR.awardTo((ServerPlayer) player);
+            else BAdvancements.MEDICAL_MALPRACTICE.awardTo((ServerPlayer) player);
+        }
+
         SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid())
                 .forEach(effect -> target.addEffect(new MobEffectInstance(effect)));
+
+        ctx.fluid().shrink(ctx.useAmount());
+        writeFluid(stack, ctx.fluid());
 
         return super.hurtEnemy(stack, target, attacker);
     }
@@ -129,16 +210,49 @@ public class SyringeBladeItem extends SwordItem
                 .findFirst().orElse(null);
     }
 
-    // fallback fluid for mobs
+    // fallback fluid for mobs without set fluids
     private SyringeFluidType getFallback(RegistryAccess access) {
         return access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUIDS)
                 .getOptional(BSyringeFluidTypes.FALLBACK)
                 .orElse(null);
     }
 
-    // helper method to assist with the charges
-    public static int getUseAmount(int capacity, int charges) {
-        return (int) Math.ceil((double) capacity / charges);
+    private void spawnDrainingParticles(Level level, Entity entity, ItemStack stack, int count) {
+        if (!(level instanceof ServerLevel server)) return;
+        int color = getBarColor(stack);
+        float r = ((color >> 16) & 0xFF) / 255.0F;
+        float g = ((color >> 8) & 0xFF) / 255.0F;
+        float b = (color & 0xFF) / 255.0F;
+        Vector3f particleColor = new Vector3f(r, g, b);
+        for (int i = 0; i < count; i++) {
+            double dx = (level.random.nextDouble() - 0.5) * 0.3;
+            double dy = level.random.nextDouble() * 0.2;
+            double dz = (level.random.nextDouble() - 0.5) * 0.3;
+            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
+                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
+                    1, 0.0, 0.0, 0.0, 0.0);
+        }
+    }
+
+    private void spawnBloodParticles(Level level, Entity entity, ItemStack stack) {
+        if (!(level instanceof ServerLevel server)) return;
+        int color = getBarColor(stack);
+        float r = ((color >> 16) & 0xFF) / 255.0F;
+        float g = ((color >> 8) & 0xFF) / 255.0F;
+        float b = (color & 0xFF) / 255.0F;
+        Vector3f particleColor = new Vector3f(r, g, b);
+        for (int i = 0; i < 10; i++) {
+            double dx = (level.random.nextDouble() - 0.5) * 0.5;
+            double dy = level.random.nextDouble() * 1.0;
+            double dz = (level.random.nextDouble() - 0.5) * 0.5;
+            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
+                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
+                    1, 0.0, 0.0, 0.0, 0.0);
+        }
+    }
+
+    private void playSound(Level level, Entity entity, SoundEvent sound) {
+        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     // tooltip stuff, like the amount counter
@@ -151,9 +265,8 @@ public class SyringeBladeItem extends SwordItem
     @Override
     public int getBarColor(ItemStack stack) {
         Level level = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null;
-        return SyringeFluidTypeManager.getColor(
-                SyringeFluidTypeManager.fromFluid(readFluid(stack), level != null ? level.registryAccess() : null),
-                readFluid(stack));
+        return SyringeFluidTypeManager.getColor(SyringeFluidTypeManager.fromFluid(readFluid(stack),
+                level != null ? level.registryAccess() : null), readFluid(stack));
     }
 
     // bar visibility based on the presence of fluids
@@ -168,6 +281,12 @@ public class SyringeBladeItem extends SwordItem
         return Math.round(13 * (getCurrentFillLevel(stack) / (float) getCapacity(stack)));
     }
 
+    // is it enchantable? :shrug:
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return true;
+    }
+
     // valid enchantments
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
@@ -179,25 +298,32 @@ public class SyringeBladeItem extends SwordItem
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
-    // is it enchantable? :shrug:
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return true;
-    }
-
     // lets it be used as a fluids container
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
         return getFluidHandler(stack);
     }
 
-    // arm pose stuff, i want to mess with this later
-    // currently not doing anything
+    @Override
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.BOW;
+    }
+
+    @Override
+    public int getUseDuration(ItemStack stack) {
+        return 72000;
+    }
+
     @Override
     @Nullable
     public ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
-        if (!player.swinging) return ArmPose.ITEM;
-        return null;
+        return (player.isUsingItem() && player.getUseItem() == stack && player.getUsedItemHand() == hand)
+                ? ArmPose.BOW_AND_ARROW : ArmPose.ITEM;
+    }
+
+    // helper method to assist with the charges
+    public static int getUseAmount(int capacity, int charges) {
+        return (int) Math.ceil((double) capacity / charges);
     }
 
     // helper method and record for context to assist hurtEnemy and getAttributeModifiers
@@ -209,11 +335,9 @@ public class SyringeBladeItem extends SwordItem
         int charges = getChargeCount(stack);
         int useAmount = getUseAmount(capacity, charges);
         int currentFill = getCurrentFillLevel(stack);
-
         List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluidStack);
         boolean onlyBeneficial = !effects.isEmpty() && effects.stream().allMatch(effect -> effect.getEffect().isBeneficial());
         boolean canAttack = currentFill >= useAmount && !onlyBeneficial;
-
         return new CombatContext(fluidStack, type, useAmount, canAttack, onlyBeneficial);
     }
 }

@@ -16,6 +16,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 
 import java.util.function.Supplier;
@@ -31,17 +32,19 @@ public class BoilingBloodBlock extends AbstractFluidBlock {
     public void entityInsideProxy(Level level, BlockPos pos, Entity entity) {
         super.entityInsideProxy(level, pos, entity);
 
-        if (!level.isClientSide()) {
+        FluidState fluidState = level.getFluidState(pos);
+        float fluidHeight = fluidState.getHeight(level, pos);
+        double fluidSurfaceY = pos.getY() + fluidHeight;
 
-            if (entity instanceof LivingEntity livingEntity) {
-                if (!livingEntity.fireImmune()) {
-                    livingEntity.setRemainingFireTicks(livingEntity.getRemainingFireTicks() + 1);
-                    if (livingEntity.getRemainingFireTicks() <= 0) {
-                        int seconds = 6 + level.getRandom().nextInt(5);
-                        livingEntity.setSecondsOnFire(seconds);
-                        livingEntity.hurt(BDamageSources.boiling(level), 2.0F);
-                    }
-                }
+        double entityBottomY = entity.getBoundingBox().minY;
+        double entityTopY = entity.getBoundingBox().maxY;
+
+        if (!(entityBottomY < fluidSurfaceY && entityTopY > pos.getY())) return;
+
+        if (!level.isClientSide()) {
+            if (entity instanceof LivingEntity livingEntity && !livingEntity.fireImmune()) {
+                livingEntity.setSecondsOnFire(1);
+                livingEntity.hurt(BDamageSources.boiling(level), 4.0F);
             }
 
             if (entity instanceof ItemEntity item) {
@@ -55,21 +58,15 @@ public class BoilingBloodBlock extends AbstractFluidBlock {
                 item.discard();
             }
 
-            if (entity instanceof ExperienceOrb) {
-                level.playSound(
-                        null,
-                        entity.getX(), entity.getY(), entity.getZ(),
-                        SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS,
-                        0.6F, 2.0F
-                );
+            if (entity instanceof ExperienceOrb xpOrb) {
+                level.playSound(null, xpOrb.getX(), xpOrb.getY(), xpOrb.getZ(),
+                        SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.6F, 2.0F);
 
-                ((ServerLevel) level).sendParticles(
-                        ParticleTypes.SMOKE,
-                        entity.getX(), entity.getY() + 0.2, entity.getZ(),
-                        5, 0.0D, 0.05D, 0.0D, 0.01D
-                );
+                ((ServerLevel) level).sendParticles(ParticleTypes.SMOKE,
+                        xpOrb.getX(), xpOrb.getY() + 0.2, xpOrb.getZ(),
+                        5, 0.0D, 0.05D, 0.0D, 0.01D);
 
-                entity.discard();
+                xpOrb.discard();
             }
         }
     }

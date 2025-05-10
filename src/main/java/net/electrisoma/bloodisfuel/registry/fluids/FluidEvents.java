@@ -1,54 +1,59 @@
 package net.electrisoma.bloodisfuel.registry.fluids;
 
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.BFluids;
-
-import com.tterrag.registrate.util.entry.RegistryEntry;
-
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.minecraftforge.fml.common.Mod;
 
-import java.util.Arrays;
+import java.util.List;
 
-
-@SuppressWarnings("all")
 @Mod.EventBusSubscriber(modid = BloodIsFuel.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class FluidEvents {
 
-    public static final int VISCERA = 8000;
-    public static final int BLOOD = (int) (VISCERA*1.5);
-    public static final int ENRICHED_TYPES = VISCERA*2;
-    public static final int INFUSED_TYPES = ENRICHED_TYPES*2;
+    private static final int BURN_VISCERA = 8000;
+    private static final int BURN_BLOOD = Math.round(BURN_VISCERA * 1.5f);
+    private static final int BURN_ENRICHED = BURN_VISCERA * 2;
+    private static final int BURN_INFUSED = BURN_ENRICHED * 2;
+
+    private static final List<RegistryEntry<ForgeFlowingFluid.Flowing>> ENRICHED_TYPES = List.of(
+            BFluids.ENRICHED_BLOOD,
+            BFluids.OIL_ENRICHED_BLOOD
+    );
+
+    private static final List<RegistryEntry<ForgeFlowingFluid.Flowing>> INFUSED_TYPES = List.of(
+            BFluids.DIESEL_INFUSED_BLOOD,
+            BFluids.GASOLINE_INFUSED_BLOOD
+    );
 
     @SubscribeEvent
-    static void onFurnaceFuel(FurnaceFuelBurnTimeEvent event) {
+    public static void onFurnaceFuel(FurnaceFuelBurnTimeEvent event) {
+        var item = event.getItemStack().getItem();
 
-        if (event.getItemStack().getItem() == BFluids.VISCERA.get().getBucket()) {
-            event.setBurnTime(VISCERA);
+        if (item == BFluids.VISCERA.get().getBucket()) {
+            event.setBurnTime(BURN_VISCERA);
+            return;
         }
 
-        if (event.getItemStack().getItem() == BFluids.BLOOD.get().getBucket()) {
-            event.setBurnTime(BLOOD);
+        if (item == BFluids.BLOOD.get().getBucket()) {
+            event.setBurnTime(BURN_BLOOD);
+            return;
         }
 
-        for (RegistryEntry<ForgeFlowingFluid.Flowing> enrichedTypesEntry :
-                Arrays.asList(
-                        BFluids.ENRICHED_BLOOD,
-                        BFluids.OIL_ENRICHED_BLOOD)) {
-            if (event.getItemStack().getItem() == enrichedTypesEntry.get().getBucket()) {
-                event.setBurnTime(ENRICHED_TYPES);
-            }
+        if (matchesBucket(item, ENRICHED_TYPES)) {
+            event.setBurnTime(BURN_ENRICHED);
+            return;
         }
 
-        for (RegistryEntry<ForgeFlowingFluid.Flowing> infusedTypesEntry :
-                Arrays.asList(
-                        BFluids.DIESEL_INFUSED_BLOOD,
-                        BFluids.GASOLINE_INFUSED_BLOOD)) {
-            if (event.getItemStack().getItem() == infusedTypesEntry.get().getBucket()) {
-                event.setBurnTime(INFUSED_TYPES);
-            }
+        if (matchesBucket(item, INFUSED_TYPES)) {
+            event.setBurnTime(BURN_INFUSED);
         }
+    }
+
+    private static boolean matchesBucket(Object item, List<RegistryEntry<ForgeFlowingFluid.Flowing>> fluids) {
+        return fluids.stream()
+                .anyMatch(entry -> item == entry.get().getBucket());
     }
 }

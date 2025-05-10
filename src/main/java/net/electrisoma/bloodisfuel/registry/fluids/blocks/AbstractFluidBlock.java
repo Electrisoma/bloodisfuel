@@ -1,24 +1,22 @@
 package net.electrisoma.bloodisfuel.registry.fluids.blocks;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.fluids.FluidType;
 
 import java.util.function.Supplier;
 
-
-@SuppressWarnings("all")
 public abstract class AbstractFluidBlock extends LiquidBlock {
 
     private final Supplier<? extends FlowingFluid> fluid;
@@ -28,7 +26,7 @@ public abstract class AbstractFluidBlock extends LiquidBlock {
         this.fluid = fluid;
     }
 
-    // -- entity calculations
+    // -- entity calculations --
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
@@ -41,34 +39,45 @@ public abstract class AbstractFluidBlock extends LiquidBlock {
         }
     }
 
-    public void onEntityInFluid(Level level, BlockPos pos, LivingEntity entity) {
-        entityInsideProxy(level, pos, entity);
-        playStepSound(level, entity);
-    }
+    // -- Existing logic for entity interaction in the fluid --
 
-    protected void entityInsideProxy(Level level, BlockPos pos, Entity entity) {
-        // break fall damage
-        entity.fallDistance = 0.0F;
-        if (entity.getDeltaMovement().y < -0.25D)
-            entity.setDeltaMovement(entity.getDeltaMovement().x, -0.25D, entity.getDeltaMovement().z);
+    public void entityInsideProxy(Level level, BlockPos pos, Entity entity) {
+        FluidState fluidState = level.getFluidState(pos);
+        float fluidHeight = fluidState.getHeight(level, pos);
+        double fluidSurfaceY = pos.getY() + fluidHeight;
 
-        // viscosity
-        double mult = thickness();
-        if (entity instanceof LivingEntity livingEntity)
-            if (!livingEntity.isNoGravity()) entity.setDeltaMovement(entity.getDeltaMovement().multiply(mult, mult, mult));
-            else entity.setDeltaMovement(entity.getDeltaMovement().multiply(mult, mult, mult));
+        // Use the entity's bounding box minY to determine if it is submerged
+        double entityBottomY = entity.getBoundingBox().minY;
+        double entityTopY = entity.getBoundingBox().maxY;
 
-        // extinguish
-        if (shouldExtinguishFire() && entity.isOnFire()) {
-            entity.extinguishFire();
-            level.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                    SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
+        // Only apply if there's a real intersection
+        if (entityBottomY < fluidSurfaceY && entityTopY > pos.getY()) {
+
+            // No fall damage
+            entity.fallDistance = 0.0F;
+            if (entity.getDeltaMovement().y < -0.25D) {
+                entity.setDeltaMovement(entity.getDeltaMovement().x, -0.25D, entity.getDeltaMovement().z);
+            }
+
+            // Viscosity
+            double mult = thickness();
+            entity.setDeltaMovement(entity.getDeltaMovement().multiply(mult, mult, mult));
+
+            // Extinguish fire
+            if (shouldExtinguishFire() && entity.isOnFire()) {
+                entity.extinguishFire();
+                level.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                        SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
+
+            // Sound
+            if (entity instanceof LivingEntity livingEntity && !level.isClientSide) {
+                playStepSound(level, livingEntity);
+            }
         }
-
-        // step sound
-        if (entity instanceof LivingEntity livingEntity && !level.isClientSide)
-            playStepSound(level, livingEntity);
     }
+
+    // -- Fall damage reduction --
 
     @Override
     public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
@@ -81,12 +90,14 @@ public abstract class AbstractFluidBlock extends LiquidBlock {
             entity.setDeltaMovement(entity.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D));
     }
 
+    // -- Pathfinding --
+
     @Override
     public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
         return true;
     }
 
-    // -- sound calculations
+    // -- Sound calculations --
 
     protected void playStepSound(Level level, LivingEntity entity) {
         var data = entity.getPersistentData();
@@ -104,15 +115,11 @@ public abstract class AbstractFluidBlock extends LiquidBlock {
         data.putDouble("last_z", entity.getZ());
     }
 
-    // -- controllable variables
+    // -- Controllable variables --
 
     protected SoundSource getSoundSource() {
         return SoundSource.BLOCKS;
     }
-
-//    protected SoundEvent getEntrySound() {
-//        return SoundEvents.GENERIC_SPLASH;
-//    }
 
     protected SoundEvent getStepSound() {
         return SoundEvents.EMPTY;

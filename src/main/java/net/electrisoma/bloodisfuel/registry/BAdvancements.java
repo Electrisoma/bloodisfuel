@@ -7,7 +7,12 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput.PathProvider;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MilkBucketItem;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +26,7 @@ import java.util.function.BiConsumer;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.common.collect.Sets;
+import net.minecraftforge.common.ForgeMod;
 
 
 @SuppressWarnings("all")
@@ -101,6 +107,33 @@ public class BAdvancements implements DataProvider {
             .secret()
             .challenge()
             .announce()
+            .build(),
+
+    LACTOSE_TOLERANT = create("lactose_tolerant", ForgeMod.MILK.get().getBucket())
+            .name("Lactose Tolerant")
+            .description("Inject milk directly into your blood stream")
+            .after(SYRINGE_BLADE)
+            .secret()
+            .challenge()
+            .announce()
+            .build(),
+
+    DOCTOR = create("doctor", Items.POTION)
+            .name("Doctor!")
+            .description("Heal another player with the syringe")
+            .after(SYRINGE_BLADE)
+            .secret()
+            .challenge()
+            .announce()
+            .build(),
+
+    MEDICAL_MALPRACTICE = create("medical_malpractice", Items.POTION)
+            .name("Medical Malpractice")
+            .description("Damage a player with the syringe")
+            .after(SYRINGE_BLADE)
+            .secret()
+            .challenge()
+            .announce()
             .build()
 
 //    KILL_ME = create("kill_me", BFluids.UBER_FLUID.getBucket().get().getDefaultInstance().getItem())
@@ -147,16 +180,14 @@ public class BAdvancements implements DataProvider {
                     .serializeToJson(), path));
         };
 
-        for (BAdvancement advancement : ENTRIES)
-            advancement.save(consumer);
+        for (BAdvancement advancement : ENTRIES) advancement.save(consumer);
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
 
     public static void provideLang(BiConsumer<String, String> consumer) {
-        for (BAdvancement advancement : ENTRIES)
-            advancement.provideLang(consumer);
+        for (BAdvancement advancement : ENTRIES) advancement.provideLang(consumer);
     }
 
     public static ResourceLocation getBackground() {
