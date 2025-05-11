@@ -1,19 +1,13 @@
 package net.electrisoma.bloodisfuel.registry.fluids.fluidtypes;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.config.BConfigs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 
 import net.minecraftforge.fluids.FluidType;
@@ -28,6 +22,7 @@ import org.joml.Vector3f;
 import java.util.function.Consumer;
 
 
+@SuppressWarnings("all")
 public abstract class AbstractFluidType extends FluidType {
 
     protected static final int NO_TINT = 0xffffffff;

@@ -24,7 +24,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public interface ItemUtils {
 
     default int getBaseCapacity(ItemStack stack) {

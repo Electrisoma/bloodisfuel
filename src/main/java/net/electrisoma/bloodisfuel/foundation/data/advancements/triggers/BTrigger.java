@@ -10,6 +10,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
+
+@SuppressWarnings("all")
 public class BTrigger extends BCriterionTrigger<BTrigger.Instance>{
     public BTrigger(String id) {
         super(id);

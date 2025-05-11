@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.google.common.collect.Maps;
-import com.simibubi.create.Create;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.minecraft.MethodsReturnNonnullByDefault;

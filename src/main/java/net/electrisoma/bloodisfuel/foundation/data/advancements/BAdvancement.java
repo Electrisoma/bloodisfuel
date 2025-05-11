@@ -1,6 +1,5 @@
 package net.electrisoma.bloodisfuel.foundation.data.advancements;
 
-import com.google.gson.JsonObject;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.foundation.data.advancements.triggers.BTrigger;
 import net.electrisoma.bloodisfuel.foundation.data.advancements.triggers.BTriggers;
@@ -9,7 +8,6 @@ import net.electrisoma.bloodisfuel.registry.BAdvancements;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +21,7 @@ import java.util.function.Consumer;
 import com.google.common.collect.Maps;
 
 
+@SuppressWarnings("all")
 public class BAdvancement {
 
     private static final String LANG = "advancement." + BloodIsFuel.MOD_ID + ".";

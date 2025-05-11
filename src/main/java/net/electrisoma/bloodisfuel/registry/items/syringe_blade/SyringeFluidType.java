@@ -22,6 +22,7 @@ import java.util.Optional;
  * Represents a fluid type used in the Syringe Blade system.
  * Can define which fluids match, display color, its effects on hit, and which mobs drop it.
  */
+@SuppressWarnings("all")
 public record SyringeFluidType(
         HolderSet<Fluid> fluids,
         int color,
