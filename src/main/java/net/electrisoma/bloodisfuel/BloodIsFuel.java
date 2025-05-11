@@ -12,8 +12,6 @@ import com.simibubi.create.foundation.item.TooltipModifier;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -32,9 +30,6 @@ import net.minecraftforge.event.server.ServerStartedEvent;
 
 import com.mojang.logging.LogUtils;
 
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
 

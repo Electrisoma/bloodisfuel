@@ -17,6 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 
 import java.util.function.Supplier;
 
+
+@SuppressWarnings("unused")
 public abstract class AbstractFluidBlock extends LiquidBlock {
 
     private final Supplier<? extends FlowingFluid> fluid;

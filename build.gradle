@@ -235,13 +235,14 @@ project.publishing {
     }
 }
 
-def localProperties = new Properties()
+def localProperties = getProperties()
 def localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
-    localPropertiesFile.withInputStream { stream -> localProperties.load(stream) }
+    localProperties.load(localPropertiesFile.newObjectInputStream())
 }
 
 publishMods {
+
     def curseforgeToken = localProperties.getProperty("curseforgeToken", "")
     def modrinthToken = localProperties.getProperty("modrinthToken", "")
 

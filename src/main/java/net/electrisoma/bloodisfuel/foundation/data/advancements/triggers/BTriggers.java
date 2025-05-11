@@ -1,6 +1,5 @@
 package net.electrisoma.bloodisfuel.foundation.data.advancements.triggers;
 
-import com.simibubi.create.foundation.advancement.CriterionTriggerBase;
 import net.minecraft.advancements.CriteriaTriggers;
 
 import java.util.LinkedList;

@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+
+@SuppressWarnings("all")
 public class AdvancementBehavior extends BlockEntityBehaviour {
 
     public static final BehaviourType<AdvancementBehavior> TYPE = new BehaviourType<>();

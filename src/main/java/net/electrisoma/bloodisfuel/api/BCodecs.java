@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffectInstance;
 
 
+@SuppressWarnings("all")
 public class BCodecs {
 
     /**
