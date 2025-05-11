@@ -234,8 +234,6 @@ project.publishing {
         }
     }
 }
-//modrinthToken=...
-//curseforgeToken=...
 
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file("local.properties")
