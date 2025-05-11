@@ -1,5 +1,17 @@
 ------------------------------------------------------
-Version 1.0.0
+Blood is Fuel 1.1.5
+------------------------------------------------------
+Additions
+- The Syringe Blade works now, and it's data-driven 
+
+Changes
+- Fluids work properly, to some degree
+
+Bug Fixes
+- Fixed most stuffs, idk man
+
+------------------------------------------------------
+Template
 ------------------------------------------------------
 Additions
 - None

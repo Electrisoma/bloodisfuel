@@ -242,7 +242,6 @@ if (localPropertiesFile.exists()) {
 }
 
 publishMods {
-
     def curseforgeToken = localProperties.getProperty("curseforgeToken", "")
     def modrinthToken = localProperties.getProperty("modrinthToken", "")
 
