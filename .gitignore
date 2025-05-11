@@ -21,7 +21,6 @@ build
 eclipse
 run
 run-data/logs
-local.properties
 
 # Files from Forge MDK
 forge*changelog.txt
