@@ -40,7 +40,6 @@ idea {
     }
 }
 
-
 legacyForge {
     version="$minecraft_version-$forge_version"
 
@@ -235,14 +234,15 @@ project.publishing {
     }
 }
 
-def localProperties = getProperties()
+def localProperties = new Properties()
 def localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
-    localProperties.load(localPropertiesFile.newObjectInputStream())
+    localPropertiesFile.withInputStream {
+        stream -> localProperties.load(stream)
+    }
 }
 
 publishMods {
-
     def curseforgeToken = localProperties.getProperty("curseforgeToken", "")
     def modrinthToken = localProperties.getProperty("modrinthToken", "")
 
@@ -261,7 +261,6 @@ publishMods {
         projectId="$curseforge_id"
         minecraftVersions.add(minecraft_version)
     }
-
     modrinth {
         accessToken=modrinthToken
         projectId="$modrinth_id"
