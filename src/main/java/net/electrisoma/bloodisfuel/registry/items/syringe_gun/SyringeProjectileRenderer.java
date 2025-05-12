@@ -7,22 +7,17 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 
 public class SyringeProjectileRenderer extends EntityRenderer<SyringeProjectileEntity> {
-    private final ItemRenderer itemRenderer;
 
     public SyringeProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
-        this.itemRenderer = Minecraft.getInstance().getItemRenderer(); // Get the ItemRenderer
+        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
     }
 
 
@@ -38,14 +33,7 @@ public class SyringeProjectileRenderer extends EntityRenderer<SyringeProjectileE
     }
 
     private void renderRandomItem(PoseStack ms, MultiBufferSource buffer, int light) {
-        ItemStack randomItem = new ItemStack(Items.DIAMOND);
-        Level world = Minecraft.getInstance().level;
-        LivingEntity entity = Minecraft.getInstance().player;
 
-        BakedModel model = itemRenderer.getModel(randomItem, world, entity, 0);
-
-        itemRenderer.render(randomItem, ItemDisplayContext.NONE, false, ms,
-                buffer, light, OverlayTexture.NO_OVERLAY, model);
     }
 
     @Override

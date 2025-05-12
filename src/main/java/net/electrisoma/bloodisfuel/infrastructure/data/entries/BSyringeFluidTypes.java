@@ -4,7 +4,8 @@ import com.github.alexmodguy.alexscaves.server.block.fluid.ACFluidRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
 import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.api.BurningData;
+import net.electrisoma.bloodisfuel.api.data.BurningData;
+import net.electrisoma.bloodisfuel.api.data.ExtinguishingData;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
@@ -14,6 +15,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.ForgeMod;
 
 
@@ -35,6 +37,20 @@ public class BSyringeFluidTypes {
                 .addMobs(EntityType.COW)
                 .color(0xFFFFFF)
                 .onEntityHitEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 100, 0, false, true))
+                .build()
+        );
+
+        register(ctx, "water", new SyringeFluidType.Builder()
+                .addFluids(Fluids.WATER.getSource())
+                .color(0x0C17CD)
+                .extinguishing(new ExtinguishingData(0, 4F))
+                .build()
+        );
+
+        register(ctx, "lava", new SyringeFluidType.Builder()
+                .addFluids(Fluids.LAVA.getSource())
+                .color(0xCB4810)
+                .burning(new BurningData(15, 4F))
                 .build()
         );
 
@@ -63,7 +79,7 @@ public class BSyringeFluidTypes {
         register(ctx, "boiling_blood", new SyringeFluidType.Builder()
                 .addFluids(BFluids.BOILING_BLOOD.getSource())
                 .color(0xE11313)
-                .burning(new BurningData(4,4))
+                .burning(new BurningData(4, 4F))
                 .build()
         );
 

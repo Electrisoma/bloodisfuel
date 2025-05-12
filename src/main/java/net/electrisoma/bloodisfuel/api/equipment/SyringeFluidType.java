@@ -1,8 +1,9 @@
 package net.electrisoma.bloodisfuel.api.equipment;
 
-import net.electrisoma.bloodisfuel.api.BCodecs;
+import net.electrisoma.bloodisfuel.api.data.BCodecs;
 
-import net.electrisoma.bloodisfuel.api.BurningData;
+import net.electrisoma.bloodisfuel.api.data.BurningData;
+import net.electrisoma.bloodisfuel.api.data.ExtinguishingData;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -29,13 +30,15 @@ public record SyringeFluidType(
         int color,
         Optional<MobEffectInstance> onEntityHitEffect,
         Optional<HolderSet<EntityType<?>>> mobs,
-        Optional<BurningData> burning) {
+        Optional<BurningData> burning,
+        Optional<ExtinguishingData> extinguishing) {
     public static final Codec<SyringeFluidType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registries.FLUID).fieldOf("fluids").forGetter(SyringeFluidType::fluids),
             Codec.INT.fieldOf("color").forGetter(SyringeFluidType::color),
             BCodecs.MOB_EFFECT_INSTANCE.optionalFieldOf("on_entity_hit").forGetter(SyringeFluidType::onEntityHitEffect),
             RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).optionalFieldOf("mobs").forGetter(SyringeFluidType::mobs),
-            BCodecs.BURNING_DATA.optionalFieldOf("burning").forGetter(SyringeFluidType::burning)
+            BCodecs.BURNING_DATA.optionalFieldOf("burning").forGetter(SyringeFluidType::burning),
+            BCodecs.EXTINGUISHING_DATA.optionalFieldOf("extinguishing").forGetter(SyringeFluidType::extinguishing)
     ).apply(instance, SyringeFluidType::new));
 
     /**
@@ -55,12 +58,20 @@ public record SyringeFluidType(
         return burning.isPresent();
     }
 
+    /**
+     * Returns true if this fluid type can extinguish.
+     */
+    public boolean hasExtinguishing() {
+        return extinguishing.isPresent();
+    }
+
     public static class Builder {
         private final List<Holder<Fluid>> fluids = new ArrayList<>();
         private int color = 0xFFFFFF;
         private MobEffectInstance onEntityHitEffect;
         private final List<Holder<EntityType<?>>> mobs = new ArrayList<>();
         private Optional<BurningData> burning = Optional.empty();
+        private Optional<ExtinguishingData> extinguishing = Optional.empty();
 
         /**
          * Adds one or more fluids that this type applies to.
@@ -80,7 +91,7 @@ public record SyringeFluidType(
         }
 
         /**
-         * Defines the effect applied when this fluid type hits an entity.
+         * Defines the effect applied when the fluid type hits an entity.
          */
         public Builder onEntityHitEffect(MobEffectInstance effect) {
             this.onEntityHitEffect = effect;
@@ -88,7 +99,7 @@ public record SyringeFluidType(
         }
 
         /**
-         * Adds mobs associated with this fluid type.
+         * Adds mobs associated with the fluid type.
          */
         public Builder addMobs(EntityType<?>... types) {
             for (EntityType<?> type : types) {
@@ -97,10 +108,18 @@ public record SyringeFluidType(
         }
 
         /**
-         * Adds a burning effect to this fluid type.
+         * Adds a burning effect to the fluid type.
          */
         public Builder burning(BurningData burningData) {
             this.burning = Optional.ofNullable(burningData);
+            return this;
+        }
+
+        /**
+         * Adds an extinguishing effect to the fluid type.
+         */
+        public Builder extinguishing(ExtinguishingData extinguishingData) {
+            this.extinguishing = Optional.ofNullable(extinguishingData);
             return this;
         }
 
@@ -113,7 +132,8 @@ public record SyringeFluidType(
                     color,
                     Optional.ofNullable(onEntityHitEffect),
                     mobs.isEmpty() ? Optional.empty() : Optional.of(HolderSet.direct(mobs)),
-                    burning
+                    burning,
+                    extinguishing
             );
         }
     }

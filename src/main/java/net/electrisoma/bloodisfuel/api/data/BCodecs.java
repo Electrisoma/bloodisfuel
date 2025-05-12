@@ -1,4 +1,4 @@
-package net.electrisoma.bloodisfuel.api;
+package net.electrisoma.bloodisfuel.api.data;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,4 +21,9 @@ public class BCodecs {
             Codec.INT.optionalFieldOf("duration_seconds", 4).forGetter(BurningData::durationSeconds),
             Codec.FLOAT.optionalFieldOf("damage_per_second", 1.0f).forGetter(BurningData::damagePerSecond)
     ).apply(instance, BurningData::new));
+
+    public static final Codec<ExtinguishingData> EXTINGUISHING_DATA = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.optionalFieldOf("duration_seconds", 4).forGetter(ExtinguishingData::durationSeconds),
+            Codec.FLOAT.optionalFieldOf("heak_per_second", 1.0f).forGetter(ExtinguishingData::healPerSecond)
+    ).apply(instance, ExtinguishingData::new));
 }

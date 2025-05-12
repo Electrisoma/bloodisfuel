@@ -1,0 +1,8 @@
+{
+  "burning": {
+    "damage_per_second": 4.0,
+    "duration_seconds": 15
+  },
+  "color": 13322256,
+  "fluids": "minecraft:lava"
+}

@@ -1,23 +1,27 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
 import com.simibubi.create.AllSoundEvents;
-import net.electrisoma.bloodisfuel.api.BurningData;
+import net.createmod.catnip.math.VecHelper;
 import net.electrisoma.bloodisfuel.registry.BEntityTypes;
 import net.electrisoma.bloodisfuel.registry.items.ItemUtils;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
@@ -25,8 +29,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
+import java.util.Objects;
 
-public class SyringeProjectileEntity extends AbstractHurtingProjectile implements IEntityAdditionalSpawnData, ItemUtils {
+public class SyringeProjectileEntity extends AbstractHurtingProjectile
+        implements IEntityAdditionalSpawnData, ItemUtils {
 
     public SyringeProjectileEntity(EntityType<? extends AbstractHurtingProjectile> type, Level level) {
         super(type, level);
@@ -34,11 +40,11 @@ public class SyringeProjectileEntity extends AbstractHurtingProjectile implement
 
     private FluidStack fluid = FluidStack.EMPTY;
 
-    public SyringeProjectileEntity(Level level, LivingEntity shooter) {
+    public SyringeProjectileEntity(Level level, LivingEntity shooter, double velocityX, double velocityY, double velocityZ) {
         this(BEntityTypes.SYRINGE_PROJECTILE.get(), level);
         this.setOwner(shooter);
         this.setPos(shooter.getX(), shooter.getEyeY() - 0.1, shooter.getZ());
-        this.setDeltaMovement(shooter.getLookAngle().scale(2.5));
+        this.setDeltaMovement(velocityX, velocityY, velocityZ);
     }
 
     public void setFluid(FluidStack fluid) {
@@ -67,18 +73,27 @@ public class SyringeProjectileEntity extends AbstractHurtingProjectile implement
             SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluid, access);
             List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluid);
 
-            for (MobEffectInstance effect : effects) {
-                target.addEffect(new MobEffectInstance(effect));
-            }
-
-            if (type != null && type.hasBurning()) {
-                type.burning().ifPresent(burningData -> applyBurningEffect(target, burningData));
-            }
+            target.hurt(target.damageSources().indirectMagic(this, this.getOwner()), 2.0F);
+            for (MobEffectInstance effect : effects) target.addEffect(new MobEffectInstance(effect));
+            if (type != null && type.hasBurning())
+                type.burning().ifPresent(burningData -> {
+                    applyBurningEffect(target, burningData);
+                });
+            if (type != null && type.hasExtinguishing())
+                applyExtinguishingEffect(target, type);
 
             playHitSound(level(), position());
         }
 
         this.discard();
+    }
+
+    @Override
+    protected void onHitBlock(BlockHitResult ray) {
+        //Vec3 hit = ray.getLocation();
+
+        super.onHitBlock(ray);
+        kill();
     }
 
     @Override
@@ -100,7 +115,7 @@ public class SyringeProjectileEntity extends AbstractHurtingProjectile implement
         fluid.writeToNBT(tag);
         fakeStack.getOrCreateTag().put("Fluid", tag);
 
-        ItemUtils.super.spawnBloodParticles(level(), this, fakeStack);
+        ItemUtils.super.spawnTrailParticles(level(), this, fakeStack, 5);
     }
 
     @Override
@@ -135,7 +150,7 @@ public class SyringeProjectileEntity extends AbstractHurtingProjectile implement
 
     @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
-        readAdditionalSaveData(buffer.readNbt());
+        readAdditionalSaveData(Objects.requireNonNull(buffer.readNbt()));
     }
 
     @Override

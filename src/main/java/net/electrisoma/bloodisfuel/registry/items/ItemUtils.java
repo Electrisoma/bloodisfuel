@@ -2,7 +2,7 @@ package net.electrisoma.bloodisfuel.registry.items;
 
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.utility.CreateLang;
-import net.electrisoma.bloodisfuel.api.BurningData;
+import net.electrisoma.bloodisfuel.api.data.BurningData;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
@@ -93,7 +93,9 @@ public interface ItemUtils {
         return new String[]{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"}[number - 1];
     }
 
-    // matching fluid for mobs
+    /**
+     * Matching extraction fluid for entities.
+     */
     default SyringeFluidType getMatchingFluid(LivingEntity target, RegistryAccess access) {
         return SyringeFluidTypeManager.getAll(access).stream()
                 .filter(type -> ForgeRegistries.ENTITY_TYPES.getHolder(target.getType())
@@ -102,23 +104,40 @@ public interface ItemUtils {
                 .findFirst().orElse(null);
     }
 
-    // fallback fluid for mobs without set fluids
+    /**
+     * Default extraction fluid.
+     */
     default SyringeFluidType getFallback(RegistryAccess access) {
         return access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUIDS)
                 .getOptional(BSyringeFluidTypes.FALLBACK)
                 .orElse(null);
     }
 
+    /**
+     * Burning effect from fluid.
+     */
     default void applyBurningEffect(LivingEntity entity, BurningData burningData) {
         if (entity == null || entity.level().isClientSide) return;
-
-        entity.setSecondsOnFire(burningData.durationSeconds());
+        if (burningData != null) entity.setSecondsOnFire(burningData.durationSeconds());
         if (burningData.damagePerSecond() > 0) {
             entity.hurt(entity.damageSources().onFire(), burningData.damagePerSecond());
         }
 
         entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
                 SoundEvents.FIRE_AMBIENT, entity.getSoundSource(), 1.0F, 1.0F);
+    }
+
+    /**
+     * Extinguishing effect from fluid.
+     */
+    default void applyExtinguishingEffect(LivingEntity entity, SyringeFluidType type) {
+        if (entity == null || entity.level().isClientSide) return;
+        if (type != null && type.hasExtinguishing()) {
+            SyringeFluidTypeManager.applyExtinguishing(type, entity);
+
+            entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                    SoundEvents.FIRE_EXTINGUISH, entity.getSoundSource(), 1.0F, 1.0F);
+        }
     }
 
     default void playSound(Level level, Entity entity, SoundEvent sound) {
@@ -133,6 +152,9 @@ public interface ItemUtils {
         return Math.round(13 * (getCurrentFillLevel(stack) / (float) getCapacity(stack)));
     }
 
+    /**
+     * Item bar color.
+     */
     default int getBarColor(ItemStack stack) {
         Level level = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null;
         RegistryAccess access = level != null ? level.registryAccess() : null;
@@ -143,6 +165,9 @@ public interface ItemUtils {
         return SyringeFluidTypeManager.getColor(type, fluidStack);
     }
 
+    /**
+     * Syringe blood particle.
+     */
     default void spawnBloodParticles(Level level, Entity entity, ItemStack stack) {
         if (!(level instanceof ServerLevel server)) return;
         int color = getBarColor(stack);
@@ -160,6 +185,9 @@ public interface ItemUtils {
         }
     }
 
+    /**
+     * Syringe drain particle.
+     */
     default void spawnDrainingParticles(Level level, Entity entity, ItemStack stack, int count) {
         if (!(level instanceof ServerLevel server)) return;
         int color = getBarColor(stack);
@@ -177,16 +205,45 @@ public interface ItemUtils {
         }
     }
 
+    /**
+     * Projectile trail particle.
+     */
+    default void spawnTrailParticles(Level level, Entity entity, ItemStack stack, int count) {
+        if (!(level instanceof ServerLevel server)) return;
+        int color = getBarColor(stack);
+        float r = ((color >> 16) & 0xFF) / 255.0F;
+        float g = ((color >> 8) & 0xFF) / 255.0F;
+        float b = (color & 0xFF) / 255.0F;
+        Vector3f particleColor = new Vector3f(r, g, b);
+        double trailLength = 0.3;
+        for (int i = 0; i < count; i++) {
+            double dx = (level.random.nextDouble() - 0.5) * 0.3;
+            double dy = level.random.nextDouble() * 0.2;
+            double dz = (level.random.nextDouble() - 0.5) * 0.3;
+            double offsetX = entity.getX() - Math.cos(entity.getYRot() * Math.PI / 180) * trailLength;
+            double offsetZ = entity.getZ() - Math.sin(entity.getYRot() * Math.PI / 180) * trailLength;
+            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
+                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
+                    1, 0.0, 0.0, 0.0, 0.0);
+        }
+    }
+
     default void tooltipMaker(List<Component> tooltip, ItemStack stack, @Nullable RegistryAccess registryAccess) {
         FluidStack fluid = readFluid(stack);
         SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluid, registryAccess);
         List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluid);
 
+        /**
+         * Empty tooltip.
+         */
         if (stack.getTag() == null || fluid.isEmpty()) {
             tooltip.add(Component.translatable("bloodisfuel.tooltip.empty").withStyle(ChatFormatting.GRAY));
             return;
         }
 
+        /**
+         * Fluid tooltip.
+         */
         tooltip.add(CreateLang.fluidName(fluid).component()
                 .withStyle(ChatFormatting.GRAY)
                 .append(" ")
@@ -196,12 +253,14 @@ public interface ItemUtils {
                 .append(CreateLang.number(getCapacity(stack)).style(ChatFormatting.GRAY).component())
                 .append(Component.translatable("create.generic.unit.millibuckets").withStyle(ChatFormatting.GRAY)));
 
+        /**
+         * Effects tooltip.
+         */
         for (MobEffectInstance effect : effects) {
             Component effectName = Component.translatable(effect.getDescriptionId())
                     .withStyle(effect.getEffect().isBeneficial() ? ChatFormatting.GREEN : ChatFormatting.RED);
             Component level = Component.literal(" " + toRoman(effect.getAmplifier() + 1))
                     .withStyle(ChatFormatting.GOLD);
-
             Component duration = Component.empty();
             if (effect.getDuration() > 1) {
                 duration = Component.literal(" (" + formatDuration(effect.getDuration()) + ")")
@@ -216,25 +275,63 @@ public interface ItemUtils {
                     .append(duration));
         }
 
+        /**
+         * Burning tooltip.
+         */
         if (type != null && type.hasBurning()) {
             type.burning().ifPresent(burning -> {
                 int duration = burning.durationSeconds();
                 float damage = burning.damagePerSecond();
 
-                MutableComponent burningLine = Component.literal("• ")
-                        .withStyle(ChatFormatting.GRAY)
-                        .append(Component.translatable("bloodisfuel.tooltip.burning")
-                                .withStyle(ChatFormatting.DARK_RED))
-                        .append(": ")
-                        .append(Component.literal(duration + "s")
-                                .withStyle(ChatFormatting.GOLD));
+                MutableComponent line = Component.literal("• ").withStyle(ChatFormatting.GRAY)
+                        .append(Component.translatable("bloodisfuel.tooltip.burning").withStyle(ChatFormatting.RED))
+                        .append(": ");
 
-                if (damage > 0) {
-                    burningLine.append(Component.literal(" (" + damage + " dmg/s)")
-                            .withStyle(ChatFormatting.RED));
+                if (duration > 0) {
+                    line.append(Component.literal(String.valueOf(duration)).withStyle(ChatFormatting.GOLD))
+                            .append(Component.translatable("bloodisfuel.tooltip.seconds").withStyle(ChatFormatting.GOLD));
                 }
 
-                tooltip.add(burningLine);
+                if (damage > 0) {
+                    if (duration > 0) line.append(" ");
+                    line.append(Component.literal("(" + damage + " ").withStyle(ChatFormatting.RED))
+                            .append(Component.translatable("bloodisfuel.tooltip.damage"))
+                            .append(Component.literal("/"))
+                            .append(Component.translatable("bloodisfuel.tooltip.seconds"))
+                            .append(Component.literal(")"));
+                }
+
+                tooltip.add(line);
+            });
+        }
+
+        /**
+         * Extinguishing tooltip.
+         */
+        if (type != null && type.hasExtinguishing()) {
+            type.extinguishing().ifPresent(extinguishing -> {
+                int duration = extinguishing.durationSeconds();
+                float heal = extinguishing.healPerSecond();
+
+                MutableComponent line = Component.literal("• ").withStyle(ChatFormatting.GRAY)
+                        .append(Component.translatable("bloodisfuel.tooltip.extinguishing").withStyle(ChatFormatting.AQUA))
+                        .append(": ");
+
+                if (duration > 0) {
+                    line.append(Component.literal(String.valueOf(duration)).withStyle(ChatFormatting.GOLD))
+                            .append(Component.translatable("bloodisfuel.tooltip.seconds").withStyle(ChatFormatting.GOLD));
+                }
+
+                if (heal > 0) {
+                    if (duration > 0) line.append(" ");
+                    line.append(Component.literal("(" + heal + " "))
+                            .append(Component.translatable("bloodisfuel.tooltip.heal"))
+                            .append(Component.literal("/"))
+                            .append(Component.translatable("bloodisfuel.tooltip.seconds"))
+                            .append(Component.literal(")"));
+                }
+
+                tooltip.add(line);
             });
         }
     }
@@ -243,7 +340,9 @@ public interface ItemUtils {
         return new ToolItemFluidHandler(stack, getCapacity(stack), this::readFluid, this::writeFluid);
     }
 
-    // fluid handler with read/write delegation
+    /**
+     * Fluid handler with read/write delegation.
+     */
     class ToolItemFluidHandler extends FluidHandlerItemStack {
         private final BiConsumer<ItemStack, FluidStack> write;
         private final Function<ItemStack, FluidStack> read;
@@ -267,9 +366,10 @@ public interface ItemUtils {
         }
     }
 
-    record CombatContext(FluidStack fluid, SyringeFluidType type, int useAmount, boolean canAttack,
-                         boolean onlyBeneficial) {}
-
+    /**
+     * Context for various syringe combat.
+     */
+    record CombatContext(FluidStack fluid, SyringeFluidType type, int useAmount, boolean canAttack, boolean onlyBeneficial) {}
     default CombatContext getCombatContext(ItemStack stack, @Nullable RegistryAccess access) {
         FluidStack fluidStack = readFluid(stack);
         SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);

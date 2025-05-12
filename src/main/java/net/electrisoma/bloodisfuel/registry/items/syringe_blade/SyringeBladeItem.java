@@ -1,7 +1,8 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
-import net.electrisoma.bloodisfuel.api.BurningData;
+import net.electrisoma.bloodisfuel.api.data.BurningData;
+import net.electrisoma.bloodisfuel.api.data.ExtinguishingData;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
@@ -145,6 +146,10 @@ public class SyringeBladeItem extends SwordItem
                 applyBurningEffect(player, burningData);
             }
 
+            if (ctx.type().hasExtinguishing()) {
+                applyExtinguishingEffect(player, ctx.type());
+            }
+
             ctx.fluid().shrink(ctx.useAmount());
             writeFluid(stack, ctx.fluid());
             playSound(level, player, SoundEvents.PLAYER_ATTACK_CRIT);
@@ -193,6 +198,11 @@ public class SyringeBladeItem extends SwordItem
         if (ctx.type().hasBurning()) {
             BurningData burningData = ctx.type().burning().get();
             applyBurningEffect(target, burningData);
+            BAdvancements.FIRE_FIRE_FIRE.awardTo((ServerPlayer) player);
+        }
+
+        if (ctx.type().hasExtinguishing()) {
+            applyExtinguishingEffect(player, ctx.type());
         }
 
         ctx.fluid().shrink(ctx.useAmount());

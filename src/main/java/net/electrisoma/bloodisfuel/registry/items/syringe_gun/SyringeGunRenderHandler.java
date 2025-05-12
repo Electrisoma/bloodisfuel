@@ -25,8 +25,8 @@ public class SyringeGunRenderHandler extends ShootableGadgetRenderHandler {
 
     @Override
     protected void transformTool(PoseStack ms, float flip, float equipProgress, float recoil, float pt) {
-        ms.translate(flip * -.1f, 0, .14f);
-        ms.scale(.75f, .75f, .75f);
+        ms.translate(flip * -.1f, -.05, .14f);
+        ms.scale(1, 1, 1);
         TransformStack.of(ms)
                 .rotateXDegrees(recoil * 80);
     }

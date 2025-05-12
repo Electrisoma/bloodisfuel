@@ -21,6 +21,7 @@ import java.util.function.BiConsumer;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.common.collect.Sets;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.ForgeMod;
 
 
@@ -115,7 +116,7 @@ public class BAdvancements implements DataProvider {
 
     DOCTOR = create("doctor", Items.POTION)
             .name("Doctor!")
-            .description("Heal another player with the syringe")
+            .description("Heal someone with the syringe")
             .after(SYRINGE_BLADE)
             .secret()
             .challenge()
@@ -124,7 +125,16 @@ public class BAdvancements implements DataProvider {
 
     MEDICAL_MALPRACTICE = create("medical_malpractice", Items.POTION)
             .name("Medical Malpractice")
-            .description("Damage a player with the syringe")
+            .description("Damage someone with the syringe")
+            .after(SYRINGE_BLADE)
+            .secret()
+            .challenge()
+            .announce()
+            .build(),
+
+    FIRE_FIRE_FIRE = create("fire_fire_fire", Blocks.FIRE)
+            .name("Fire, Fire, Fire!")
+            .description("Light someone on fire with a flammable fluid")
             .after(SYRINGE_BLADE)
             .secret()
             .challenge()

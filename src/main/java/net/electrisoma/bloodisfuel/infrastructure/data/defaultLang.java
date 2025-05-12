@@ -41,6 +41,10 @@ public class defaultLang {
         tooltipMisc(consumer,"empty", "Empty :3");
         tooltipMisc(consumer,"effect", "Effect");
         tooltipMisc(consumer,"burning", "Burning");
+        tooltipMisc(consumer,"seconds", "s");
+        tooltipMisc(consumer,"damage", "dmg");
+        tooltipMisc(consumer,"extinguishing", "Extinguishing");
+        tooltipMisc(consumer,"heal", "hp");
     }
 
     //capitalism!! (consumers)

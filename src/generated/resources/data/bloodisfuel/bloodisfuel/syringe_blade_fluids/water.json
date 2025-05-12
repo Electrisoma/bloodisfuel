@@ -1,0 +1,8 @@
+{
+  "color": 792525,
+  "extinguishing": {
+    "duration_seconds": 0,
+    "heak_per_second": 4.0
+  },
+  "fluids": "minecraft:water"
+}

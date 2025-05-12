@@ -141,4 +141,17 @@ public class SyringeFluidTypeManager {
                 target.hurt(target.damageSources().onFire(), burning.damagePerSecond() * burning.durationSeconds());
         });
     }
+
+    /**
+     * Gets the extinguishing properties.
+     */
+    public static void applyExtinguishing(SyringeFluidType type, LivingEntity target) {
+        type.extinguishing().ifPresent(extinguishing -> {
+            target.clearFire();
+            if (extinguishing.healPerSecond() > 0 && extinguishing.durationSeconds() > 0) {
+                float totalHeal = extinguishing.healPerSecond() * extinguishing.durationSeconds();
+                target.heal(totalHeal);
+            }
+        });
+    }
 }

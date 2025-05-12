@@ -5,7 +5,6 @@ import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 import net.electrisoma.bloodisfuel.registry.items.ItemUtils;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
-import net.electrisoma.bloodisfuel.registry.items.syringe_blade.SyringeBladeItemRenderer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.RegistryAccess;
@@ -60,7 +59,6 @@ public class SyringeGunItem extends ProjectileWeaponItem implements CustomArmPos
         RegistryAccess access = level.registryAccess();
         FluidStack fluid = readFluid(stack);
 
-        // No fluid present, attempt to extract from player
         if (fluid.isEmpty()) {
             SyringeFluidType selfType = getMatchingFluid(player, access);
             if (selfType == null) selfType = getFallback(access);
@@ -79,15 +77,18 @@ public class SyringeGunItem extends ProjectileWeaponItem implements CustomArmPos
         if (fluid.getAmount() < useAmount) return;
 
         if (!level.isClientSide) {
-            SyringeProjectileEntity projectile = new SyringeProjectileEntity(level, player);
+            double velocityX = player.getLookAngle().x * 2.5;
+            double velocityY = player.getLookAngle().y * 2.5;
+            double velocityZ = player.getLookAngle().z * 20;
+
+            SyringeProjectileEntity projectile = new SyringeProjectileEntity(level, player, velocityX, velocityY, velocityZ);
+
             projectile.setFluid(fluid.copy());
-            projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F, 1.0F);
+            projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5F, 1.0F);
             level.addFreshEntity(projectile);
 
             fluid.shrink(useAmount);
             writeFluid(stack, fluid);
-
-            spawnBloodParticles(level, player, stack);
 
             player.getCooldowns().addCooldown(this, 20);
         }
@@ -120,7 +121,8 @@ public class SyringeGunItem extends ProjectileWeaponItem implements CustomArmPos
 
     @Override
     public HumanoidModel.ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
-        return HumanoidModel.ArmPose.ITEM;
+        return (player.isUsingItem() && player.getUseItem() == stack && player.getUsedItemHand() == hand)
+                ? HumanoidModel.ArmPose.CROSSBOW_CHARGE : HumanoidModel.ArmPose.ITEM;
     }
 
     @Override
