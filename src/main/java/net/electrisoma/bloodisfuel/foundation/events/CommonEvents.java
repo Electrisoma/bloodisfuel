@@ -1,4 +1,4 @@
-package net.electrisoma.bloodisfuel.infrastructure.events;
+package net.electrisoma.bloodisfuel.foundation.events;
 
 import net.electrisoma.bloodisfuel.infrastructure.data.entries.BDamageTypes;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;

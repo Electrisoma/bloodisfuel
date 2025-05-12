@@ -40,6 +40,7 @@ public class defaultLang {
 
         tooltipMisc(consumer,"empty", "Empty :3");
         tooltipMisc(consumer,"effect", "Effect");
+        tooltipMisc(consumer,"burning", "Burning");
     }
 
     //capitalism!! (consumers)

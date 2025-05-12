@@ -1,4 +1,4 @@
-package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
+package net.electrisoma.bloodisfuel.api.equipment;
 
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.registry.BFluids;
@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,7 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.*;
 
 
-@SuppressWarnings("unused")
+//@SuppressWarnings("unused")
 public class SyringeFluidTypeManager {
 
     /**
@@ -33,9 +34,13 @@ public class SyringeFluidTypeManager {
      *     "amplifier": AMPLIFIER,
      *     "duration": DURATION,
      *     "effect": "EFFECT"
+     *   },
+     *   "burning": {
+     *       "damage_per_second": DAMAGE",
+     *       "duration_seconds": SECONDS"
      *   }
      * }
-     * Mobs, color, and entity effects are optional
+     * Mobs, color, on_entity_hit, and burning are optional
      */
 
     // hardcoded values
@@ -124,5 +129,16 @@ public class SyringeFluidTypeManager {
     public static boolean isPotion(Fluid fluid, RegistryAccess access) {
         ResourceLocation fluidKey = ForgeRegistries.FLUIDS.getKey(fluid);
         return fluidKey != null && fluidKey.equals(new ResourceLocation(Create.ID, "potion"));
+    }
+
+    /**
+     * Gets the burning properties.
+     */
+    public static void applyBurning(SyringeFluidType type, LivingEntity target) {
+        type.burning().ifPresent(burning -> {
+            target.setSecondsOnFire(burning.durationSeconds());
+            if (burning.damagePerSecond() > 0)
+                target.hurt(target.damageSources().onFire(), burning.damagePerSecond() * burning.durationSeconds());
+        });
     }
 }

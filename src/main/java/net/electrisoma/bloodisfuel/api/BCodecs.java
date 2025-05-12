@@ -16,4 +16,9 @@ public class BCodecs {
             Codec.INT.optionalFieldOf("duration", 1).forGetter(MobEffectInstance::getDuration),
             Codec.INT.optionalFieldOf("amplifier", 0).forGetter(MobEffectInstance::getAmplifier)
     ).apply(instance, MobEffectInstance::new));
+
+    public static final Codec<BurningData> BURNING_DATA = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.optionalFieldOf("duration_seconds", 4).forGetter(BurningData::durationSeconds),
+            Codec.FLOAT.optionalFieldOf("damage_per_second", 1.0f).forGetter(BurningData::damagePerSecond)
+    ).apply(instance, BurningData::new));
 }

@@ -1,0 +1,7 @@
+{
+  "burning": {
+    "damage_per_second": 4.0
+  },
+  "color": 14750483,
+  "fluids": "bloodisfuel:boiling_blood"
+}

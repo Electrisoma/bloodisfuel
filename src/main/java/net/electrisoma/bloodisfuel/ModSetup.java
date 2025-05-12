@@ -21,6 +21,7 @@ public class ModSetup {
         BConfigs.register(modLoadingContext);
 
         //BBlocks.register();
+        BEntityTypes.register();
         BItems.register();
         BFluids.register();
         BTags.register();

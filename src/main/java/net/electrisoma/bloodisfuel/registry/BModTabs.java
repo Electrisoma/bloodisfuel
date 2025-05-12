@@ -91,11 +91,12 @@ public class BModTabs {
                 Set<Item> exclusions = new ReferenceOpenHashSet<>();
 
                 List<ItemProviderEntry<?>> simpleExclusions = List.of(
+                        BItems.INCOMPLETE_SYRINGE_BLADE
                 );
 
-    //            for (ItemProviderEntry<?> entry : simpleExclusions) {
-    //                exclusions.add(entry.asItem());
-    //            }
+                for (ItemProviderEntry<?> entry : simpleExclusions) {
+                    exclusions.add(entry.asItem());
+                }
 
                 return exclusions::contains;
         }

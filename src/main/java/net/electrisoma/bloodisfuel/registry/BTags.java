@@ -129,6 +129,7 @@ public class BTags {
     public enum BItemTags {
 
         SYRINGE_BLADE,
+        SYRINGE_GUN,
 
         CARBOHYDRATES,
 

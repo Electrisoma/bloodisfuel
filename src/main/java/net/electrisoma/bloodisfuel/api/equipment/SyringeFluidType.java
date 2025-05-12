@@ -1,7 +1,8 @@
-package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
+package net.electrisoma.bloodisfuel.api.equipment;
 
 import net.electrisoma.bloodisfuel.api.BCodecs;
 
+import net.electrisoma.bloodisfuel.api.BurningData;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 
 /**
- * Represents a fluid type used in the Syringe Blade system.
+ * Represents a fluid type used in the Syringe system.
  * Can define which fluids match, display color, its effects on hit, and which mobs drop it.
  */
 @SuppressWarnings("all")
@@ -27,12 +28,14 @@ public record SyringeFluidType(
         HolderSet<Fluid> fluids,
         int color,
         Optional<MobEffectInstance> onEntityHitEffect,
-        Optional<HolderSet<EntityType<?>>> mobs) {
+        Optional<HolderSet<EntityType<?>>> mobs,
+        Optional<BurningData> burning) {
     public static final Codec<SyringeFluidType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registries.FLUID).fieldOf("fluids").forGetter(SyringeFluidType::fluids),
             Codec.INT.fieldOf("color").forGetter(SyringeFluidType::color),
             BCodecs.MOB_EFFECT_INSTANCE.optionalFieldOf("on_entity_hit").forGetter(SyringeFluidType::onEntityHitEffect),
-            RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).optionalFieldOf("mobs").forGetter(SyringeFluidType::mobs)
+            RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).optionalFieldOf("mobs").forGetter(SyringeFluidType::mobs),
+            BCodecs.BURNING_DATA.optionalFieldOf("burning").forGetter(SyringeFluidType::burning)
     ).apply(instance, SyringeFluidType::new));
 
     /**
@@ -45,11 +48,19 @@ public record SyringeFluidType(
                         .orElse(false));
     }
 
+    /**
+     * Returns true if this fluid type can burn.
+     */
+    public boolean hasBurning() {
+        return burning.isPresent();
+    }
+
     public static class Builder {
         private final List<Holder<Fluid>> fluids = new ArrayList<>();
         private int color = 0xFFFFFF;
         private MobEffectInstance onEntityHitEffect;
         private final List<Holder<EntityType<?>>> mobs = new ArrayList<>();
+        private Optional<BurningData> burning = Optional.empty();
 
         /**
          * Adds one or more fluids that this type applies to.
@@ -86,6 +97,14 @@ public record SyringeFluidType(
         }
 
         /**
+         * Adds a burning effect to this fluid type.
+         */
+        public Builder burning(BurningData burningData) {
+            this.burning = Optional.ofNullable(burningData);
+            return this;
+        }
+
+        /**
          * Builds the SyringeFluidType instance.
          */
         public SyringeFluidType build() {
@@ -93,7 +112,8 @@ public record SyringeFluidType(
                     HolderSet.direct(fluids),
                     color,
                     Optional.ofNullable(onEntityHitEffect),
-                    mobs.isEmpty() ? Optional.empty() : Optional.of(HolderSet.direct(mobs))
+                    mobs.isEmpty() ? Optional.empty() : Optional.of(HolderSet.direct(mobs)),
+                    burning
             );
         }
     }

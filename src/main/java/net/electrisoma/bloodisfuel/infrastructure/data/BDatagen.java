@@ -1,6 +1,8 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
+import com.simibubi.create.foundation.data.recipe.SequencedAssemblyRecipeGen;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
+import net.electrisoma.bloodisfuel.foundation.data.recipes.BSequencedRecipeGen;
 import net.electrisoma.bloodisfuel.foundation.data.recipes.StandardRecipeGen;
 import net.electrisoma.bloodisfuel.foundation.data.recipes.BProcessingRecipeGen;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
@@ -32,11 +34,12 @@ public class BDatagen {
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
 		BEntriesProvider bEntriesProvider = new BEntriesProvider(output, lookupProvider);
-		generator.addProvider(event.includeServer(), bEntriesProvider);
 
 		if (event.includeServer()) {
+			generator.addProvider(true, bEntriesProvider);
 			generator.addProvider(true, new BAdvancements(output));
 			generator.addProvider(true, new StandardRecipeGen(output));
+			generator.addProvider(true, new BSequencedRecipeGen(output));
 			BProcessingRecipeGen.registerAll(generator, output);
 		}
 	}

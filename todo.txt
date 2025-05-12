@@ -20,4 +20,8 @@
 -uber fluid (blood + healing stuff + lightning):
 grants incredibly strength and durability
 
--awardTo system for advancements
+-improved rendering of syringe:
+add arms and swaying, add better animations, add color changing vial
+
+-crusader's crossbow:
+stores fluid, converts arrows into any fluid in realtime

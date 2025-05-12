@@ -1,0 +1,62 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"texture_size": [8, 8],
+	"textures": {
+		"0": "bloodisfuel:item/syringe_gun_vial",
+		"particle": "bloodisfuel:item/syringe_gun_vial"
+	},
+	"elements": [
+		{
+			"from": [9.5, 7.5, 7],
+			"to": [12.5, 9.5, 9],
+			"rotation": {"angle": 45, "axis": "x", "origin": [11, 8.5, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 6, 4], "texture": "#0"},
+				"east": {"uv": [0, 8, 4, 12], "texture": "#0"},
+				"south": {"uv": [0, 4, 6, 8], "texture": "#0"},
+				"west": {"uv": [4, 8, 8, 12], "texture": "#0"},
+				"up": {"uv": [12, 4, 6, 0], "texture": "#0"},
+				"down": {"uv": [12, 4, 6, 8], "texture": "#0"}
+			}
+		}
+	],
+	"gui_light": "front",
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0, 90, 0]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0, -90, 0]
+		},
+		"firstperson_righthand": {
+			"rotation": [-4.5, 100.25, 10],
+			"translation": [1, 4, 1]
+		},
+		"firstperson_lefthand": {
+			"rotation": [17.25, 267, 10],
+			"translation": [1, 4, 1]
+		},
+		"ground": {
+			"rotation": [-90, 0, 0],
+			"translation": [0, -2.3, 0],
+			"scale": [0.76914, 0.76914, 0.76914]
+		},
+		"gui": {
+			"rotation": [27, -45, -8],
+			"translation": [-3, 1, 0],
+			"scale": [1.5, 1.5, 1.5]
+		},
+		"fixed": {
+			"rotation": [0, 180, 0]
+		}
+	},
+	"groups": [
+		{
+			"name": "item",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [0]
+		}
+	]
+}

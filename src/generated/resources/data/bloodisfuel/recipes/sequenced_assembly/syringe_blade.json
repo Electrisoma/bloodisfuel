@@ -1,0 +1,113 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "minecraft:iron_sword"
+  },
+  "loops": 1,
+  "results": [
+    {
+      "item": "bloodisfuel:syringe_blade",
+      "nbt": {
+        "Damage": 0
+      }
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        },
+        {
+          "item": "minecraft:glass_bottle"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        },
+        {
+          "tag": "forge:plates/copper"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        },
+        {
+          "item": "create:electron_tube"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        },
+        {
+          "item": "create:precision_mechanism"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        },
+        {
+          "tag": "forge:nuggets/gold"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_blade"
+        }
+      ]
+    }
+  ],
+  "transitionalItem": {
+    "item": "bloodisfuel:incomplete_syringe_blade"
+  }
+}

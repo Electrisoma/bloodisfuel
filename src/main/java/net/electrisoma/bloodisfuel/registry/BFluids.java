@@ -46,8 +46,7 @@ public class BFluids {
                             .bucket()
                             .tag(BTags.forgeItemTag("buckets/viscera"))
                             .build()
-                            .register()
-            ;
+                            .register();
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> BLOOD =
             REGISTRATE.standardFluid("blood",
@@ -70,8 +69,7 @@ public class BFluids {
                             .bucket()
                             .tag(BTags.forgeItemTag("buckets/blood"))
                             .build()
-                            .register()
-            ;
+                            .register();
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> ENRICHED_BLOOD =
             REGISTRATE.standardFluid("enriched_blood",
@@ -94,8 +92,7 @@ public class BFluids {
                             .bucket()
                             .tag(BTags.forgeItemTag("buckets/enriched_blood"))
                             .build()
-                            .register()
-            ;
+                            .register();
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> OIL_ENRICHED_BLOOD =
             REGISTRATE.standardFluid("oil_enriched_blood",
@@ -118,8 +115,7 @@ public class BFluids {
                             .bucket()
                             .tag(BTags.forgeItemTag("buckets/oil_enriched_blood"))
                             .build()
-                            .register()
-            ;
+                            .register();
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> DIESEL_INFUSED_BLOOD =
             REGISTRATE.standardFluid("diesel_infused_blood",
@@ -142,8 +138,7 @@ public class BFluids {
                             .bucket()
                             .tag(BTags.forgeItemTag("buckets/diesel_infused_blood"))
                             .build()
-                            .register()
-            ;
+                            .register();
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> GASOLINE_INFUSED_BLOOD =
             REGISTRATE.standardFluid("gasoline_infused_blood",
@@ -166,8 +161,7 @@ public class BFluids {
                             .bucket()
                             .tag(BTags.forgeItemTag("buckets/gasoline_infused_blood"))
                             .build()
-                            .register()
-            ;
+                            .register();
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> BOILING_BLOOD =
             REGISTRATE.standardFluid("boiling_blood",
@@ -191,8 +185,7 @@ public class BFluids {
                             .block(BoilingBloodBlock::new).build()
                             .bucket().tag(BTags.forgeItemTag("buckets/boiling_blood"))
                             .build()
-                            .register()
-            ;
+                            .register();
 
 
     // for later

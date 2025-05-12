@@ -1,5 +1,7 @@
 package net.electrisoma.bloodisfuel.registry;
 
+import com.simibubi.create.AllTags;
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.items.syringe_blade.SyringeBladeItem;
 
@@ -8,6 +10,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
+import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeGunItem;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.effect.MobEffects;
@@ -36,14 +39,31 @@ public class BItems {
                                     .effect(new MobEffectInstance(MobEffects.HUNGER, 600, 0),0.8f)
                                     .effect(new MobEffectInstance(MobEffects.POISON, 300, 2),0.8f)
                                     .build()))
-                    .register()
-            ;
+                    .register();
 
     public static final ItemEntry<SyringeBladeItem> SYRINGE_BLADE =
             REGISTRATE.item("syringe_blade", p ->
                             new SyringeBladeItem(Tiers.IRON,3,-2.4f,p))
                     .model(AssetLookup.itemModelWithPartials())
                     .tag(BTags.BItemTags.SYRINGE_BLADE.tag)
-                    .register()
-            ;
+                    .register();
+
+    public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_BLADE =
+            REGISTRATE.item("incomplete_syringe_blade", SequencedAssemblyItem::new)
+                    .model(AssetLookup.itemModelWithPartials())
+                    .lang("Incomplete Syringe Blade")
+                    .register();
+
+    public static final ItemEntry<SyringeGunItem> SYRINGE_GUN =
+            REGISTRATE.item("syringe_gun", SyringeGunItem::new)
+                    .model(AssetLookup.itemModelWithPartials())
+                    .tag(BTags.BItemTags.SYRINGE_GUN.tag)
+                    .register();
+
+//    public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_BLADE =
+//            REGISTRATE.item("incomplete_syringe_blade", SequencedAssemblyItem::new)
+//                    .model(AssetLookup.itemModelWithPartials())
+//                    .lang("Incomplete Syringe Blade")
+//                    .register();
+
 }
