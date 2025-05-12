@@ -1,3 +1,4 @@
+//file:noinspection GroovyAssignabilityCheck
 import dev.ithundxr.silk.ChangelogText
 
 plugins {
@@ -173,6 +174,7 @@ sourceSets.main {
 }
 
 processResources {
+    //noinspection GroovyAccessibility
     def buildProps=project.properties.clone()
 
     // Replaces FML's magic file.jarVersion string with the correct version at build time.

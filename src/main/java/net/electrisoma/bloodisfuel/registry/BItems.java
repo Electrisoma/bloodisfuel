@@ -1,6 +1,5 @@
 package net.electrisoma.bloodisfuel.registry;
 
-import com.simibubi.create.AllTags;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.items.syringe_blade.SyringeBladeItem;

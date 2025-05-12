@@ -1,16 +1,11 @@
 package net.electrisoma.bloodisfuel;
 
-import net.electrisoma.bloodisfuel.registry.BEntityTypes;
 import net.electrisoma.bloodisfuel.registry.BParticles;
 import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeGunRenderHandler;
-import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeProjectileRenderer;
 import net.electrisoma.bloodisfuel.registry.particles.*;
 
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 

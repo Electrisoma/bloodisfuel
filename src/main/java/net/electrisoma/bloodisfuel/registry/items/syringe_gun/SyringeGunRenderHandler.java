@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 
+@SuppressWarnings("unused")
 public class SyringeGunRenderHandler extends ShootableGadgetRenderHandler {
 
     private float nextPitch;

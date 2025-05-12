@@ -1,16 +1,16 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
-import com.simibubi.create.content.fluids.transfer.FillingRecipe;
 import com.simibubi.create.content.kinetics.deployer.DeployerApplicationRecipe;
 import com.simibubi.create.content.kinetics.press.PressingRecipe;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipeBuilder;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.registry.BItems;
 import net.minecraft.data.PackOutput;
 
 import java.util.function.UnaryOperator;
 
+
+@SuppressWarnings("unused")
 public class BSequencedRecipeGen extends BRecipeProvider {
 
     GeneratedRecipe

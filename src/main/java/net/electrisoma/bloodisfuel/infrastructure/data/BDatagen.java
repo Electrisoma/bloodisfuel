@@ -1,6 +1,5 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
-import com.simibubi.create.foundation.data.recipe.SequencedAssemblyRecipeGen;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.foundation.data.recipes.BSequencedRecipeGen;
 import net.electrisoma.bloodisfuel.foundation.data.recipes.StandardRecipeGen;
@@ -15,7 +14,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.function.BiConsumer;
 import java.util.concurrent.CompletableFuture;
@@ -31,7 +29,7 @@ public class BDatagen {
 		DataGenerator generator = event.getGenerator();
 		PackOutput output = generator.getPackOutput();
 		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+		//ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
 		BEntriesProvider bEntriesProvider = new BEntriesProvider(output, lookupProvider);
 

@@ -67,14 +67,13 @@ public class BModTabs {
 
         static {
                 MutableObject<Predicate<Item>> isItem3d = new MutableObject<>(item -> false);
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                    isItem3d.setValue(item -> {
-                        ItemRenderer itemRenderer = Minecraft.getInstance()
-                                .getItemRenderer();
-                        BakedModel model = itemRenderer.getModel(new ItemStack(item), null, null, 0);
-                        return model.isGui3d();
-                    });
-                });
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                        isItem3d.setValue(item -> {
+                            ItemRenderer itemRenderer = Minecraft.getInstance()
+                                    .getItemRenderer();
+                            BakedModel model = itemRenderer.getModel(new ItemStack(item), null, null, 0);
+                            return model.isGui3d();
+                        }));
                 IS_ITEM_3D_PREDICATE = isItem3d.getValue();
             }
 
@@ -221,8 +220,9 @@ public class BModTabs {
 
                 public enum Type {
                     BEFORE,
-                    AFTER;
+                    AFTER
                 }
             }
         }
+
 }

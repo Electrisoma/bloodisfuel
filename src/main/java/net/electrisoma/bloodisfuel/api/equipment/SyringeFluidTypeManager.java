@@ -21,7 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.*;
 
 
-//@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "DataFlowIssue"})
 public class SyringeFluidTypeManager {
 
     /**

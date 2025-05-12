@@ -6,13 +6,13 @@ import com.simibubi.create.foundation.item.render.CustomRenderedItemModelRendere
 import com.simibubi.create.foundation.item.render.PartialItemModelRenderer;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.engine_room.flywheel.lib.transform.TransformStack;
-import net.createmod.catnip.animation.AnimationTickHolder;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
+
+@SuppressWarnings("unused")
 public class SyringeBladeItemRenderer extends CustomRenderedItemModelRenderer {
     protected static final PartialModel VIAL = PartialModel.of(BloodIsFuel.asResource("item/syringe_blade/vial"));
 
@@ -29,7 +29,7 @@ public class SyringeBladeItemRenderer extends CustomRenderedItemModelRenderer {
 //                    SyringeBladeRenderHandler.lastMainHandAnimation,
 //                    SyringeBladeRenderHandler.mainHandAnimation);
 
-        animation = animation * animation * animation;
+        //animation = animation * animation * animation;
 
         // syringe vial
         renderer.render(model.getOriginalModel(), light);

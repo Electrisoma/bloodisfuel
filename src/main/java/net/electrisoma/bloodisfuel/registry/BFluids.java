@@ -15,6 +15,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 
+@SuppressWarnings("unused")
 public class BFluids {
 
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();

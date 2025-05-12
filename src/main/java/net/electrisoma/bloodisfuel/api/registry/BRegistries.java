@@ -5,6 +5,7 @@ import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 
+
 public class BRegistries {
 
     public static final ResourceKey<Registry<SyringeFluidType>> SYRINGE_BLADE_FLUIDS =
