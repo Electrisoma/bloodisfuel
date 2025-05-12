@@ -1,11 +1,11 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
-import com.google.common.collect.ImmutableMultimap;
+
+import net.electrisoma.bloodisfuel.api.equipment.ItemUtils;
+
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
-import net.electrisoma.bloodisfuel.api.equipment.ItemUtils;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -14,7 +14,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,6 +33,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+
 public class SyringeGunItem extends ProjectileWeaponItem implements CustomArmPoseItem, ItemUtils {
 
     public SyringeGunItem(Properties properties) {
@@ -45,13 +45,8 @@ public class SyringeGunItem extends ProjectileWeaponItem implements CustomArmPos
         ItemStack stack = player.getItemInHand(hand);
 
         if (player.isShiftKeyDown()) {
-            if (!level.isClientSide && !readFluid(stack).isEmpty()) {
-                spawnDrainingParticles(level, player, stack, 5);
-                writeFluid(stack, FluidStack.EMPTY);
-                playSound(level, player, SoundEvents.BOTTLE_EMPTY);
-                return InteractionResultHolder.sidedSuccess(stack, false);
-            }
-            return InteractionResultHolder.pass(stack);
+            drainVial(stack, player, level);
+            return InteractionResultHolder.sidedSuccess(stack, false);
         }
 
         player.startUsingItem(hand);
@@ -62,24 +57,16 @@ public class SyringeGunItem extends ProjectileWeaponItem implements CustomArmPos
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         if (!(entityLiving instanceof Player player)) return;
 
-        RegistryAccess access = level.registryAccess();
-        FluidStack fluid = readFluid(stack);
-
-        if (fluid.isEmpty()) {
-            SyringeFluidType selfType = getMatchingFluid(player, access);
-            if (selfType == null) selfType = getFallback(access);
-            if (selfType != null) {
-                writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(selfType), getCapacity(stack)));
-                player.hurt(player.damageSources().generic(), 2.0F);
-                playSound(level, player, SoundEvents.PLAYER_HURT);
-                spawnBloodParticles(level, player, stack);
-            }
+        if (readFluid(stack).isEmpty()) {
+            extractFromSelf(stack, level, player);
             return;
         }
 
+        FluidStack fluid = readFluid(stack);
         int capacity = getCapacity(stack);
         int charges = getChargeCount(stack);
         int useAmount = getUseAmount(capacity, charges);
+
         if (fluid.getAmount() < useAmount) return;
 
         if (!level.isClientSide) {
@@ -88,14 +75,12 @@ public class SyringeGunItem extends ProjectileWeaponItem implements CustomArmPos
             double velocityZ = player.getLookAngle().z * 20;
 
             SyringeProjectileEntity projectile = new SyringeProjectileEntity(level, player, velocityX, velocityY, velocityZ);
-
             projectile.setFluid(fluid.copy());
             projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5F, 1.0F);
             level.addFreshEntity(projectile);
 
             fluid.shrink(useAmount);
             writeFluid(stack, fluid);
-
             player.getCooldowns().addCooldown(this, 20);
         }
     }

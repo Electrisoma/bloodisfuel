@@ -1,18 +1,15 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
 import com.simibubi.create.AllSoundEvents;
-import net.electrisoma.bloodisfuel.registry.BEntityTypes;
 import net.electrisoma.bloodisfuel.api.equipment.ItemUtils;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
+import net.electrisoma.bloodisfuel.registry.BEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -24,7 +21,6 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.network.NetworkHooks;
 
-import java.util.List;
 import java.util.Objects;
 
 public class SyringeProjectileEntity extends AbstractHurtingProjectile
@@ -64,25 +60,17 @@ public class SyringeProjectileEntity extends AbstractHurtingProjectile
         super.onHitEntity(result);
         Entity entity = result.getEntity();
 
-        if (!level().isClientSide && entity instanceof LivingEntity target) {
-            RegistryAccess access = level().registryAccess();
-            SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluid, access);
-            List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluid);
+        if (!level().isClientSide && entity instanceof LivingEntity target && getOwner() instanceof Player player) {
+            ItemStack syringeStack = new ItemStack(Items.STICK);
+            writeFluid(syringeStack, fluid);
 
-            target.hurt(target.damageSources().indirectMagic(this, this.getOwner()), 2.0F);
-            for (MobEffectInstance effect : effects) target.addEffect(new MobEffectInstance(effect));
-            if (type != null && type.hasBurning())
-                type.burning().ifPresent(burningData -> {
-                    applyBurningEffect(target, burningData);
-                });
-            if (type != null && type.hasExtinguishing())
-                applyExtinguishingEffect(target, type);
-
+            injectIntoTarget(syringeStack, target, player, level().registryAccess());
             playHitSound(level(), position());
         }
 
         this.discard();
     }
+
 
     @Override
     protected void onHitBlock(BlockHitResult ray) {

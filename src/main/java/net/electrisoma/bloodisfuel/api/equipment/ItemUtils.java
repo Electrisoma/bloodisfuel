@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.api.equipment;
 
+import net.electrisoma.bloodisfuel.registry.BAdvancements;
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.api.data.BurningData;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
@@ -15,6 +16,8 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -71,42 +74,6 @@ public interface ItemUtils {
     }
     default int getCurrentFillLevel(ItemStack stack) {
         return readFluid(stack).getAmount();
-    }
-
-    /**
-     * Item bar utilities.
-     */
-    default boolean isBarVisible(ItemStack stack) {
-        return getCurrentFillLevel(stack) > 0;
-    }
-    default int getBarWidth(ItemStack stack) {
-        return Math.round(13 * (getCurrentFillLevel(stack) / (float) getCapacity(stack)));
-    }
-    default int getBarColor(ItemStack stack) {
-        Level level = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null;
-        RegistryAccess access = level != null ? level.registryAccess() : null;
-
-        FluidStack fluidStack = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
-
-        return SyringeFluidTypeManager.getColor(type, fluidStack);
-    }
-
-    /**
-     * Sound utilities.
-     */
-    default void playSound(Level level, Entity entity, SoundEvent sound) {
-        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 1.0F, 1.0F);
-    }
-
-    /**
-     * Fluid read/right utilities.
-     */
-    default FluidStack readFluid(ItemStack stack) {
-        return FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("Fluid"));
-    }
-    default void writeFluid(ItemStack stack, FluidStack fluid) {
-        stack.getOrCreateTag().put("Fluid", fluid.writeToNBT(new CompoundTag()));
     }
 
     /**
@@ -247,7 +214,177 @@ public interface ItemUtils {
     }
 
     /**
-     * Fluid effects utilities.
+     * Fluid handler utiltiies.
+     */
+    default FluidHandlerItemStack getFluidHandler(ItemStack stack) {
+        return new ToolItemFluidHandler(stack, getCapacity(stack), this::readFluid, this::writeFluid);
+    }
+    class ToolItemFluidHandler extends FluidHandlerItemStack {
+        private final BiConsumer<ItemStack, FluidStack> write;
+        private final Function<ItemStack, FluidStack> read;
+
+        public ToolItemFluidHandler(ItemStack container, int capacity,
+                                    Function<ItemStack, FluidStack> read,
+                                    BiConsumer<ItemStack, FluidStack> write) {
+            super(container, capacity);
+            this.read = read;
+            this.write = write;
+        }
+
+        @Override
+        public FluidStack getFluid() {
+            return read.apply(container);
+        }
+
+        @Override
+        protected void setFluid(FluidStack fluid) {
+            write.accept(container, fluid);
+        }
+    }
+
+    /**
+     * Fluid read/right utilities.
+     */
+    default FluidStack readFluid(ItemStack stack) {
+        return FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("Fluid"));
+    }
+    default void writeFluid(ItemStack stack, FluidStack fluid) {
+        stack.getOrCreateTag().put("Fluid", fluid.writeToNBT(new CompoundTag()));
+    }
+
+    /**
+     * Context for various syringe combat.
+     */
+    record CombatContext(FluidStack fluid, SyringeFluidType type, int useAmount, boolean canAttack, boolean onlyBeneficial) {}
+    default CombatContext getCombatContext(ItemStack stack, @Nullable RegistryAccess access) {
+        FluidStack fluidStack = readFluid(stack);
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
+        int capacity = getCapacity(stack);
+        int charges = getChargeCount(stack);
+        int useAmount = getUseAmount(capacity, charges);
+        int currentFill = fluidStack.getAmount();
+        List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluidStack);
+        boolean onlyBeneficial = !effects.isEmpty() && effects.stream().allMatch(e -> e.getEffect().isBeneficial());
+        boolean canAttack = currentFill >= useAmount && !onlyBeneficial;
+
+        return new CombatContext(fluidStack, type, useAmount, canAttack, onlyBeneficial);
+    }
+
+    /**
+     * Syringe utiltiies.
+     */
+    default void drainVial(ItemStack stack, Player player, Level level) {
+        if (level.isClientSide) return;
+
+        FluidStack fluid = readFluid(stack);
+        if (fluid.isEmpty()) return;
+
+        spawnDrainingParticles(level, player, stack, 5);
+        writeFluid(stack, FluidStack.EMPTY);
+        playSound(level, player, SoundEvents.BOTTLE_EMPTY);
+    }
+    default void extractFromSelf(ItemStack stack, Level level, LivingEntity entityLiving) {
+        if (!(entityLiving instanceof Player player)) return;
+
+        RegistryAccess access = level.registryAccess();
+        CombatContext ctx = getCombatContext(stack, access);
+
+        if (ctx.fluid().isEmpty()) {
+            SyringeFluidType selfType = getMatchingFluid(player, access);
+            if (selfType == null) selfType = getFallback(access);
+            if (selfType != null) {
+                writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(selfType), getCapacity(stack)));
+                player.hurt(player.damageSources().generic(), 2.0F);
+                playSound(level, player, SoundEvents.PLAYER_HURT);
+                spawnBloodParticles(level, player, stack);
+            }
+            return;
+        }
+    }
+    default void injectSelf(ItemStack stack, Level level, LivingEntity entityLiving) {
+        if (!(entityLiving instanceof Player player)) return;
+
+        RegistryAccess access = level.registryAccess();
+        CombatContext ctx = getCombatContext(stack, access);
+        FluidStack fluid = ctx.fluid();
+
+        if (ctx.fluid().getAmount() < ctx.useAmount()) return;
+
+        if (!level.isClientSide) {
+            if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), access)) {
+                player.removeAllEffects();
+                BAdvancements.LACTOSE_TOLERANT.awardTo((ServerPlayer) player);
+            }
+
+            SyringeFluidTypeManager.getEffects(ctx.type(), fluid)
+                    .forEach(effect -> player.addEffect(new MobEffectInstance(effect)));
+
+            if (ctx.type().hasBurning()) {
+                BurningData burningData = ctx.type().burning().get();
+                applyBurningEffect(player, burningData);
+            }
+
+            if (ctx.type().hasExtinguishing()) {
+                applyExtinguishingEffect(player, ctx.type());
+            }
+
+            fluid.shrink(ctx.useAmount());
+            writeFluid(stack, fluid);
+            playSound(level, player, SoundEvents.PLAYER_ATTACK_CRIT);
+        }
+    }
+    default boolean extractFromTarget(ItemStack stack, LivingEntity target, Player player, RegistryAccess access) {
+        if (readFluid(stack).isEmpty()) {
+            SyringeFluidType matchedType = getMatchingFluid(target, access);
+            if (matchedType == null) matchedType = getFallback(access);
+            if (matchedType != null) {
+                writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(matchedType), getCapacity(stack)));
+                target.hurt(player.damageSources().playerAttack(player), 2.0F);
+                spawnBloodParticles(player.level(), target, stack);
+                return true;
+            }
+        }
+        return false;
+    }
+    default boolean injectIntoTarget(ItemStack stack, LivingEntity target, Player player, RegistryAccess access) {
+        CombatContext ctx = getCombatContext(stack, access);
+
+        if (ctx.fluid().getAmount() < ctx.useAmount()) {
+            target.hurt(player.damageSources().playerAttack(player), 2.0F);
+            return true;
+        }
+
+        if (!player.level().isClientSide) {
+            if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), access)) {
+                target.removeAllEffects();
+            }
+
+            if (target instanceof Player targetPlayer) {
+                if (ctx.onlyBeneficial()) BAdvancements.DOCTOR.awardTo((ServerPlayer) player);
+                else BAdvancements.MEDICAL_MALPRACTICE.awardTo((ServerPlayer) player);
+            }
+
+            SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid())
+                    .forEach(effect -> target.addEffect(new MobEffectInstance(effect)));
+
+            if (ctx.type().hasBurning()) {
+                applyBurningEffect(target, ctx.type().burning().get());
+                BAdvancements.FIRE_FIRE_FIRE.awardTo((ServerPlayer) player);
+            }
+
+            if (ctx.type().hasExtinguishing()) {
+                applyExtinguishingEffect(target, ctx.type());
+            }
+
+            ctx.fluid().shrink(ctx.useAmount());
+            writeFluid(stack, ctx.fluid());
+        }
+
+        return true;
+    }
+
+    /**
+     * Syringe effects utilities.
      */
     default void applyBurningEffect(LivingEntity entity, BurningData burningData) {
         if (entity == null || entity.level().isClientSide) return;
@@ -327,50 +464,29 @@ public interface ItemUtils {
     }
 
     /**
-     * Fluid handler utiltiies.
+     * Item bar utilities.
      */
-    default FluidHandlerItemStack getFluidHandler(ItemStack stack) {
-        return new ToolItemFluidHandler(stack, getCapacity(stack), this::readFluid, this::writeFluid);
+    default boolean isBarVisible(ItemStack stack) {
+        return getCurrentFillLevel(stack) > 0;
     }
-    class ToolItemFluidHandler extends FluidHandlerItemStack {
-        private final BiConsumer<ItemStack, FluidStack> write;
-        private final Function<ItemStack, FluidStack> read;
+    default int getBarWidth(ItemStack stack) {
+        return Math.round(13 * (getCurrentFillLevel(stack) / (float) getCapacity(stack)));
+    }
+    default int getBarColor(ItemStack stack) {
+        Level level = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null;
+        RegistryAccess access = level != null ? level.registryAccess() : null;
 
-        public ToolItemFluidHandler(ItemStack container, int capacity,
-                                    Function<ItemStack, FluidStack> read,
-                                    BiConsumer<ItemStack, FluidStack> write) {
-            super(container, capacity);
-            this.read = read;
-            this.write = write;
-        }
+        FluidStack fluidStack = readFluid(stack);
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
 
-        @Override
-        public FluidStack getFluid() {
-            return read.apply(container);
-        }
-
-        @Override
-        protected void setFluid(FluidStack fluid) {
-            write.accept(container, fluid);
-        }
+        return SyringeFluidTypeManager.getColor(type, fluidStack);
     }
 
     /**
-     * Context for various syringe combat.
+     * Sound utilities.
      */
-    record CombatContext(FluidStack fluid, SyringeFluidType type, int useAmount, boolean canAttack, boolean onlyBeneficial) {}
-    default CombatContext getCombatContext(ItemStack stack, @Nullable RegistryAccess access) {
-        FluidStack fluidStack = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
-        int capacity = getCapacity(stack);
-        int charges = getChargeCount(stack);
-        int useAmount = getUseAmount(capacity, charges);
-        int currentFill = fluidStack.getAmount();
-        List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluidStack);
-        boolean onlyBeneficial = !effects.isEmpty() && effects.stream().allMatch(e -> e.getEffect().isBeneficial());
-        boolean canAttack = currentFill >= useAmount && !onlyBeneficial;
-
-        return new CombatContext(fluidStack, type, useAmount, canAttack, onlyBeneficial);
+    default void playSound(Level level, Entity entity, SoundEvent sound) {
+        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     // simple fuel item with fixed burn time

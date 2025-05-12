@@ -1,13 +1,9 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
-import net.electrisoma.bloodisfuel.api.data.BurningData;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
-import net.electrisoma.bloodisfuel.registry.BAdvancements;
+import net.electrisoma.bloodisfuel.api.equipment.ItemUtils;
 import net.electrisoma.bloodisfuel.registry.BTags;
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
-import net.electrisoma.bloodisfuel.api.equipment.ItemUtils;
 import net.electrisoma.bloodisfuel.registry.enchantments.ChargesEnchantment;
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
@@ -19,10 +15,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.*;
@@ -39,7 +32,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import com.google.common.collect.Multimap;
@@ -110,12 +102,8 @@ public class SyringeBladeItem extends SwordItem
         ItemStack stack = player.getItemInHand(hand);
 
         if (player.isShiftKeyDown()) {
-            if (!level.isClientSide && !readFluid(stack).isEmpty()) {
-                spawnDrainingParticles(level, player, stack, 5);
-                writeFluid(stack, FluidStack.EMPTY);
-                playSound(level, player, SoundEvents.BOTTLE_EMPTY);
-                return InteractionResultHolder.sidedSuccess(stack, false);
-            } return InteractionResultHolder.pass(stack);
+            drainVial(stack, player, level);
+            return InteractionResultHolder.sidedSuccess(stack, false);
         }
 
         if (player.getCooldowns().isOnCooldown(this)) return InteractionResultHolder.pass(stack);
@@ -131,47 +119,13 @@ public class SyringeBladeItem extends SwordItem
         int useDuration = getUseDuration(stack) - player.getUseItemRemainingTicks();
         if (useDuration < 20) return;
 
-        RegistryAccess access = level.registryAccess();
-        CombatContext ctx = getCombatContext(stack, access);
-
-        if (ctx.fluid().isEmpty()) {
-            SyringeFluidType selfType = getMatchingFluid(player, access);
-            if (selfType == null) selfType = getFallback(access);
-            if (selfType != null) {
-                writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(selfType), getCapacity(stack)));
-                player.hurt(player.damageSources().generic(), 2.0F);
-                playSound(level, player, SoundEvents.PLAYER_HURT);
-                spawnBloodParticles(level, player, stack);
-            }
+        if (readFluid(stack).isEmpty()) {
+            extractFromSelf(stack, level, player);
             return;
         }
 
-        if (ctx.fluid().getAmount() < ctx.useAmount()) return;
-
-        if (!level.isClientSide) {
-            if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), access)) {
-                player.removeAllEffects();
-                BAdvancements.LACTOSE_TOLERANT.awardTo((ServerPlayer) player);
-            }
-
-            SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid())
-                    .forEach(effect -> player.addEffect(new MobEffectInstance(effect)));
-
-            if (ctx.type().hasBurning()) {
-                BurningData burningData = ctx.type().burning().get();
-                applyBurningEffect(player, burningData);
-            }
-
-            if (ctx.type().hasExtinguishing()) {
-                applyExtinguishingEffect(player, ctx.type());
-            }
-
-            ctx.fluid().shrink(ctx.useAmount());
-            writeFluid(stack, ctx.fluid());
-            playSound(level, player, SoundEvents.PLAYER_ATTACK_CRIT);
-            player.getCooldowns().addCooldown(this, 40);
-        }
-
+        injectSelf(stack, level, player);
+        player.getCooldowns().addCooldown(this, 40);
         isOnCooldown = false;
     }
 
@@ -181,48 +135,9 @@ public class SyringeBladeItem extends SwordItem
         if (!(attacker instanceof Player player)) return false;
 
         RegistryAccess access = attacker.level().registryAccess();
-        CombatContext ctx = getCombatContext(stack, access);
 
-        if (ctx.fluid().isEmpty()) {
-            SyringeFluidType matchedType = getMatchingFluid(target, access);
-            if (matchedType == null) matchedType = getFallback(access);
-            if (matchedType != null) {
-                writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(matchedType), getCapacity(stack)));
-                target.hurt(player.damageSources().playerAttack(player), 2.0F);
-                spawnBloodParticles(attacker.level(), target, stack);
-                return true;
-            }
-        }
-
-        if (ctx.fluid().getAmount() < ctx.useAmount()) {
-            target.hurt(player.damageSources().playerAttack(player), 2.0F);
-            return true;
-        }
-
-        if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), access)) {
-            target.removeAllEffects();
-        }
-
-        if (target instanceof Player targetPlayer) {
-            if (ctx.onlyBeneficial()) BAdvancements.DOCTOR.awardTo((ServerPlayer) player);
-            else BAdvancements.MEDICAL_MALPRACTICE.awardTo((ServerPlayer) player);
-        }
-
-        SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid())
-                .forEach(effect -> target.addEffect(new MobEffectInstance(effect)));
-
-        if (ctx.type().hasBurning()) {
-            BurningData burningData = ctx.type().burning().get();
-            applyBurningEffect(target, burningData);
-            BAdvancements.FIRE_FIRE_FIRE.awardTo((ServerPlayer) player);
-        }
-
-        if (ctx.type().hasExtinguishing()) {
-            applyExtinguishingEffect(player, ctx.type());
-        }
-
-        ctx.fluid().shrink(ctx.useAmount());
-        writeFluid(stack, ctx.fluid());
+        if (extractFromTarget(stack, target, player, access)) return true;
+        if (injectIntoTarget(stack, target, player, access)) return true;
 
         return super.hurtEnemy(stack, target, attacker);
     }
