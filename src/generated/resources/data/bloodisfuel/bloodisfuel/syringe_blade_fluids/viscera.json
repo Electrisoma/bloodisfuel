@@ -1,5 +1,7 @@
 {
+  "attack_speed": -2.5,
   "color": 14631958,
+  "damage": 6.0,
   "fluids": "bloodisfuel:viscera",
   "mobs": "minecraft:zombie",
   "on_entity_hit": {

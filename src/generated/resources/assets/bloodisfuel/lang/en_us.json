@@ -37,6 +37,7 @@
   "bloodisfuel.tooltip.extinguishing": "Extinguishing",
   "bloodisfuel.tooltip.heal": "hp",
   "bloodisfuel.tooltip.seconds": "s",
+  "bloodisfuel.tooltip.syringe_gun.damage": "Impact Damage",
   "death.attack.bloodisfuel.boiling": "%s died like a lobster",
   "death.attack.bloodisfuel.syringe_blade": "%1$s was stabbed by %2$s's Syringe Blade",
   "death.attack.bloodisfuel.syringe_blade.item": "%1$s was stabbed by %2$s using %3$s",

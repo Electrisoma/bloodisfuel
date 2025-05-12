@@ -28,6 +28,8 @@ public class BSyringeFluidTypes {
         register(ctx, "fallback", new SyringeFluidType.Builder()
                 .addFluids(BFluids.BLOOD.getSource()) // default blood
                 .color(0xF10B0B)
+                .damage(6)
+                .attackSpeed(-2.5F)
                 .onEntityHitEffect(new MobEffectInstance(MobEffects.WEAKNESS, 500, 1, false, true))
                 .build()
         );
@@ -58,6 +60,8 @@ public class BSyringeFluidTypes {
                 .addFluids(BFluids.VISCERA.getSource())
                 .addMobs(EntityType.ZOMBIE)
                 .color(0xDF4416)
+                .damage(6)
+                .attackSpeed(-2.5F)
                 .onEntityHitEffect(new MobEffectInstance(MobEffects.POISON, 500, 1, false, true))
                 .build()
         );
@@ -65,6 +69,8 @@ public class BSyringeFluidTypes {
         register(ctx, "blood", new SyringeFluidType.Builder()
                 .addFluids(BFluids.BLOOD.getSource())
                 .color(0xF10B0B)
+                .damage(6)
+                .attackSpeed(-2.5F)
                 .onEntityHitEffect(new MobEffectInstance(MobEffects.WEAKNESS, 500, 1, false, true))
                 .build()
         );
@@ -72,6 +78,8 @@ public class BSyringeFluidTypes {
         register(ctx, "enriched_blood", new SyringeFluidType.Builder()
                 .addFluids(BFluids.ENRICHED_BLOOD.getSource())
                 .color(0xE11313)
+                .damage(6)
+                .attackSpeed(-2.5F)
                 .onEntityHitEffect(new MobEffectInstance(MobEffects.WEAKNESS, 500, 1, false, true))
                 .build()
         );
@@ -79,6 +87,8 @@ public class BSyringeFluidTypes {
         register(ctx, "boiling_blood", new SyringeFluidType.Builder()
                 .addFluids(BFluids.BOILING_BLOOD.getSource())
                 .color(0xE11313)
+                .damage(6)
+                .attackSpeed(-2.5F)
                 .burning(new BurningData(4, 4F))
                 .build()
         );

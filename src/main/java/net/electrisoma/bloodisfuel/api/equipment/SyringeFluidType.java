@@ -23,11 +23,14 @@ import java.util.Optional;
 /**
  * Represents a fluid type used in the Syringe system.
  * Can define which fluids match, display color, its effects on hit, and which mobs drop it.
+ * This system can also be used by a data generator for convenience.
  */
 @SuppressWarnings("all")
 public record SyringeFluidType(
         HolderSet<Fluid> fluids,
         int color,
+        Optional<Float> damage,
+        Optional<Float> attackSpeed,
         Optional<MobEffectInstance> onEntityHitEffect,
         Optional<HolderSet<EntityType<?>>> mobs,
         Optional<BurningData> burning,
@@ -35,6 +38,8 @@ public record SyringeFluidType(
     public static final Codec<SyringeFluidType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registries.FLUID).fieldOf("fluids").forGetter(SyringeFluidType::fluids),
             Codec.INT.fieldOf("color").forGetter(SyringeFluidType::color),
+            Codec.FLOAT.optionalFieldOf("damage").forGetter(SyringeFluidType::damage),
+            Codec.FLOAT.optionalFieldOf("attack_speed").forGetter(SyringeFluidType::attackSpeed),
             BCodecs.MOB_EFFECT_INSTANCE.optionalFieldOf("on_entity_hit").forGetter(SyringeFluidType::onEntityHitEffect),
             RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).optionalFieldOf("mobs").forGetter(SyringeFluidType::mobs),
             BCodecs.BURNING_DATA.optionalFieldOf("burning").forGetter(SyringeFluidType::burning),
@@ -65,9 +70,19 @@ public record SyringeFluidType(
         return extinguishing.isPresent();
     }
 
+    public float getDamageOrDefault(float fallback) {
+        return damage.orElse(fallback);
+    }
+
+    public float getAttackSpeedOrDefault(float fallback) {
+        return attackSpeed.orElse(fallback);
+    }
+
     public static class Builder {
         private final List<Holder<Fluid>> fluids = new ArrayList<>();
         private int color = 0xFFFFFF;
+        private Optional<Float> damage = Optional.empty();
+        private Optional<Float> attackSpeed = Optional.empty();
         private MobEffectInstance onEntityHitEffect;
         private final List<Holder<EntityType<?>>> mobs = new ArrayList<>();
         private Optional<BurningData> burning = Optional.empty();
@@ -77,9 +92,9 @@ public record SyringeFluidType(
          * Adds one or more fluids that this type applies to.
          */
         public Builder addFluids(Fluid... fluids) {
-            for (Fluid fluid : fluids) {
+            for (Fluid fluid : fluids)
                 this.fluids.add(fluid.builtInRegistryHolder());
-            } return this;
+            return this;
         }
 
         /**
@@ -87,6 +102,16 @@ public record SyringeFluidType(
          */
         public Builder color(int color) {
             this.color = color;
+            return this;
+        }
+
+        public Builder damage(float value) {
+            this.damage = Optional.of(value);
+            return this;
+        }
+
+        public Builder attackSpeed(float value) {
+            this.attackSpeed = Optional.of(value);
             return this;
         }
 
@@ -102,9 +127,9 @@ public record SyringeFluidType(
          * Adds mobs associated with the fluid type.
          */
         public Builder addMobs(EntityType<?>... types) {
-            for (EntityType<?> type : types) {
+            for (EntityType<?> type : types)
                 ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(mobs::add);
-            } return this;
+            return this;
         }
 
         /**
@@ -130,6 +155,8 @@ public record SyringeFluidType(
             return new SyringeFluidType(
                     HolderSet.direct(fluids),
                     color,
+                    damage,
+                    attackSpeed,
                     Optional.ofNullable(onEntityHitEffect),
                     mobs.isEmpty() ? Optional.empty() : Optional.of(HolderSet.direct(mobs)),
                     burning,

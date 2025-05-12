@@ -60,10 +60,10 @@ public class BItems {
                     .tag(BTags.BItemTags.SYRINGE_GUN.tag)
                     .register();
 
-//    public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_BLADE =
-//            REGISTRATE.item("incomplete_syringe_blade", SequencedAssemblyItem::new)
+//    public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_GUN =
+//            REGISTRATE.item("incomplete_syringe_gun", SequencedAssemblyItem::new)
 //                    .model(AssetLookup.itemModelWithPartials())
-//                    .lang("Incomplete Syringe Blade")
+//                    .lang("Incomplete Syringe Gun")
 //                    .register();
 
 }

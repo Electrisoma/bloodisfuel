@@ -45,6 +45,7 @@ public class defaultLang {
         tooltipMisc(consumer,"damage", "dmg");
         tooltipMisc(consumer,"extinguishing", "Extinguishing");
         tooltipMisc(consumer,"heal", "hp");
+        tooltipMisc(consumer,"syringe_gun.damage", "Impact Damage");
     }
 
     //capitalism!! (consumers)

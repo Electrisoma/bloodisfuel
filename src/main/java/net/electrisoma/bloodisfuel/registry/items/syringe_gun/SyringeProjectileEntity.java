@@ -1,22 +1,18 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
 import com.simibubi.create.AllSoundEvents;
-import net.createmod.catnip.math.VecHelper;
 import net.electrisoma.bloodisfuel.registry.BEntityTypes;
-import net.electrisoma.bloodisfuel.registry.items.ItemUtils;
+import net.electrisoma.bloodisfuel.api.equipment.ItemUtils;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.particles.ItemParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;

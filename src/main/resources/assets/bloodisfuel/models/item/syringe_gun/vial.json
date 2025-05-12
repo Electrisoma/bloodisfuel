@@ -3,21 +3,22 @@
 	"parent": "block/block",
 	"texture_size": [8, 8],
 	"textures": {
-		"0": "bloodisfuel:item/syringe_gun_vial",
-		"particle": "bloodisfuel:item/syringe_gun_vial"
+		"5": "bloodisfuel:item/syringe_gun",
+		"particle": "bloodisfuel:item/syringe_gun"
 	},
 	"elements": [
 		{
+			"name": "vial",
 			"from": [9.5, 7.5, 7],
 			"to": [12.5, 9.5, 9],
 			"rotation": {"angle": 45, "axis": "x", "origin": [11, 8.5, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 6, 4], "texture": "#0"},
-				"east": {"uv": [0, 8, 4, 12], "texture": "#0"},
-				"south": {"uv": [0, 4, 6, 8], "texture": "#0"},
-				"west": {"uv": [4, 8, 8, 12], "texture": "#0"},
-				"up": {"uv": [12, 4, 6, 0], "texture": "#0"},
-				"down": {"uv": [12, 4, 6, 8], "texture": "#0"}
+				"north": {"uv": [8, 0, 11, 2], "texture": "#5"},
+				"east": {"uv": [8, 4, 10, 6], "texture": "#5"},
+				"south": {"uv": [8, 2, 11, 4], "texture": "#5"},
+				"west": {"uv": [10, 4, 12, 6], "texture": "#5"},
+				"up": {"uv": [14, 2, 11, 0], "texture": "#5"},
+				"down": {"uv": [14, 2, 11, 4], "texture": "#5"}
 			}
 		}
 	],
@@ -53,10 +54,10 @@
 	},
 	"groups": [
 		{
-			"name": "item",
+			"name": "vial",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [0]
+			"children": [10]
 		}
 	]
 }

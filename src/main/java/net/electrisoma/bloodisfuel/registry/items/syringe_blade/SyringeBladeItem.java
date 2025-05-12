@@ -2,13 +2,12 @@ package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 import net.electrisoma.bloodisfuel.api.data.BurningData;
-import net.electrisoma.bloodisfuel.api.data.ExtinguishingData;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
 import net.electrisoma.bloodisfuel.registry.BTags;
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
-import net.electrisoma.bloodisfuel.registry.items.ItemUtils;
+import net.electrisoma.bloodisfuel.api.equipment.ItemUtils;
 import net.electrisoma.bloodisfuel.registry.enchantments.ChargesEnchantment;
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
@@ -47,6 +46,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.ImmutableMultimap;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
@@ -67,16 +67,32 @@ public class SyringeBladeItem extends SwordItem
     // attributes and stuff
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot != EquipmentSlot.MAINHAND) return super.getAttributeModifiers(slot, stack);
-        CombatContext ctx = getCombatContext(stack, Minecraft.getInstance().level != null ?
-                Minecraft.getInstance().level.registryAccess() : null);
+        if (slot != EquipmentSlot.MAINHAND)
+            return super.getAttributeModifiers(slot, stack);
+
+        RegistryAccess access = Minecraft.getInstance().level != null
+                ? Minecraft.getInstance().level.registryAccess()
+                : null;
+
+        CombatContext ctx = getCombatContext(stack, access);
         if (!ctx.canAttack()) return ImmutableMultimap.of();
-        return ImmutableMultimap.<Attribute, AttributeModifier>builder()
-                .put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,
-                        "Weapon modifier", 6.0, AttributeModifier.Operation.ADDITION))
-                .put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID,
-                        "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION))
-                .build();
+
+        Optional<Float> optDamage = ctx.type() != null ? ctx.type().damage() : Optional.empty();
+        Optional<Float> optSpeed = ctx.type() != null ? ctx.type().attackSpeed() : Optional.empty();
+
+        if (optDamage.isEmpty() && optSpeed.isEmpty()) return ImmutableMultimap.of();
+
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+
+        optDamage.ifPresent(damage ->
+                builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,
+                        "Weapon modifier", (double) damage.floatValue(), AttributeModifier.Operation.ADDITION)));
+
+        optSpeed.ifPresent(speed ->
+                builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID,
+                        "Weapon modifier", (double) speed.floatValue(), AttributeModifier.Operation.ADDITION)));
+
+        return builder.build();
     }
 
     // we cant just have the item not have a cooldown or anything, that would be unbalanced

@@ -1,13 +1,12 @@
-package net.electrisoma.bloodisfuel.registry.items;
+package net.electrisoma.bloodisfuel.api.equipment;
 
-import com.simibubi.create.AllEnchantments;
-import com.simibubi.create.foundation.utility.CreateLang;
+import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.api.data.BurningData;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
-import net.electrisoma.bloodisfuel.registry.BEnchantments;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
+
+import com.simibubi.create.AllEnchantments;
+import com.simibubi.create.foundation.utility.CreateLang;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -16,145 +15,73 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-
-import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
+
 import org.joml.Vector3f;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.BiConsumer;
+import javax.annotation.Nullable;
 
 
 @SuppressWarnings("all")
 public interface ItemUtils {
 
+    /**
+     * Item capacity utilities.
+     */
     default int getBaseCapacity(ItemStack stack) {
         return 1000;
     }
-
     default int getCapacityEnchantmentAddition(ItemStack stack) {
         return 1000;
     }
-
     default int getCapacity(ItemStack stack) {
         int enchantLevel = stack.getEnchantmentLevel(AllEnchantments.CAPACITY.get());
         return getBaseCapacity(stack) + getCapacityEnchantmentAddition(stack) * enchantLevel;
     }
 
+    /**
+     * Item usage utilities.
+     */
     default int getChargeCount(ItemStack stack) {
         int baseCharges = 4;
         int extraLevel = stack.getEnchantmentLevel(BEnchantments.EXTRA_VIALS.get());
         return baseCharges + (extraLevel * 2);
     }
-
     default int getUseAmount(int capacity, int charges) {
         return (int) Math.ceil((double) capacity / charges);
     }
-
     default int getUseAmount(ItemStack stack) {
         return getUseAmount(getCapacity(stack), getChargeCount(stack));
     }
-
-    default FluidStack readFluid(ItemStack stack) {
-        return FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("Fluid"));
-    }
-
-    default void writeFluid(ItemStack stack, FluidStack fluid) {
-        stack.getOrCreateTag().put("Fluid", fluid.writeToNBT(new CompoundTag()));
-    }
-
     default int getCurrentFillLevel(ItemStack stack) {
         return readFluid(stack).getAmount();
     }
 
-    default String formatDuration(int ticks) {
-        int seconds = ticks / 20;
-        int minutes = seconds / 60;
-        seconds %= 60;
-        return String.format("%d:%02d", minutes, seconds);
-    }
-
-    static String toRoman(int number) {
-        if (number < 1 || number > 10) return String.valueOf(number);
-        return new String[]{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"}[number - 1];
-    }
-
     /**
-     * Matching extraction fluid for entities.
+     * Item bar utilities.
      */
-    default SyringeFluidType getMatchingFluid(LivingEntity target, RegistryAccess access) {
-        return SyringeFluidTypeManager.getAll(access).stream()
-                .filter(type -> ForgeRegistries.ENTITY_TYPES.getHolder(target.getType())
-                        .map(holder -> type.mobs().map(set -> set.contains(holder)).orElse(false))
-                        .orElse(false))
-                .findFirst().orElse(null);
-    }
-
-    /**
-     * Default extraction fluid.
-     */
-    default SyringeFluidType getFallback(RegistryAccess access) {
-        return access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUIDS)
-                .getOptional(BSyringeFluidTypes.FALLBACK)
-                .orElse(null);
-    }
-
-    /**
-     * Burning effect from fluid.
-     */
-    default void applyBurningEffect(LivingEntity entity, BurningData burningData) {
-        if (entity == null || entity.level().isClientSide) return;
-        if (burningData != null) entity.setSecondsOnFire(burningData.durationSeconds());
-        if (burningData.damagePerSecond() > 0) {
-            entity.hurt(entity.damageSources().onFire(), burningData.damagePerSecond());
-        }
-
-        entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                SoundEvents.FIRE_AMBIENT, entity.getSoundSource(), 1.0F, 1.0F);
-    }
-
-    /**
-     * Extinguishing effect from fluid.
-     */
-    default void applyExtinguishingEffect(LivingEntity entity, SyringeFluidType type) {
-        if (entity == null || entity.level().isClientSide) return;
-        if (type != null && type.hasExtinguishing()) {
-            SyringeFluidTypeManager.applyExtinguishing(type, entity);
-
-            entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                    SoundEvents.FIRE_EXTINGUISH, entity.getSoundSource(), 1.0F, 1.0F);
-        }
-    }
-
-    default void playSound(Level level, Entity entity, SoundEvent sound) {
-        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 1.0F, 1.0F);
-    }
-
     default boolean isBarVisible(ItemStack stack) {
         return getCurrentFillLevel(stack) > 0;
     }
-
     default int getBarWidth(ItemStack stack) {
         return Math.round(13 * (getCurrentFillLevel(stack) / (float) getCapacity(stack)));
     }
-
-    /**
-     * Item bar color.
-     */
     default int getBarColor(ItemStack stack) {
         Level level = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null;
         RegistryAccess access = level != null ? level.registryAccess() : null;
@@ -166,68 +93,35 @@ public interface ItemUtils {
     }
 
     /**
-     * Syringe blood particle.
+     * Sound utilities.
      */
-    default void spawnBloodParticles(Level level, Entity entity, ItemStack stack) {
-        if (!(level instanceof ServerLevel server)) return;
-        int color = getBarColor(stack);
-        float r = ((color >> 16) & 0xFF) / 255.0F;
-        float g = ((color >> 8) & 0xFF) / 255.0F;
-        float b = (color & 0xFF) / 255.0F;
-        Vector3f particleColor = new Vector3f(r, g, b);
-        for (int i = 0; i < 10; i++) {
-            double dx = (level.random.nextDouble() - 0.5) * 0.5;
-            double dy = level.random.nextDouble();
-            double dz = (level.random.nextDouble() - 0.5) * 0.5;
-            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
-                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
-                    1, 0.0, 0.0, 0.0, 0.0);
-        }
+    default void playSound(Level level, Entity entity, SoundEvent sound) {
+        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     /**
-     * Syringe drain particle.
+     * Fluid read/right utilities.
      */
-    default void spawnDrainingParticles(Level level, Entity entity, ItemStack stack, int count) {
-        if (!(level instanceof ServerLevel server)) return;
-        int color = getBarColor(stack);
-        float r = ((color >> 16) & 0xFF) / 255.0F;
-        float g = ((color >> 8) & 0xFF) / 255.0F;
-        float b = (color & 0xFF) / 255.0F;
-        Vector3f particleColor = new Vector3f(r, g, b);
-        for (int i = 0; i < count; i++) {
-            double dx = (level.random.nextDouble() - 0.5) * 0.3;
-            double dy = level.random.nextDouble() * 0.2;
-            double dz = (level.random.nextDouble() - 0.5) * 0.3;
-            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
-                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
-                    1, 0.0, 0.0, 0.0, 0.0);
-        }
+    default FluidStack readFluid(ItemStack stack) {
+        return FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("Fluid"));
+    }
+    default void writeFluid(ItemStack stack, FluidStack fluid) {
+        stack.getOrCreateTag().put("Fluid", fluid.writeToNBT(new CompoundTag()));
     }
 
     /**
-     * Projectile trail particle.
+     * Text utilities.
      */
-    default void spawnTrailParticles(Level level, Entity entity, ItemStack stack, int count) {
-        if (!(level instanceof ServerLevel server)) return;
-        int color = getBarColor(stack);
-        float r = ((color >> 16) & 0xFF) / 255.0F;
-        float g = ((color >> 8) & 0xFF) / 255.0F;
-        float b = (color & 0xFF) / 255.0F;
-        Vector3f particleColor = new Vector3f(r, g, b);
-        double trailLength = 0.3;
-        for (int i = 0; i < count; i++) {
-            double dx = (level.random.nextDouble() - 0.5) * 0.3;
-            double dy = level.random.nextDouble() * 0.2;
-            double dz = (level.random.nextDouble() - 0.5) * 0.3;
-            double offsetX = entity.getX() - Math.cos(entity.getYRot() * Math.PI / 180) * trailLength;
-            double offsetZ = entity.getZ() - Math.sin(entity.getYRot() * Math.PI / 180) * trailLength;
-            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
-                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
-                    1, 0.0, 0.0, 0.0, 0.0);
-        }
+    default String formatDuration(int ticks) {
+        int seconds = ticks / 20;
+        int minutes = seconds / 60;
+        seconds %= 60;
+        return String.format("%d:%02d", minutes, seconds);
     }
-
+    static String toRoman(int number) {
+        if (number < 1 || number > 10) return String.valueOf(number);
+        return new String[]{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"}[number - 1];
+    }
     default void tooltipMaker(List<Component> tooltip, ItemStack stack, @Nullable RegistryAccess registryAccess) {
         FluidStack fluid = readFluid(stack);
         SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluid, registryAccess);
@@ -336,13 +230,108 @@ public interface ItemUtils {
         }
     }
 
-    default FluidHandlerItemStack getFluidHandler(ItemStack stack) {
-        return new ToolItemFluidHandler(stack, getCapacity(stack), this::readFluid, this::writeFluid);
+    /**
+     * Matching fluid utilities.
+     */
+    default SyringeFluidType getMatchingFluid(LivingEntity target, RegistryAccess access) {
+        return SyringeFluidTypeManager.getAll(access).stream()
+                .filter(type -> ForgeRegistries.ENTITY_TYPES.getHolder(target.getType())
+                        .map(holder -> type.mobs().map(set -> set.contains(holder)).orElse(false))
+                        .orElse(false))
+                .findFirst().orElse(null);
+    }
+    default SyringeFluidType getFallback(RegistryAccess access) {
+        return access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUIDS)
+                .getOptional(BSyringeFluidTypes.FALLBACK)
+                .orElse(null);
     }
 
     /**
-     * Fluid handler with read/write delegation.
+     * Fluid effects utilities.
      */
+    default void applyBurningEffect(LivingEntity entity, BurningData burningData) {
+        if (entity == null || entity.level().isClientSide) return;
+        if (burningData != null) entity.setSecondsOnFire(burningData.durationSeconds());
+        if (burningData.damagePerSecond() > 0) {
+            entity.hurt(entity.damageSources().onFire(), burningData.damagePerSecond());
+        }
+
+        entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                SoundEvents.FIRE_AMBIENT, entity.getSoundSource(), 1.0F, 1.0F);
+    }
+    default void applyExtinguishingEffect(LivingEntity entity, SyringeFluidType type) {
+        if (entity == null || entity.level().isClientSide) return;
+        if (type != null && type.hasExtinguishing()) {
+            if (entity.isOnFire()) {
+                SyringeFluidTypeManager.applyExtinguishing(type, entity);
+
+                entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                        SoundEvents.FIRE_EXTINGUISH, entity.getSoundSource(), 1.0F, 1.0F);
+            }
+        }
+    }
+
+    /**
+     * Syringe particle utilities.
+     */
+    default void spawnBloodParticles(Level level, Entity entity, ItemStack stack) {
+        if (!(level instanceof ServerLevel server)) return;
+        int color = getBarColor(stack);
+        float r = ((color >> 16) & 0xFF) / 255.0F;
+        float g = ((color >> 8) & 0xFF) / 255.0F;
+        float b = (color & 0xFF) / 255.0F;
+        Vector3f particleColor = new Vector3f(r, g, b);
+        for (int i = 0; i < 10; i++) {
+            double dx = (level.random.nextDouble() - 0.5) * 0.5;
+            double dy = level.random.nextDouble();
+            double dz = (level.random.nextDouble() - 0.5) * 0.5;
+            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
+                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
+                    1, 0.0, 0.0, 0.0, 0.0);
+        }
+    }
+    default void spawnDrainingParticles(Level level, Entity entity, ItemStack stack, int count) {
+        if (!(level instanceof ServerLevel server)) return;
+        int color = getBarColor(stack);
+        float r = ((color >> 16) & 0xFF) / 255.0F;
+        float g = ((color >> 8) & 0xFF) / 255.0F;
+        float b = (color & 0xFF) / 255.0F;
+        Vector3f particleColor = new Vector3f(r, g, b);
+        for (int i = 0; i < count; i++) {
+            double dx = (level.random.nextDouble() - 0.5) * 0.3;
+            double dy = level.random.nextDouble() * 0.2;
+            double dz = (level.random.nextDouble() - 0.5) * 0.3;
+            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
+                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
+                    1, 0.0, 0.0, 0.0, 0.0);
+        }
+    }
+    default void spawnTrailParticles(Level level, Entity entity, ItemStack stack, int count) {
+        if (!(level instanceof ServerLevel server)) return;
+        int color = getBarColor(stack);
+        float r = ((color >> 16) & 0xFF) / 255.0F;
+        float g = ((color >> 8) & 0xFF) / 255.0F;
+        float b = (color & 0xFF) / 255.0F;
+        Vector3f particleColor = new Vector3f(r, g, b);
+        double trailLength = 0.3;
+        for (int i = 0; i < count; i++) {
+            double dx = (level.random.nextDouble() - 0.5) * 0.3;
+            double dy = level.random.nextDouble() * 0.2;
+            double dz = (level.random.nextDouble() - 0.5) * 0.3;
+            double offsetX = entity.getX() - Math.cos(entity.getYRot() * Math.PI / 180) * trailLength;
+            double offsetZ = entity.getZ() - Math.sin(entity.getYRot() * Math.PI / 180) * trailLength;
+            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
+                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
+                    1, 0.0, 0.0, 0.0, 0.0);
+        }
+    }
+
+    /**
+     * Fluid handler utiltiies.
+     */
+    default FluidHandlerItemStack getFluidHandler(ItemStack stack) {
+        return new ToolItemFluidHandler(stack, getCapacity(stack), this::readFluid, this::writeFluid);
+    }
     class ToolItemFluidHandler extends FluidHandlerItemStack {
         private final BiConsumer<ItemStack, FluidStack> write;
         private final Function<ItemStack, FluidStack> read;
