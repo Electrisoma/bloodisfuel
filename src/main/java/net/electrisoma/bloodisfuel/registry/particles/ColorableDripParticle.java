@@ -18,7 +18,7 @@ public class ColorableDripParticle extends TextureSheetParticle {
 
     private final SpriteSet sprites;
     private int onGroundTime = 0;
-    private float floatTime;
+    private final float floatTime;
 
     protected ColorableDripParticle(ClientLevel level, double x, double y, double z,
                                     double red, double green, double blue,

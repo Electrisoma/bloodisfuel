@@ -76,7 +76,6 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
                 playSound(level, player, SoundEvents.PLAYER_HURT);
                 spawnBloodParticles(level, player, stack, 5);
             }
-            return;
         }
     }
     default void injectSelf(ItemStack stack, Level level, LivingEntity entityLiving) {
@@ -250,18 +249,19 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
 
         if (!entity.level().isClientSide && entity.level() instanceof ServerLevel serverLevel) {
             MinecraftServer server = serverLevel.getServer();
-            server.execute(() -> {
-                serverLevel.getServer().tell(new TickTask(1, new Runnable() {
-                    int ticksLeft = durationTicks;
-                    @Override
-                    public void run() {
-                        if (--ticksLeft <= 0) {
-                            AttributeInstance attr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-                            if (attr != null) attr.removeModifier(slowId);
-                        } else serverLevel.getServer().tell(new TickTask(1, this));
-                    }
-                }));
-            });
+            server.execute(() ->
+                    serverLevel.getServer().tell(new TickTask(1, new Runnable() {
+                        int ticksLeft = durationTicks;
+                        @Override
+                        public void run() {
+                            if (--ticksLeft <= 0) {
+                                AttributeInstance attr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+                                if (attr != null) attr.removeModifier(slowId);
+                            }
+                            else serverLevel.getServer().tell(new TickTask(1, this));
+                        }
+                    }))
+            );
         }
     }
 
