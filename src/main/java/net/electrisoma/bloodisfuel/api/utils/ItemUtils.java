@@ -1,5 +1,7 @@
-package net.electrisoma.bloodisfuel.api.equipment;
+package net.electrisoma.bloodisfuel.api.utils;
 
+import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
+import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.api.data.BurningData;
@@ -9,6 +11,7 @@ import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidType
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.utility.CreateLang;
 
+import net.electrisoma.bloodisfuel.api.data.ColorableDripParticleData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
@@ -17,7 +20,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -36,6 +41,7 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import org.joml.Vector3f;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.BiConsumer;
 import javax.annotation.Nullable;
@@ -196,6 +202,29 @@ public interface ItemUtils {
             });
         }
     }
+    default void projectileTooltipMaker(List<Component> tooltip, ItemStack stack, @Nullable RegistryAccess registryAccess) {
+        CombatContext ctx = getCombatContext(stack, registryAccess);
+        if (ctx.canAttack()) {
+            Optional<Float> optDamage = ctx.type() != null ? ctx.type().damage() : Optional.empty();
+            if (optDamage.isPresent()) {
+                float damage = optDamage.get();
+                if (Minecraft.getInstance().player != null) {
+                    float playerAttackDamage = (float) Minecraft.getInstance().player.getAttributeValue(Attributes.ATTACK_DAMAGE);
+                    damage += playerAttackDamage;
+                }
+                tooltip.add(Component.empty());
+                tooltip.add(Component.translatable("item.modifiers.mainhand").withStyle(ChatFormatting.GRAY));
+                String damageText = (damage % 1.0f == 0.0f)
+                        ? String.valueOf((int) damage)
+                        : String.format("%.2f", damage);
+                tooltip.add(Component.literal(" ")
+                        .append(Component.literal(damageText))
+                        .append(" ")
+                        .append(Component.translatable("bloodisfuel.tooltip.syringe_gun.damage"))
+                        .withStyle(ChatFormatting.DARK_GREEN));
+            }
+        }
+    }
 
     /**
      * Matching fluid utilities.
@@ -296,7 +325,7 @@ public interface ItemUtils {
                 writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(selfType), getCapacity(stack)));
                 player.hurt(player.damageSources().generic(), 2.0F);
                 playSound(level, player, SoundEvents.PLAYER_HURT);
-                spawnBloodParticles(level, player, stack);
+                spawnBloodParticles(level, player, stack, 5);
             }
             return;
         }
@@ -328,6 +357,10 @@ public interface ItemUtils {
                 applyExtinguishingEffect(player, ctx.type());
             }
 
+            if (ctx.type().hasFood()) {
+                applyFoodEffect(player, ctx.type());
+            }
+
             fluid.shrink(ctx.useAmount());
             writeFluid(stack, fluid);
             playSound(level, player, SoundEvents.PLAYER_ATTACK_CRIT);
@@ -340,7 +373,7 @@ public interface ItemUtils {
             if (matchedType != null) {
                 writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(matchedType), getCapacity(stack)));
                 target.hurt(player.damageSources().playerAttack(player), 2.0F);
-                spawnBloodParticles(player.level(), target, stack);
+                spawnBloodParticles(player.level(), target, stack, 5);
                 return true;
             }
         }
@@ -355,6 +388,7 @@ public interface ItemUtils {
         }
 
         if (!player.level().isClientSide) {
+
             if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), access)) {
                 target.removeAllEffects();
             }
@@ -371,15 +405,24 @@ public interface ItemUtils {
                 applyBurningEffect(target, ctx.type().burning().get());
                 BAdvancements.FIRE_FIRE_FIRE.awardTo((ServerPlayer) player);
             }
-
             if (ctx.type().hasExtinguishing()) {
                 applyExtinguishingEffect(target, ctx.type());
+            }
+            if (ctx.type().hasFood()) {
+                applyFoodEffect(target, ctx.type());
             }
 
             ctx.fluid().shrink(ctx.useAmount());
             writeFluid(stack, ctx.fluid());
-        }
 
+            Optional<Float> optDamage = ctx.type() != null ? ctx.type().damage() : Optional.empty();
+            if (optDamage.isPresent()) {
+                float damage = optDamage.get();
+                target.hurt(player.damageSources().playerAttack(player), damage);
+            }
+
+            spawnBloodParticles(player.level(), target, stack, 5);
+        }
         return true;
     }
 
@@ -407,11 +450,23 @@ public interface ItemUtils {
             }
         }
     }
+    default void applyFoodEffect(LivingEntity entity, SyringeFluidType type) {
+        if (!(entity instanceof Player player) || entity.level().isClientSide) return;
+        if (type == null || type.food().isEmpty()) return;
+
+        FoodProperties food = type.food().get();
+        if (player.getFoodData().needsFood()) {
+            player.getFoodData().eat(food.getNutrition(), food.getSaturationModifier());
+
+            entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                    SoundEvents.GENERIC_EAT, SoundSource.PLAYERS, 1.0F, 1.0F);
+        }
+    }
 
     /**
      * Syringe particle utilities.
      */
-    default void spawnBloodParticles(Level level, Entity entity, ItemStack stack) {
+    default void spawnBloodParticles(Level level, Entity entity, ItemStack stack, int count) {
         if (!(level instanceof ServerLevel server)) return;
         int color = getBarColor(stack);
         float r = ((color >> 16) & 0xFF) / 255.0F;
@@ -449,17 +504,15 @@ public interface ItemUtils {
         float r = ((color >> 16) & 0xFF) / 255.0F;
         float g = ((color >> 8) & 0xFF) / 255.0F;
         float b = (color & 0xFF) / 255.0F;
-        Vector3f particleColor = new Vector3f(r, g, b);
-        double trailLength = 0.3;
         for (int i = 0; i < count; i++) {
-            double dx = (level.random.nextDouble() - 0.5) * 0.3;
-            double dy = level.random.nextDouble() * 0.2;
-            double dz = (level.random.nextDouble() - 0.5) * 0.3;
-            double offsetX = entity.getX() - Math.cos(entity.getYRot() * Math.PI / 180) * trailLength;
-            double offsetZ = entity.getZ() - Math.sin(entity.getYRot() * Math.PI / 180) * trailLength;
-            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
-                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
-                    1, 0.0, 0.0, 0.0, 0.0);
+            double x = entity.getX() + (level.random.nextDouble() - 0.5) * 0.2;
+            double y = entity.getY() + level.random.nextDouble() * 0.6 + 0.5;
+            double z = entity.getZ() + (level.random.nextDouble() - 0.5) * 0.2;
+            server.sendParticles(
+                    new ColorableDripParticleData(r, g, b),
+                    x, y, z,
+                    5, 0.0, 0.0, 0.0, 0.0
+            );
         }
     }
 

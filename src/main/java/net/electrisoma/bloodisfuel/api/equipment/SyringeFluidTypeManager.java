@@ -11,6 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,30 +21,44 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 
+/**
+ * Expected datapack format:
+ * {
+ *   "fluids": "FLUIDS",
+ *@  "color": COLOR,
+ *@  "mobs": ["MOBS"],
+ *@  "damage": DAMAGE,
+ *@  "attack_speed": ATTACK SPEED,
+ *@  "food": {
+ *      "nutrition": NUTRITION,
+ *      "saturation": SATURATION
+ *   },
+ *@  "on_entity_hit": {
+ *      "amplifier": AMPLIFIER,
+ *      "duration": DURATION,
+ *      "effect": "EFFECT"
+ *   },
+ *@  "burning": {
+ *      "duration_seconds": SECONDS,
+ *      "damage_per_second": DAMAGE
+ *   },
+ *@  "extinguishing": {
+ *      "duration_seconds": SECONDS,
+ *      "heal_per_second": HEALTH
+ *   }
+ * }
+ * Optional fields will be marked with a @
+ */
 
-@SuppressWarnings({"unused", "DataFlowIssue"})
+// L warning lol -----------------V laugh at this fool
+@SuppressWarnings({"unused", "DataFlowIssue", "RedundantSuppression"})
 public class SyringeFluidTypeManager {
 
     /**
-     * Expected datapack format:
-     * {
-     *   "color": COLOR,
-     *   "fluids": "FLUIDS",
-     *   "mobs": ["MOBS"],
-     *   "on_entity_hit": {
-     *     "amplifier": AMPLIFIER,
-     *     "duration": DURATION,
-     *     "effect": "EFFECT"
-     *   },
-     *   "burning": {
-     *       "damage_per_second": DAMAGE",
-     *       "duration_seconds": SECONDS"
-     *   }
-     * }
-     * Mobs, color, on_entity_hit, and burning are optional
+     * Hardcoded values, the color is only a placeholder.
+     * The actual fluid color is reflected properly.
+     * Also, potions are dynamic anyway so this is just for hooking into that system.
      */
-
-    // hardcoded values
     public static final SyringeFluidType POTION = new SyringeFluidType.Builder()
             .addFluids(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(Create.ID, "potion")))
             .color(0x9966FF)
@@ -151,6 +166,18 @@ public class SyringeFluidTypeManager {
             if (extinguishing.healPerSecond() > 0 && extinguishing.durationSeconds() > 0) {
                 float totalHeal = extinguishing.healPerSecond() * extinguishing.durationSeconds();
                 target.heal(totalHeal);
+            }
+        });
+    }
+
+    /**
+     * Gets the food properties.
+     */
+    public static void applyFood(SyringeFluidType type, LivingEntity entity) {
+        if (!(entity instanceof Player player)) return;
+        type.food().ifPresent(food -> {
+            if (player.getFoodData().needsFood()) {
+                player.getFoodData().eat(food.getNutrition(), food.getSaturationModifier());
             }
         });
     }

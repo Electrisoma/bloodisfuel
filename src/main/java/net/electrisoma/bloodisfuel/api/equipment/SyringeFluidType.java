@@ -8,6 +8,7 @@ import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.level.material.Fluid;
 
 import net.minecraftforge.registries.ForgeRegistries;
@@ -25,12 +26,13 @@ import java.util.Optional;
  * Can define which fluids match, display color, its effects on hit, and which mobs drop it.
  * This system can also be used by a data generator for convenience.
  */
-@SuppressWarnings("all")
+@SuppressWarnings("unused")
 public record SyringeFluidType(
         HolderSet<Fluid> fluids,
         int color,
         Optional<Float> damage,
         Optional<Float> attackSpeed,
+        Optional<FoodProperties> food,
         Optional<MobEffectInstance> onEntityHitEffect,
         Optional<HolderSet<EntityType<?>>> mobs,
         Optional<BurningData> burning,
@@ -40,6 +42,7 @@ public record SyringeFluidType(
             Codec.INT.fieldOf("color").forGetter(SyringeFluidType::color),
             Codec.FLOAT.optionalFieldOf("damage").forGetter(SyringeFluidType::damage),
             Codec.FLOAT.optionalFieldOf("attack_speed").forGetter(SyringeFluidType::attackSpeed),
+            BCodecs.FOOD_PROPERTIES.optionalFieldOf("food").forGetter(SyringeFluidType::food),
             BCodecs.MOB_EFFECT_INSTANCE.optionalFieldOf("on_entity_hit").forGetter(SyringeFluidType::onEntityHitEffect),
             RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).optionalFieldOf("mobs").forGetter(SyringeFluidType::mobs),
             BCodecs.BURNING_DATA.optionalFieldOf("burning").forGetter(SyringeFluidType::burning),
@@ -70,19 +73,34 @@ public record SyringeFluidType(
         return extinguishing.isPresent();
     }
 
+    /**
+     * Returns true if this fluid type can feed.
+     */
+    public boolean hasFood() {
+        return food.isPresent();
+    }
+
+    /**
+     * Returns the default damage set by the fallback.
+     */
     public float getDamageOrDefault(float fallback) {
         return damage.orElse(fallback);
     }
 
+    /**
+     * Returns the default attack speed set by the fallback.
+     */
     public float getAttackSpeedOrDefault(float fallback) {
         return attackSpeed.orElse(fallback);
     }
 
+    @SuppressWarnings({"deprecation", "OptionalUsedAsFieldOrParameterType"})
     public static class Builder {
         private final List<Holder<Fluid>> fluids = new ArrayList<>();
         private int color = 0xFFFFFF;
         private Optional<Float> damage = Optional.empty();
         private Optional<Float> attackSpeed = Optional.empty();
+        private Optional<FoodProperties> food = Optional.empty();
         private MobEffectInstance onEntityHitEffect;
         private final List<Holder<EntityType<?>>> mobs = new ArrayList<>();
         private Optional<BurningData> burning = Optional.empty();
@@ -105,13 +123,27 @@ public record SyringeFluidType(
             return this;
         }
 
+        /**
+         * Sets the damage that the item or projectile does on hit.
+         */
         public Builder damage(float value) {
             this.damage = Optional.of(value);
             return this;
         }
 
+        /**
+         * Sets the attack speed that an item has.
+         */
         public Builder attackSpeed(float value) {
             this.attackSpeed = Optional.of(value);
+            return this;
+        }
+
+        /**
+         * Defines the food properties applied when the fluid type hits an entity.
+         */
+        public Builder food(FoodProperties foodProperties) {
+            this.food = Optional.ofNullable(foodProperties);
             return this;
         }
 
@@ -157,6 +189,7 @@ public record SyringeFluidType(
                     color,
                     damage,
                     attackSpeed,
+                    food,
                     Optional.ofNullable(onEntityHitEffect),
                     mobs.isEmpty() ? Optional.empty() : Optional.of(HolderSet.direct(mobs)),
                     burning,

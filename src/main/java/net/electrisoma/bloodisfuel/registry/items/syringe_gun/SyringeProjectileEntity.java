@@ -1,13 +1,18 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
 import com.simibubi.create.AllSoundEvents;
-import net.electrisoma.bloodisfuel.api.equipment.ItemUtils;
+import net.electrisoma.bloodisfuel.api.utils.ItemUtils;
 import net.electrisoma.bloodisfuel.registry.BEntityTypes;
+import net.electrisoma.bloodisfuel.registry.BParticles;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
@@ -25,6 +30,11 @@ import java.util.Objects;
 
 public class SyringeProjectileEntity extends AbstractHurtingProjectile
         implements IEntityAdditionalSpawnData, ItemUtils {
+
+    @Override
+    public boolean shouldRender(double x, double y, double z) {
+        return true;
+    }
 
     public SyringeProjectileEntity(EntityType<? extends AbstractHurtingProjectile> type, Level level) {
         super(type, level);
@@ -77,6 +87,7 @@ public class SyringeProjectileEntity extends AbstractHurtingProjectile
         //Vec3 hit = ray.getLocation();
 
         super.onHitBlock(ray);
+        playHitSound(level(), position());
         kill();
     }
 

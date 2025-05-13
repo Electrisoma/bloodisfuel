@@ -1,7 +1,7 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
 
-import net.electrisoma.bloodisfuel.api.equipment.ItemUtils;
+import net.electrisoma.bloodisfuel.api.utils.ItemUtils;
 
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
@@ -88,36 +88,7 @@ public class SyringeGunItem extends ProjectileWeaponItem implements CustomArmPos
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         tooltipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
-
-        RegistryAccess access = Minecraft.getInstance().level != null
-                ? Minecraft.getInstance().level.registryAccess()
-                : null;
-
-        CombatContext ctx = getCombatContext(stack, access);
-
-        if (ctx.canAttack()) {
-            Optional<Float> optDamage = ctx.type() != null ? ctx.type().damage() : Optional.empty();
-            if (optDamage.isPresent()) {
-                float damage = optDamage.get();
-                if (Minecraft.getInstance().player != null) {
-                    float playerAttackDamage = (float) Minecraft.getInstance().player.getAttributeValue(Attributes.ATTACK_DAMAGE);
-                    damage += playerAttackDamage;
-                }
-                tooltip.add(CommonComponents.EMPTY);
-                tooltip.add(Component.translatable("item.modifiers.mainhand")
-                        .withStyle(ChatFormatting.GRAY));
-
-                String damageText = (damage % 1.0f == 0.0f)
-                        ? String.valueOf((int) damage)
-                        : String.format("%.2f", damage);
-
-                tooltip.add(Component.literal(" ")
-                        .append(Component.literal(damageText)
-                        .append(Component.literal(" "))
-                        .append(Component.translatable("bloodisfuel.tooltip.syringe_gun.damage"))
-                        .withStyle(ChatFormatting.DARK_GREEN)));
-            }
-        }
+        projectileTooltipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
     }
 
     @Override

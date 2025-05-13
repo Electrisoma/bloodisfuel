@@ -1,7 +1,9 @@
 package net.electrisoma.bloodisfuel.registry;
 
+import com.mojang.serialization.Codec;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 
+import net.electrisoma.bloodisfuel.api.data.ColorableDripParticleData;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 
@@ -26,5 +28,12 @@ public class BParticles {
             PARTICLES.register("boiling_blood_drop", () -> new SimpleParticleType(false));
     public static final RegistryObject<SimpleParticleType> BLOOD_DROP =
             PARTICLES.register("blood_drop", () -> new SimpleParticleType(false));
-
+    public static final RegistryObject<ParticleType<ColorableDripParticleData>> COLORABLE_DRIPPING =
+            PARTICLES.register("colorable_dripping", () ->
+                    new ParticleType<>(false, ColorableDripParticleData.DESERIALIZER) {
+                        @Override
+                        public Codec<ColorableDripParticleData> codec() {
+                            return ColorableDripParticleData.CODEC;
+                        }
+                    });
 }

@@ -3,6 +3,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.food.FoodProperties;
 
 
 @SuppressWarnings("all")
@@ -32,4 +33,15 @@ public class BCodecs {
             Codec.INT.optionalFieldOf("duration_seconds", 4).forGetter(ExtinguishingData::durationSeconds),
             Codec.FLOAT.optionalFieldOf("heal_per_second", 1.0f).forGetter(ExtinguishingData::healPerSecond)
     ).apply(instance, ExtinguishingData::new));
+
+    /**
+     * Codec for serializing FoodProperties objects with optional nutrition, saturation and health fields.
+     */
+    public static final Codec<FoodProperties> FOOD_PROPERTIES = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("nutrition").forGetter(FoodProperties::getNutrition),
+            Codec.FLOAT.fieldOf("saturation").forGetter(FoodProperties::getSaturationModifier)
+    ).apply(instance, (nutrition, saturation) -> new FoodProperties.Builder()
+            .nutrition(nutrition).saturationMod(saturation)
+            .build()
+    ));
 }

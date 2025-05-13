@@ -1,0 +1,8 @@
+{
+  "color": 8999209,
+  "fluids": "create:chocolate",
+  "food": {
+    "nutrition": 4,
+    "saturation": 2.0
+  }
+}

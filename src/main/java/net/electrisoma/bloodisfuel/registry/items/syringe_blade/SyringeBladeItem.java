@@ -1,7 +1,7 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
-import net.electrisoma.bloodisfuel.api.equipment.ItemUtils;
+import net.electrisoma.bloodisfuel.api.utils.ItemUtils;
 import net.electrisoma.bloodisfuel.registry.BTags;
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.registry.enchantments.ChargesEnchantment;

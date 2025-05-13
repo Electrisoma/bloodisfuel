@@ -27,5 +27,6 @@ public class BClient {
     public static void setupParticles(RegisterParticleProvidersEvent registry) {
         registry.registerSpriteSet(BParticles.BLOOD_DROP.get(), BloodDropParticle.Factory::new);
         registry.registerSpriteSet(BParticles.BOILING_BLOOD_DROP.get(), BoilingBloodDropParticle.Factory::new);
+        registry.registerSpriteSet(BParticles.COLORABLE_DRIPPING.get(), ColorableDripParticle.Factory::new);
     }
 }

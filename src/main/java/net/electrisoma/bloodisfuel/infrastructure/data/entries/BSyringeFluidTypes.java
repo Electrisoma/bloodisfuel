@@ -3,6 +3,7 @@ package net.electrisoma.bloodisfuel.infrastructure.data.entries;
 import com.github.alexmodguy.alexscaves.server.block.fluid.ACFluidRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
 import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
+import com.simibubi.create.AllFluids;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.api.data.BurningData;
 import net.electrisoma.bloodisfuel.api.data.ExtinguishingData;
@@ -15,6 +16,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.ForgeMod;
 
@@ -45,7 +47,7 @@ public class BSyringeFluidTypes {
         register(ctx, "water", new SyringeFluidType.Builder()
                 .addFluids(Fluids.WATER.getSource())
                 .color(0x0C17CD)
-                .extinguishing(new ExtinguishingData(0, 4F))
+                .extinguishing(new ExtinguishingData(1, 4F))
                 .build()
         );
 
@@ -53,6 +55,27 @@ public class BSyringeFluidTypes {
                 .addFluids(Fluids.LAVA.getSource())
                 .color(0xCB4810)
                 .burning(new BurningData(15, 4F))
+                .build()
+        );
+
+        register(ctx, "honey", new SyringeFluidType.Builder()
+                .addFluids(AllFluids.HONEY.getSource())
+                .addMobs(EntityType.BEE)
+                .color(0xFFBF00)
+                .food(new FoodProperties.Builder()
+                        .nutrition(4)
+                        .saturationMod(2)
+                        .build())
+                .build()
+        );
+
+        register(ctx, "chocolate", new SyringeFluidType.Builder()
+                .addFluids(AllFluids.CHOCOLATE.getSource())
+                .color(0x895129)
+                .food(new FoodProperties.Builder()
+                        .nutrition(4)
+                        .saturationMod(2)
+                        .build())
                 .build()
         );
 
@@ -105,6 +128,10 @@ public class BSyringeFluidTypes {
                 .addFluids(ACFluidRegistry.PURPLE_SODA_FLUID_SOURCE.get())
                 .addMobs(ACEntityRegistry.SWEETISH_FISH.get())
                 .color(0x7F00FF)
+                .food(new FoodProperties.Builder()
+                        .nutrition(2)
+                        .saturationMod(0.4f)
+                        .build())
                 .onEntityHitEffect(new MobEffectInstance(ACEffectRegistry.SUGAR_RUSH.get(), 500, 1, false, true))
                 .build()
         );
