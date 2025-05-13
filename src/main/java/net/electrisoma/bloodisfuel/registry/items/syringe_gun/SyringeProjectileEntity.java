@@ -1,18 +1,16 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
 import com.simibubi.create.AllSoundEvents;
-import net.electrisoma.bloodisfuel.api.utils.ItemUtils;
+import net.electrisoma.bloodisfuel.api.utils.FluidUtils;
+import net.electrisoma.bloodisfuel.api.utils.ItemCapacityUtils;
+import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
+import net.electrisoma.bloodisfuel.api.utils.TooltipUtils;
 import net.electrisoma.bloodisfuel.registry.BEntityTypes;
-import net.electrisoma.bloodisfuel.registry.BParticles;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
@@ -29,7 +27,7 @@ import net.minecraftforge.network.NetworkHooks;
 import java.util.Objects;
 
 public class SyringeProjectileEntity extends AbstractHurtingProjectile
-        implements IEntityAdditionalSpawnData, ItemUtils {
+        implements IEntityAdditionalSpawnData, FluidUtils, TooltipUtils, SyringeUtils, ItemCapacityUtils {
 
     @Override
     public boolean shouldRender(double x, double y, double z) {
@@ -110,7 +108,7 @@ public class SyringeProjectileEntity extends AbstractHurtingProjectile
         fluid.writeToNBT(tag);
         fakeStack.getOrCreateTag().put("Fluid", tag);
 
-        ItemUtils.super.spawnTrailParticles(level(), this, fakeStack, 5);
+        SyringeUtils.super.spawnTrailParticles(level(), this, fakeStack, 5);
     }
 
     @Override

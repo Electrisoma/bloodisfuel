@@ -1,240 +1,42 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
+import net.electrisoma.bloodisfuel.api.data.BurningData;
+import net.electrisoma.bloodisfuel.api.data.ColorableDripParticleData;
 import net.electrisoma.bloodisfuel.api.data.DrowningData;
 import net.electrisoma.bloodisfuel.api.data.FreezingData;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
-import net.electrisoma.bloodisfuel.registry.BEnchantments;
-import net.electrisoma.bloodisfuel.api.data.BurningData;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
-
-import com.simibubi.create.AllEnchantments;
-import com.simibubi.create.foundation.utility.CreateLang;
-
-import net.electrisoma.bloodisfuel.api.data.ColorableDripParticleData;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-
+import net.minecraftforge.registries.ForgeRegistries;
 import org.joml.Vector3f;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.function.BiConsumer;
-import javax.annotation.Nullable;
 
 
-@Deprecated
-@SuppressWarnings("all")
-public interface ItemUtils {
+@SuppressWarnings({"OptionalGetWithoutIsPresent", "DataFlowIssue", "RedundantSuppression"})
+public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUtils{
 
-    /**
-     * Item capacity utilities.
-     */
-    default int getBaseCapacity(ItemStack stack) {
-        return 1000;
-    }
-    default int getCapacityEnchantmentAddition(ItemStack stack) {
-        return 1000;
-    }
-    default int getCapacity(ItemStack stack) {
-        int enchantLevel = stack.getEnchantmentLevel(AllEnchantments.CAPACITY.get());
-        return getBaseCapacity(stack) + getCapacityEnchantmentAddition(stack) * enchantLevel;
-    }
-
-    /**
-     * Item usage utilities.
-     */
-    default int getChargeCount(ItemStack stack) {
-        int baseCharges = 4;
-        int extraLevel = stack.getEnchantmentLevel(BEnchantments.EXTRA_VIALS.get());
-        return baseCharges + (extraLevel * 2);
-    }
-    default int getUseAmount(int capacity, int charges) {
-        return (int) Math.ceil((double) capacity / charges);
-    }
-    default int getUseAmount(ItemStack stack) {
-        return getUseAmount(getCapacity(stack), getChargeCount(stack));
-    }
-    default int getCurrentFillLevel(ItemStack stack) {
-        return readFluid(stack).getAmount();
-    }
-
-    /**
-     * Text utilities.
-     */
-    default String formatDuration(int ticks) {
-        int seconds = ticks / 20;
-        int minutes = seconds / 60;
-        seconds %= 60;
-        return String.format("%d:%02d", minutes, seconds);
-    }
-    static String toRoman(int number) {
-        if (number < 1 || number > 10) return String.valueOf(number);
-        return new String[]{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"}[number - 1];
-    }
-    default void tooltipMaker(List<Component> tooltip, ItemStack stack, @Nullable RegistryAccess registryAccess) {
-        FluidStack fluid = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluid, registryAccess);
-        List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluid);
-
-        /**
-         * Empty tooltip.
-         */
-        if (stack.getTag() == null || fluid.isEmpty()) {
-            tooltip.add(Component.translatable("bloodisfuel.tooltip.empty").withStyle(ChatFormatting.GRAY));
-            return;
-        }
-
-        /**
-         * Fluid tooltip.
-         */
-        tooltip.add(CreateLang.fluidName(fluid).component()
-                .withStyle(ChatFormatting.GRAY)
-                .append(" ")
-                .append(CreateLang.number(fluid.getAmount()).style(ChatFormatting.GOLD).component())
-                .append(Component.translatable("create.generic.unit.millibuckets").withStyle(ChatFormatting.GOLD))
-                .append(" / ")
-                .append(CreateLang.number(getCapacity(stack)).style(ChatFormatting.GRAY).component())
-                .append(Component.translatable("create.generic.unit.millibuckets").withStyle(ChatFormatting.GRAY)));
-
-        /**
-         * Effects tooltip.
-         */
-        for (MobEffectInstance effect : effects) {
-            Component effectName = Component.translatable(effect.getDescriptionId())
-                    .withStyle(effect.getEffect().isBeneficial() ? ChatFormatting.GREEN : ChatFormatting.RED);
-            Component level = Component.literal(" " + toRoman(effect.getAmplifier() + 1))
-                    .withStyle(ChatFormatting.GOLD);
-            Component duration = Component.empty();
-            if (effect.getDuration() > 1) {
-                duration = Component.literal(" (" + formatDuration(effect.getDuration()) + ")")
-                        .withStyle(ChatFormatting.GRAY);
-            }
-
-            tooltip.add(Component.literal("• ").withStyle(ChatFormatting.GRAY)
-                    .append(Component.translatable("bloodisfuel.tooltip.effect").withStyle(ChatFormatting.GRAY))
-                    .append(": ")
-                    .append(effectName)
-                    .append(level)
-                    .append(duration));
-        }
-
-        /**
-         * Burning tooltip.
-         */
-        if (type != null && type.hasBurning()) {
-            type.burning().ifPresent(burning -> {
-                int duration = burning.durationSeconds();
-                float damage = burning.damagePerSecond();
-
-                MutableComponent line = Component.literal("• ").withStyle(ChatFormatting.GRAY)
-                        .append(Component.translatable("bloodisfuel.tooltip.burning").withStyle(ChatFormatting.RED))
-                        .append(": ");
-
-                if (duration > 0) {
-                    line.append(Component.literal(String.valueOf(duration)).withStyle(ChatFormatting.GOLD))
-                            .append(Component.translatable("bloodisfuel.tooltip.seconds").withStyle(ChatFormatting.GOLD));
-                }
-
-                if (damage > 0) {
-                    if (duration > 0) line.append(" ");
-                    line.append(Component.literal("(" + damage + " ").withStyle(ChatFormatting.RED))
-                            .append(Component.translatable("bloodisfuel.tooltip.damage"))
-                            .append(Component.literal("/"))
-                            .append(Component.translatable("bloodisfuel.tooltip.seconds"))
-                            .append(Component.literal(")"));
-                }
-
-                tooltip.add(line);
-            });
-        }
-
-        /**
-         * Extinguishing tooltip.
-         */
-        if (type != null && type.hasExtinguishing()) {
-            type.extinguishing().ifPresent(extinguishing -> {
-                int duration = extinguishing.durationSeconds();
-                float heal = extinguishing.healPerSecond();
-
-                MutableComponent line = Component.literal("• ").withStyle(ChatFormatting.GRAY)
-                        .append(Component.translatable("bloodisfuel.tooltip.extinguishing").withStyle(ChatFormatting.AQUA))
-                        .append(": ");
-
-                if (duration > 0) {
-                    line.append(Component.literal(String.valueOf(duration)).withStyle(ChatFormatting.GOLD))
-                            .append(Component.translatable("bloodisfuel.tooltip.seconds").withStyle(ChatFormatting.GOLD));
-                }
-
-                if (heal > 0) {
-                    if (duration > 0) line.append(" ");
-                    line.append(Component.literal("(" + heal + " "))
-                            .append(Component.translatable("bloodisfuel.tooltip.heal"))
-                            .append(Component.literal("/"))
-                            .append(Component.translatable("bloodisfuel.tooltip.seconds"))
-                            .append(Component.literal(")"));
-                }
-
-                tooltip.add(line);
-            });
-        }
-    }
-    default void projectileTooltipMaker(List<Component> tooltip, ItemStack stack, @Nullable RegistryAccess registryAccess) {
-        CombatContext ctx = getCombatContext(stack, registryAccess);
-        if (ctx.canAttack()) {
-            Optional<Float> optDamage = ctx.type() != null ? ctx.type().damage() : Optional.empty();
-            if (optDamage.isPresent()) {
-                float damage = optDamage.get();
-                if (Minecraft.getInstance().player != null) {
-                    float playerAttackDamage = (float) Minecraft.getInstance().player.getAttributeValue(Attributes.ATTACK_DAMAGE);
-                    damage += playerAttackDamage;
-                }
-                tooltip.add(Component.empty());
-                tooltip.add(Component.translatable("item.modifiers.mainhand").withStyle(ChatFormatting.GRAY));
-                String damageText = (damage % 1.0f == 0.0f)
-                        ? String.valueOf((int) damage)
-                        : String.format("%.2f", damage);
-                tooltip.add(Component.literal(" ")
-                        .append(Component.literal(damageText))
-                        .append(" ")
-                        .append(Component.translatable("bloodisfuel.tooltip.syringe_gun.damage"))
-                        .withStyle(ChatFormatting.DARK_GREEN));
-            }
-        }
-    }
-
-    /**
-     * Matching fluid utilities.
-     */
     default SyringeFluidType getMatchingFluid(LivingEntity target, RegistryAccess access) {
         return SyringeFluidTypeManager.getAll(access).stream()
                 .filter(type -> ForgeRegistries.ENTITY_TYPES.getHolder(target.getType())
@@ -248,66 +50,6 @@ public interface ItemUtils {
                 .orElse(null);
     }
 
-    /**
-     * Fluid handler utiltiies.
-     */
-    default FluidHandlerItemStack getFluidHandler(ItemStack stack) {
-        return new ToolItemFluidHandler(stack, getCapacity(stack), this::readFluid, this::writeFluid);
-    }
-    class ToolItemFluidHandler extends FluidHandlerItemStack {
-        private final BiConsumer<ItemStack, FluidStack> write;
-        private final Function<ItemStack, FluidStack> read;
-
-        public ToolItemFluidHandler(ItemStack container, int capacity,
-                                    Function<ItemStack, FluidStack> read,
-                                    BiConsumer<ItemStack, FluidStack> write) {
-            super(container, capacity);
-            this.read = read;
-            this.write = write;
-        }
-
-        @Override
-        public FluidStack getFluid() {
-            return read.apply(container);
-        }
-
-        @Override
-        protected void setFluid(FluidStack fluid) {
-            write.accept(container, fluid);
-        }
-    }
-
-    /**
-     * Fluid read/right utilities.
-     */
-    default FluidStack readFluid(ItemStack stack) {
-        return FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("Fluid"));
-    }
-    default void writeFluid(ItemStack stack, FluidStack fluid) {
-        stack.getOrCreateTag().put("Fluid", fluid.writeToNBT(new CompoundTag()));
-    }
-
-    /**
-     * Context for various syringe combat.
-     */
-    record CombatContext(FluidStack fluid, SyringeFluidType type, int useAmount, boolean canAttack, boolean onlyBeneficial) {}
-    default CombatContext getCombatContext(ItemStack stack, @Nullable RegistryAccess access) {
-        FluidStack fluidStack = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
-        int capacity = getCapacity(stack);
-        int charges = getChargeCount(stack);
-        int useAmount = getUseAmount(capacity, charges);
-        int currentFill = fluidStack.getAmount();
-        List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluidStack);
-        boolean onlyBeneficial = effects.stream().allMatch(e -> e.getEffect().isBeneficial());
-        boolean canAttack = currentFill >= useAmount && !onlyBeneficial;
-
-        return new CombatContext(fluidStack, type, useAmount, canAttack, onlyBeneficial);
-    }
-
-    /**
-     * Syringe utiltiies.
-     */
     default void drainVial(ItemStack stack, Player player, Level level) {
         if (level.isClientSide) return;
 
@@ -388,9 +130,6 @@ public interface ItemUtils {
         return true;
     }
 
-    /**
-     * Syringe effects utilities.
-     */
     default void applySyringeEffects(LivingEntity entity, CombatContext ctx) {
         if (ctx.fluid().isEmpty()) return;
 
@@ -473,8 +212,7 @@ public interface ItemUtils {
             @Override
             public void run() {
                 if (ticksLeft[0] > 0) {
-                    if (entity instanceof Player) {
-                        Player player = (Player) entity;
+                    if (entity instanceof Player player) {
                         int currentAir = player.getAirSupply();
                         if (currentAir > 0) player.setAirSupply(currentAir - 1);
                     }
@@ -482,12 +220,7 @@ public interface ItemUtils {
                     ticksLeft[0]--;
                     entity.level().getServer().execute(this);
                 }
-                else {
-                    if (entity instanceof Player) {
-                        Player player = (Player) entity;
-                        player.setAirSupply(0);
-                    }
-                }
+                else if (entity instanceof Player player) player.setAirSupply(0);
             }
         };
 
@@ -532,9 +265,6 @@ public interface ItemUtils {
         }
     }
 
-    /**
-     * Syringe particle utilities.
-     */
     default void spawnBloodParticles(Level level, Entity entity, ItemStack stack, int count) {
         if (!(level instanceof ServerLevel server)) return;
         int color = getBarColor(stack);
@@ -542,7 +272,7 @@ public interface ItemUtils {
         float g = ((color >> 8) & 0xFF) / 255.0F;
         float b = (color & 0xFF) / 255.0F;
         Vector3f particleColor = new Vector3f(r, g, b);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < count; i++) {
             double dx = (level.random.nextDouble() - 0.5) * 0.5;
             double dy = level.random.nextDouble();
             double dz = (level.random.nextDouble() - 0.5) * 0.5;
@@ -585,44 +315,7 @@ public interface ItemUtils {
         }
     }
 
-    /**
-     * Item bar utilities.
-     */
-    default boolean isBarVisible(ItemStack stack) {
-        return getCurrentFillLevel(stack) > 0;
-    }
-    default int getBarWidth(ItemStack stack) {
-        return Math.round(13 * (getCurrentFillLevel(stack) / (float) getCapacity(stack)));
-    }
-    default int getBarColor(ItemStack stack) {
-        Level level = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null;
-        RegistryAccess access = level != null ? level.registryAccess() : null;
-
-        FluidStack fluidStack = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
-
-        return SyringeFluidTypeManager.getColor(type, fluidStack);
-    }
-
-    /**
-     * Sound utilities.
-     */
     default void playSound(Level level, Entity entity, SoundEvent sound) {
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 1.0F, 1.0F);
-    }
-
-    // simple fuel item with fixed burn time
-    class FuelItems extends Item {
-        private final int burnTime;
-
-        public FuelItems(Properties properties, int burnTime) {
-            super(properties);
-            this.burnTime = burnTime;
-        }
-
-        @Override
-        public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
-            return burnTime;
-        }
     }
 }

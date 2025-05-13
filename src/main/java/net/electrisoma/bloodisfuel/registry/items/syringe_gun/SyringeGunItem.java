@@ -1,23 +1,20 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
-
-import net.electrisoma.bloodisfuel.api.utils.ItemUtils;
+import net.electrisoma.bloodisfuel.api.utils.FluidUtils;
+import net.electrisoma.bloodisfuel.api.utils.ItemCapacityUtils;
 
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
+import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
+import net.electrisoma.bloodisfuel.api.utils.TooltipUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -29,12 +26,12 @@ import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 
-public class SyringeGunItem extends ProjectileWeaponItem implements CustomArmPoseItem, ItemUtils {
+public class SyringeGunItem extends ProjectileWeaponItem
+        implements CustomArmPoseItem, FluidUtils, TooltipUtils, SyringeUtils, ItemCapacityUtils {
 
     public SyringeGunItem(Properties properties) {
         super(properties);
@@ -124,17 +121,17 @@ public class SyringeGunItem extends ProjectileWeaponItem implements CustomArmPos
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return ItemUtils.super.isBarVisible(stack);
+        return SyringeUtils.super.isBarVisible(stack);
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return ItemUtils.super.getBarWidth(stack);
+        return SyringeUtils.super.getBarWidth(stack);
     }
 
     @Override
     public int getBarColor(ItemStack stack) {
-        return ItemUtils.super.getBarColor(stack);
+        return SyringeUtils.super.getBarColor(stack);
     }
 
     @Override
