@@ -15,7 +15,7 @@
 //
 //public class BloodFluidParticleData implements ParticleOptions, ICustomParticleDataWithSprite<BloodFluidParticleData> {
 //
-//    public static final Codec<BloodFluidParticleData> CODEC = RecordCodecBuilder.create(i -> i
+//    public static final Codec<BloodFluidParticleData> COLORABLE_DRIP_CODEC = RecordCodecBuilder.create(i -> i
 //            .group(Codec.FLOAT.fieldOf("speed")
 //                    .forGetter(p -> p.speed))
 //            .apply(i, BloodFluidParticleData::new));
@@ -67,7 +67,7 @@
 //
 //    @Override
 //    public Codec<BloodFluidParticleData> getCodec(ParticleType<BloodFluidParticleData> type) {
-//        return CODEC;
+//        return COLORABLE_DRIP_CODEC;
 //    }
 //
 //    @Override

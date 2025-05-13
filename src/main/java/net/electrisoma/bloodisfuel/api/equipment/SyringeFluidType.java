@@ -1,9 +1,7 @@
 package net.electrisoma.bloodisfuel.api.equipment;
 
-import net.electrisoma.bloodisfuel.api.data.BCodecs;
+import net.electrisoma.bloodisfuel.api.data.*;
 
-import net.electrisoma.bloodisfuel.api.data.BurningData;
-import net.electrisoma.bloodisfuel.api.data.ExtinguishingData;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -36,7 +34,9 @@ public record SyringeFluidType(
         Optional<MobEffectInstance> onEntityHitEffect,
         Optional<HolderSet<EntityType<?>>> mobs,
         Optional<BurningData> burning,
-        Optional<ExtinguishingData> extinguishing) {
+        Optional<ExtinguishingData> extinguishing,
+        Optional<DrowningData> drowning,
+        Optional<FreezingData> freezing) {
     public static final Codec<SyringeFluidType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registries.FLUID).fieldOf("fluids").forGetter(SyringeFluidType::fluids),
             Codec.INT.fieldOf("color").forGetter(SyringeFluidType::color),
@@ -46,7 +46,9 @@ public record SyringeFluidType(
             BCodecs.MOB_EFFECT_INSTANCE.optionalFieldOf("on_entity_hit").forGetter(SyringeFluidType::onEntityHitEffect),
             RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).optionalFieldOf("mobs").forGetter(SyringeFluidType::mobs),
             BCodecs.BURNING_DATA.optionalFieldOf("burning").forGetter(SyringeFluidType::burning),
-            BCodecs.EXTINGUISHING_DATA.optionalFieldOf("extinguishing").forGetter(SyringeFluidType::extinguishing)
+            BCodecs.EXTINGUISHING_DATA.optionalFieldOf("extinguishing").forGetter(SyringeFluidType::extinguishing),
+            BCodecs.DROWNING_DATA.optionalFieldOf("drowning").forGetter(SyringeFluidType::drowning),
+            BCodecs.FREEZING_DATA.optionalFieldOf("freezing").forGetter(SyringeFluidType::freezing)
     ).apply(instance, SyringeFluidType::new));
 
     /**
@@ -74,6 +76,20 @@ public record SyringeFluidType(
     }
 
     /**
+     * Returns true if this fluid type can burn.
+     */
+    public boolean hasDrowning() {
+        return drowning.isPresent();
+    }
+
+    /**
+     * Returns true if this fluid type can extinguish.
+     */
+    public boolean hasFreezing() {
+        return freezing.isPresent();
+    }
+
+    /**
      * Returns true if this fluid type can feed.
      */
     public boolean hasFood() {
@@ -94,7 +110,7 @@ public record SyringeFluidType(
         return attackSpeed.orElse(fallback);
     }
 
-    @SuppressWarnings({"deprecation", "OptionalUsedAsFieldOrParameterType"})
+    @SuppressWarnings({"deprecation", "OptionalUsedAsFieldOrParameterType", "RedundantSuppression"})
     public static class Builder {
         private final List<Holder<Fluid>> fluids = new ArrayList<>();
         private int color = 0xFFFFFF;
@@ -105,6 +121,8 @@ public record SyringeFluidType(
         private final List<Holder<EntityType<?>>> mobs = new ArrayList<>();
         private Optional<BurningData> burning = Optional.empty();
         private Optional<ExtinguishingData> extinguishing = Optional.empty();
+        private Optional<DrowningData> drowning = Optional.empty();
+        private Optional<FreezingData> freezing = Optional.empty();
 
         /**
          * Adds one or more fluids that this type applies to.
@@ -181,6 +199,22 @@ public record SyringeFluidType(
         }
 
         /**
+         * Adds a drowning effect to the fluid type.
+         */
+        public Builder drowning(DrowningData drowningData) {
+            this.drowning = Optional.ofNullable(drowningData);
+            return this;
+        }
+
+        /**
+         * Adds a freezing effect to the fluid type.
+         */
+        public Builder freezing(FreezingData freezingData) {
+            this.freezing = Optional.ofNullable(freezingData);
+            return this;
+        }
+
+        /**
          * Builds the SyringeFluidType instance.
          */
         public SyringeFluidType build() {
@@ -193,7 +227,9 @@ public record SyringeFluidType(
                     Optional.ofNullable(onEntityHitEffect),
                     mobs.isEmpty() ? Optional.empty() : Optional.of(HolderSet.direct(mobs)),
                     burning,
-                    extinguishing
+                    extinguishing,
+                    drowning,
+                    freezing
             );
         }
     }

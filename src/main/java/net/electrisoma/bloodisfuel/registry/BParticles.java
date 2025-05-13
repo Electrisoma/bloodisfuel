@@ -3,6 +3,7 @@ package net.electrisoma.bloodisfuel.registry;
 import com.mojang.serialization.Codec;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 
+import net.electrisoma.bloodisfuel.api.data.BCodecs;
 import net.electrisoma.bloodisfuel.api.data.ColorableDripParticleData;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -33,7 +34,7 @@ public class BParticles {
                     new ParticleType<>(false, ColorableDripParticleData.DESERIALIZER) {
                         @Override
                         public Codec<ColorableDripParticleData> codec() {
-                            return ColorableDripParticleData.CODEC;
+                            return BCodecs.COLORABLE_DRIP_CODEC;
                         }
                     });
 }

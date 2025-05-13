@@ -6,7 +6,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
 
 
-@SuppressWarnings("all")
+@SuppressWarnings({"deprecation", "RedundantSuppression"})
 public class BCodecs {
 
     /**
@@ -44,4 +44,30 @@ public class BCodecs {
             .nutrition(nutrition).saturationMod(saturation)
             .build()
     ));
+
+    /**
+     * Codec for serializing ColorableDripParticleData objects with rgb fields.
+     */
+    public static final Codec<ColorableDripParticleData> COLORABLE_DRIP_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.FLOAT.fieldOf("r").forGetter(ColorableDripParticleData::r),
+            Codec.FLOAT.fieldOf("g").forGetter(ColorableDripParticleData::g),
+            Codec.FLOAT.fieldOf("b").forGetter(ColorableDripParticleData::b)
+    ).apply(instance, ColorableDripParticleData::new));
+
+    /**
+     * Codec for serializing DrowningData objects with optional duration and damage fields.
+     */
+    public static final Codec<DrowningData> DROWNING_DATA = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.optionalFieldOf("duration_seconds", 4).forGetter(DrowningData::durationSeconds),
+            Codec.FLOAT.optionalFieldOf("damage_per_second", 1.0f).forGetter(DrowningData::damagePerSecond)
+    ).apply(instance, DrowningData::new));
+
+    /**
+     * Codec for serializing FreezingData objects with optional duration and slowness fields.
+     */
+    public static final Codec<FreezingData> FREEZING_DATA = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.optionalFieldOf("duration_seconds", 4).forGetter(FreezingData::durationSeconds),
+            Codec.FLOAT.optionalFieldOf("damage_per_second", 4F).forGetter(FreezingData::damagePerSecond),
+            Codec.FLOAT.optionalFieldOf("slow_amount", 0.5f).forGetter(FreezingData::slowAmount)
+    ).apply(instance, FreezingData::new));
 }

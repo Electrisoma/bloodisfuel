@@ -10,7 +10,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.alchemy.PotionUtils;
@@ -178,6 +182,39 @@ public class SyringeFluidTypeManager {
         type.food().ifPresent(food -> {
             if (player.getFoodData().needsFood()) {
                 player.getFoodData().eat(food.getNutrition(), food.getSaturationModifier());
+            }
+        });
+    }
+
+    /**
+     * Applies drowning effects.
+     */
+    public static void applyDrowning(SyringeFluidType type, LivingEntity target) {
+        type.drowning().ifPresent(drowning -> {
+            if (drowning.durationSeconds() != null && drowning.damagePerSecond() != null) {
+                float totalDamage = drowning.damagePerSecond() * drowning.durationSeconds();
+                target.hurt(target.damageSources().drown(), totalDamage);
+            }
+        });
+    }
+
+    /**
+     * Applies freezing effects.
+     */
+    public static void applyFreezing(SyringeFluidType type, LivingEntity target) {
+        type.freezing().ifPresent(freezing -> {
+            int duration = freezing.durationSeconds() != null ? freezing.durationSeconds() : 5; // default to 5 seconds
+            float damagePerSecond = freezing.damagePerSecond() != null ? freezing.damagePerSecond() : 1.0f;
+
+            AttributeInstance speedAttribute = target.getAttribute(Attributes.MOVEMENT_SPEED);
+            if (speedAttribute != null) {
+                float freezeEffect = -0.05F;
+                speedAttribute.addTransientModifier(new AttributeModifier(UUID.randomUUID(), "Frozen Slow",
+                        freezeEffect, AttributeModifier.Operation.ADDITION));
+            }
+
+            if (damagePerSecond > 0) {
+                target.hurt(target.damageSources().freeze(), damagePerSecond * duration);
             }
         });
     }

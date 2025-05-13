@@ -1,25 +1,19 @@
 package net.electrisoma.bloodisfuel.api.data;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.electrisoma.bloodisfuel.registry.BParticles;
+
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 /**
  * Holds RGB color data for the colorable drip particle.
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "RedundantSuppression"})
 public record ColorableDripParticleData(float r, float g, float b) implements ParticleOptions {
-
-    public static final Codec<ColorableDripParticleData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.FLOAT.fieldOf("r").forGetter(ColorableDripParticleData::r),
-            Codec.FLOAT.fieldOf("g").forGetter(ColorableDripParticleData::g),
-            Codec.FLOAT.fieldOf("b").forGetter(ColorableDripParticleData::b)
-    ).apply(instance, ColorableDripParticleData::new));
 
     public static final Deserializer<ColorableDripParticleData> DESERIALIZER = new Deserializer<>() {
         @Override

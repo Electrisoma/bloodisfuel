@@ -1,5 +1,7 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
+import net.electrisoma.bloodisfuel.api.data.DrowningData;
+import net.electrisoma.bloodisfuel.api.data.FreezingData;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
@@ -19,7 +21,11 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -42,6 +48,7 @@ import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.BiConsumer;
 import javax.annotation.Nullable;
@@ -293,7 +300,7 @@ public interface ItemUtils {
         int useAmount = getUseAmount(capacity, charges);
         int currentFill = fluidStack.getAmount();
         List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluidStack);
-        boolean onlyBeneficial = !effects.isEmpty() && effects.stream().allMatch(e -> e.getEffect().isBeneficial());
+        boolean onlyBeneficial = effects.stream().allMatch(e -> e.getEffect().isBeneficial());
         boolean canAttack = currentFill >= useAmount && !onlyBeneficial;
 
         return new CombatContext(fluidStack, type, useAmount, canAttack, onlyBeneficial);
@@ -322,7 +329,8 @@ public interface ItemUtils {
             SyringeFluidType selfType = getMatchingFluid(player, access);
             if (selfType == null) selfType = getFallback(access);
             if (selfType != null) {
-                writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(selfType), getCapacity(stack)));
+                FluidStack fluid = new FluidStack(SyringeFluidTypeManager.getFluidFor(selfType), getCapacity(stack));
+                writeFluid(stack, fluid);
                 player.hurt(player.damageSources().generic(), 2.0F);
                 playSound(level, player, SoundEvents.PLAYER_HURT);
                 spawnBloodParticles(level, player, stack, 5);
@@ -337,29 +345,9 @@ public interface ItemUtils {
         CombatContext ctx = getCombatContext(stack, access);
         FluidStack fluid = ctx.fluid();
 
-        if (ctx.fluid().getAmount() < ctx.useAmount()) return;
-
+        if (fluid.getAmount() < ctx.useAmount()) return;
         if (!level.isClientSide) {
-            if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), access)) {
-                player.removeAllEffects();
-                BAdvancements.LACTOSE_TOLERANT.awardTo((ServerPlayer) player);
-            }
-
-            SyringeFluidTypeManager.getEffects(ctx.type(), fluid)
-                    .forEach(effect -> player.addEffect(new MobEffectInstance(effect)));
-
-            if (ctx.type().hasBurning()) {
-                BurningData burningData = ctx.type().burning().get();
-                applyBurningEffect(player, burningData);
-            }
-
-            if (ctx.type().hasExtinguishing()) {
-                applyExtinguishingEffect(player, ctx.type());
-            }
-
-            if (ctx.type().hasFood()) {
-                applyFoodEffect(player, ctx.type());
-            }
+            applySyringeEffects(player, ctx);
 
             fluid.shrink(ctx.useAmount());
             writeFluid(stack, fluid);
@@ -371,7 +359,8 @@ public interface ItemUtils {
             SyringeFluidType matchedType = getMatchingFluid(target, access);
             if (matchedType == null) matchedType = getFallback(access);
             if (matchedType != null) {
-                writeFluid(stack, new FluidStack(SyringeFluidTypeManager.getFluidFor(matchedType), getCapacity(stack)));
+                FluidStack fluid = new FluidStack(SyringeFluidTypeManager.getFluidFor(matchedType), getCapacity(stack));
+                writeFluid(stack, fluid);
                 target.hurt(player.damageSources().playerAttack(player), 2.0F);
                 spawnBloodParticles(player.level(), target, stack, 5);
                 return true;
@@ -386,40 +375,14 @@ public interface ItemUtils {
             target.hurt(player.damageSources().playerAttack(player), 2.0F);
             return true;
         }
-
         if (!player.level().isClientSide) {
-
-            if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), access)) {
-                target.removeAllEffects();
-            }
-
-            if (target instanceof Player targetPlayer) {
-                if (ctx.onlyBeneficial()) BAdvancements.DOCTOR.awardTo((ServerPlayer) player);
-                else BAdvancements.MEDICAL_MALPRACTICE.awardTo((ServerPlayer) player);
-            }
-
-            SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid())
-                    .forEach(effect -> target.addEffect(new MobEffectInstance(effect)));
-
-            if (ctx.type().hasBurning()) {
-                applyBurningEffect(target, ctx.type().burning().get());
-                BAdvancements.FIRE_FIRE_FIRE.awardTo((ServerPlayer) player);
-            }
-            if (ctx.type().hasExtinguishing()) {
-                applyExtinguishingEffect(target, ctx.type());
-            }
-            if (ctx.type().hasFood()) {
-                applyFoodEffect(target, ctx.type());
-            }
+            applySyringeEffects(target, ctx);
 
             ctx.fluid().shrink(ctx.useAmount());
             writeFluid(stack, ctx.fluid());
 
             Optional<Float> optDamage = ctx.type() != null ? ctx.type().damage() : Optional.empty();
-            if (optDamage.isPresent()) {
-                float damage = optDamage.get();
-                target.hurt(player.damageSources().playerAttack(player), damage);
-            }
+            optDamage.ifPresent(damage -> target.hurt(player.damageSources().playerAttack(player), damage));
 
             spawnBloodParticles(player.level(), target, stack, 5);
         }
@@ -429,9 +392,38 @@ public interface ItemUtils {
     /**
      * Syringe effects utilities.
      */
+    default void applySyringeEffects(LivingEntity entity, CombatContext ctx) {
+        if (ctx.fluid().isEmpty()) return;
+
+        if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), entity.level().registryAccess())) {
+            entity.removeAllEffects();
+        }
+
+        SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid())
+                .forEach(effect -> entity.addEffect(new MobEffectInstance(effect)));
+
+        if (ctx.type().hasBurning()) {
+            BurningData burningData = ctx.type().burning().get();
+            applyBurningEffect(entity, burningData);
+        }
+        if (ctx.type().hasExtinguishing()) {
+            applyExtinguishingEffect(entity, ctx.type());
+        }
+        if (ctx.type().hasFood()) {
+            applyFoodEffect(entity, ctx.type());
+        }
+        if (ctx.type().hasDrowning()) {
+            DrowningData drowningData = ctx.type().drowning().get();
+            applyDrowningEffect(entity, drowningData);
+        }
+        if (ctx.type().hasFreezing()) {
+            FreezingData freezingData = ctx.type().freezing().get();
+            applyFreezingEffect(entity, freezingData);
+        }
+    }
     default void applyBurningEffect(LivingEntity entity, BurningData burningData) {
-        if (entity == null || entity.level().isClientSide) return;
-        if (burningData != null) entity.setSecondsOnFire(burningData.durationSeconds());
+        if (entity == null || entity.level().isClientSide || burningData == null) return;
+        entity.setSecondsOnFire(burningData.durationSeconds());
         if (burningData.damagePerSecond() > 0) {
             entity.hurt(entity.damageSources().onFire(), burningData.damagePerSecond());
         }
@@ -441,25 +433,103 @@ public interface ItemUtils {
     }
     default void applyExtinguishingEffect(LivingEntity entity, SyringeFluidType type) {
         if (entity == null || entity.level().isClientSide) return;
-        if (type != null && type.hasExtinguishing()) {
-            if (entity.isOnFire()) {
-                SyringeFluidTypeManager.applyExtinguishing(type, entity);
-
-                entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                        SoundEvents.FIRE_EXTINGUISH, entity.getSoundSource(), 1.0F, 1.0F);
-            }
+        if (type != null && type.hasExtinguishing() && entity.isOnFire()) {
+            SyringeFluidTypeManager.applyExtinguishing(type, entity);
+            entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                    SoundEvents.FIRE_EXTINGUISH, entity.getSoundSource(), 1.0F, 1.0F);
         }
     }
     default void applyFoodEffect(LivingEntity entity, SyringeFluidType type) {
-        if (!(entity instanceof Player player) || entity.level().isClientSide) return;
-        if (type == null || type.food().isEmpty()) return;
+        if (!(entity instanceof Player player) || entity.level().isClientSide || type == null || type.food().isEmpty()) return;
 
         FoodProperties food = type.food().get();
         if (player.getFoodData().needsFood()) {
             player.getFoodData().eat(food.getNutrition(), food.getSaturationModifier());
-
             entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
                     SoundEvents.GENERIC_EAT, SoundSource.PLAYERS, 1.0F, 1.0F);
+        }
+    }
+    default void applyDrowningEffect(LivingEntity entity, DrowningData drowningData) {
+        if (entity == null || entity.level().isClientSide || drowningData == null) return;
+
+        float damagePerTick = drowningData.damagePerSecond();
+        int durationTicks = drowningData.durationSeconds() != null ? drowningData.durationSeconds() * 20 : 100;
+
+        entity.hurt(entity.damageSources().drown(), damagePerTick);
+
+        if (entity instanceof Player player) {
+            if (!player.level().isClientSide && player.level() instanceof ServerLevel serverLevel) {
+                MinecraftServer server = serverLevel.getServer();
+                server.execute(() -> handleDrowning(player, damagePerTick, durationTicks));
+            }
+        }
+
+        entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                SoundEvents.DROWNED_HURT, entity.getSoundSource(), 1.0F, 1.0F);
+    }
+    private void handleDrowning(LivingEntity entity, float damagePerTick, int durationTicks) {
+        final int[] ticksLeft = {durationTicks};
+
+        Runnable tickTask = new Runnable() {
+            @Override
+            public void run() {
+                if (ticksLeft[0] > 0) {
+                    if (entity instanceof Player) {
+                        Player player = (Player) entity;
+                        int currentAir = player.getAirSupply();
+                        if (currentAir > 0) player.setAirSupply(currentAir - 1);
+                    }
+                    entity.hurt(entity.damageSources().drown(), damagePerTick);
+                    ticksLeft[0]--;
+                    entity.level().getServer().execute(this);
+                }
+                else {
+                    if (entity instanceof Player) {
+                        Player player = (Player) entity;
+                        player.setAirSupply(0);
+                    }
+                }
+            }
+        };
+
+        entity.level().getServer().execute(tickTask);
+    }
+    default void applyFreezingEffect(LivingEntity entity, FreezingData freezingData) {
+        if (entity == null || entity.level().isClientSide || freezingData == null) return;
+        int durationTicks = freezingData.durationSeconds() != null ? freezingData.durationSeconds() * 20 : 100;
+        float damage = freezingData.damagePerSecond() != null ? freezingData.damagePerSecond() : 1.0f;
+        float slowAmount = freezingData.slowAmount() != null ? freezingData.slowAmount() : 0.5f;
+
+        int freezeThreshold = entity.getTicksRequiredToFreeze();
+        entity.setTicksFrozen(freezeThreshold + durationTicks);
+
+        entity.hurt(entity.damageSources().freeze(), damage);
+
+        UUID slowId = UUID.nameUUIDFromBytes("bloodisfuel:freezing_slow".getBytes());
+        AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speedAttr != null) {
+            AttributeModifier slowMod = new AttributeModifier(slowId, "Freezing Slowness",
+                    -slowAmount, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            if (!speedAttr.hasModifier(slowMod)) speedAttr.addTransientModifier(slowMod);
+        }
+
+        entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                SoundEvents.PLAYER_HURT_FREEZE, entity.getSoundSource(), 1.0F, 1.0F);
+
+        if (!entity.level().isClientSide && entity.level() instanceof ServerLevel serverLevel) {
+            MinecraftServer server = serverLevel.getServer();
+            server.execute(() -> {
+                serverLevel.getServer().tell(new TickTask(1, new Runnable() {
+                    int ticksLeft = durationTicks;
+                    @Override
+                    public void run() {
+                        if (--ticksLeft <= 0) {
+                            AttributeInstance attr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+                            if (attr != null) attr.removeModifier(slowId);
+                        } else serverLevel.getServer().tell(new TickTask(1, this));
+                    }
+                }));
+            });
         }
     }
 
