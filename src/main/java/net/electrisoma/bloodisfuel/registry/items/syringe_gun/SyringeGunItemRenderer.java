@@ -17,14 +17,16 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-
 public class SyringeGunItemRenderer extends CustomRenderedItemModelRenderer {
+
     protected static final PartialModel VIAL = PartialModel.of(BloodIsFuel.asResource("item/syringe_gun/vial"));
 
     @Override
-    protected void render(ItemStack stack, CustomRenderedItemModel model, PartialItemModelRenderer renderer, ItemDisplayContext transformType,
+    protected void render(ItemStack stack, CustomRenderedItemModel model,
+                          PartialItemModelRenderer renderer, ItemDisplayContext transformType,
                           PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
         renderer.render(model.getOriginalModel(), light);
+
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
 
@@ -52,5 +54,4 @@ public class SyringeGunItemRenderer extends CustomRenderedItemModelRenderer {
         renderer.render(VIAL.get(), light);
         ms.popPose();
     }
-
 }

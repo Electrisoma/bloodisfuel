@@ -1,10 +1,6 @@
 {
   "parent": "bloodisfuel:root",
   "criteria": {
-    "0": {
-      "conditions": {},
-      "trigger": "bloodisfuel:drained_meat_builtin"
-    },
     "drained_meat": {
       "conditions": {
         "items": [
@@ -37,9 +33,6 @@
   "requirements": [
     [
       "drained_meat"
-    ],
-    [
-      "0"
     ]
   ],
   "sends_telemetry_event": true

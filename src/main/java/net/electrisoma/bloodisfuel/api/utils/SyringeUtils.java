@@ -8,11 +8,14 @@ import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
+import net.electrisoma.bloodisfuel.registry.BAdvancements;
+
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -28,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+
 import org.joml.Vector3f;
 
 import java.util.Optional;
@@ -91,7 +95,12 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
 
             fluid.shrink(ctx.useAmount());
             writeFluid(stack, fluid);
+            player.hurt(player.damageSources().generic(), 2.0F);
             playSound(level, player, SoundEvents.PLAYER_ATTACK_CRIT);
+            spawnBloodParticles(player.level(), player, stack, 5);
+
+            if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), level.registryAccess()))
+                BAdvancements.LACTOSE_TOLERANT.awardTo((ServerPlayer) player);
         }
     }
     default boolean extractFromTarget(ItemStack stack, LivingEntity target, Player player, RegistryAccess access) {
@@ -110,21 +119,35 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
     }
     default boolean injectIntoTarget(ItemStack stack, LivingEntity target, Player player, RegistryAccess access) {
         CombatContext ctx = getCombatContext(stack, access);
-
         if (ctx.fluid().getAmount() < ctx.useAmount()) {
             target.hurt(player.damageSources().playerAttack(player), 2.0F);
             return true;
         }
+
         if (!player.level().isClientSide) {
             applySyringeEffects(target, ctx);
-
             ctx.fluid().shrink(ctx.useAmount());
             writeFluid(stack, ctx.fluid());
 
             Optional<Float> optDamage = ctx.type() != null ? ctx.type().damage() : Optional.empty();
-            optDamage.ifPresent(damage -> target.hurt(player.damageSources().playerAttack(player), damage));
+            boolean isBurning = ctx.type() != null && ctx.type().hasBurning();
+            boolean isHelpful = ctx.type() != null &&
+                    SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid()).stream()
+                            .anyMatch(effect -> effect.getEffect().isBeneficial());
+            boolean isHarmful = ctx.type() != null &&
+                    SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid()).stream()
+                            .anyMatch(effect -> !effect.getEffect().isBeneficial());
 
+            float damage = ctx.type() != null ? ctx.type().damage().orElse(2.0F) : 2.0F;
+            target.hurt(player.damageSources().playerAttack(player), damage);
             spawnBloodParticles(player.level(), target, stack, 5);
+
+            if (player != target) {
+                if (isHelpful) BAdvancements.MEDIC.awardTo((ServerPlayer) player);
+                else if (isHarmful) BAdvancements.MEDICAL_MALPRACTICE.awardTo((ServerPlayer) player);
+                if (isBurning) BAdvancements.FIRE_FIRE_FIRE.awardTo((ServerPlayer) player);
+            }
+            else BAdvancements.SELF_INFLICTED_SCIENCE.awardTo((ServerPlayer) player);
         }
         return true;
     }
@@ -267,7 +290,10 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
 
     default void spawnBloodParticles(Level level, Entity entity, ItemStack stack, int count) {
         if (!(level instanceof ServerLevel server)) return;
-        int color = getBarColor(stack);
+        RegistryAccess access = level.registryAccess();
+        FluidStack fluidStack = readFluid(stack);
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
+        int color = SyringeFluidTypeManager.getColor(type, fluidStack);
         float r = ((color >> 16) & 0xFF) / 255.0F;
         float g = ((color >> 8) & 0xFF) / 255.0F;
         float b = (color & 0xFF) / 255.0F;
@@ -283,7 +309,10 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
     }
     default void spawnDrainingParticles(Level level, Entity entity, ItemStack stack, int count) {
         if (!(level instanceof ServerLevel server)) return;
-        int color = getBarColor(stack);
+        RegistryAccess access = level.registryAccess();
+        FluidStack fluidStack = readFluid(stack);
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
+        int color = SyringeFluidTypeManager.getColor(type, fluidStack);
         float r = ((color >> 16) & 0xFF) / 255.0F;
         float g = ((color >> 8) & 0xFF) / 255.0F;
         float b = (color & 0xFF) / 255.0F;
@@ -299,7 +328,10 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
     }
     default void spawnTrailParticles(Level level, Entity entity, ItemStack stack, int count) {
         if (!(level instanceof ServerLevel server)) return;
-        int color = getBarColor(stack);
+        RegistryAccess access = level.registryAccess();
+        FluidStack fluidStack = readFluid(stack);
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
+        int color = SyringeFluidTypeManager.getColor(type, fluidStack);
         float r = ((color >> 16) & 0xFF) / 255.0F;
         float g = ((color >> 8) & 0xFF) / 255.0F;
         float b = (color & 0xFF) / 255.0F;

@@ -38,7 +38,7 @@ public class BAdvancements implements DataProvider {
 
     // Blood - Root
 
-    ROOT = create("root", BItems.DRAINED_MEAT)
+    ROOT = create("root", BItems.DRAINED_MEAT.get().asItem())
             .name("Blood is Fuel!")
             .description("Here Be Meat")
             .free()
@@ -114,8 +114,8 @@ public class BAdvancements implements DataProvider {
             .announce()
             .build(),
 
-    DOCTOR = create("doctor", Items.POTION)
-            .name("Doctor!")
+    MEDIC = create("medic", Items.POTION)
+            .name("Medic!")
             .description("Heal someone with the syringe")
             .after(SYRINGE_BLADE)
             .secret()
@@ -135,6 +135,15 @@ public class BAdvancements implements DataProvider {
     FIRE_FIRE_FIRE = create("fire_fire_fire", Blocks.FIRE)
             .name("Fire, Fire, Fire!")
             .description("Light someone on fire with a flammable fluid")
+            .after(SYRINGE_BLADE)
+            .secret()
+            .challenge()
+            .announce()
+            .build(),
+
+    SELF_INFLICTED_SCIENCE = create("self_inflicted_science", Blocks.FIRE)
+            .name("Self-Inflicted Science")
+            .description("Hit yourself with a syringe projectile")
             .after(SYRINGE_BLADE)
             .secret()
             .challenge()

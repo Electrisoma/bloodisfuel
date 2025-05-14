@@ -1,10 +1,7 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
-import net.electrisoma.bloodisfuel.api.utils.FluidUtils;
-import net.electrisoma.bloodisfuel.api.utils.ItemCapacityUtils;
 import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
-import net.electrisoma.bloodisfuel.api.utils.TooltipUtils;
 import net.electrisoma.bloodisfuel.registry.BTags;
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.registry.enchantments.ChargesEnchantment;
@@ -50,7 +47,7 @@ import javax.annotation.Nullable;
 @SuppressWarnings("all")
 public class SyringeBladeItem extends SwordItem
         implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable,
-        ChargesEnchantment.ICapacityEnchantable, FluidUtils, TooltipUtils, SyringeUtils, ItemCapacityUtils {
+        ChargesEnchantment.ICapacityEnchantable, SyringeUtils {
 
     private boolean isOnCooldown;
     private boolean offHandPower;

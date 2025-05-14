@@ -1,13 +1,10 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
-import net.electrisoma.bloodisfuel.api.utils.FluidUtils;
-import net.electrisoma.bloodisfuel.api.utils.ItemCapacityUtils;
+import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
 
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 
-import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
-import net.electrisoma.bloodisfuel.api.utils.TooltipUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
@@ -31,7 +28,9 @@ import java.util.function.Predicate;
 
 
 public class SyringeGunItem extends ProjectileWeaponItem
-        implements CustomArmPoseItem, FluidUtils, TooltipUtils, SyringeUtils, ItemCapacityUtils {
+        implements CustomArmPoseItem, SyringeUtils {
+
+    public int cooldown = 40;
 
     public SyringeGunItem(Properties properties) {
         super(properties);
@@ -78,7 +77,7 @@ public class SyringeGunItem extends ProjectileWeaponItem
 
             fluid.shrink(useAmount);
             writeFluid(stack, fluid);
-            player.getCooldowns().addCooldown(this, 20);
+            player.getCooldowns().addCooldown(this, cooldown);
         }
     }
 

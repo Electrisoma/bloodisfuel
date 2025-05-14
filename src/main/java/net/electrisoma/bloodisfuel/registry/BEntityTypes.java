@@ -19,7 +19,7 @@ import net.minecraft.world.entity.MobCategory;
 public class BEntityTypes {
 
     public static final EntityEntry<SyringeProjectileEntity> SYRINGE_PROJECTILE =
-            register("potato_projectile", SyringeProjectileEntity::new, () -> SyringeProjectileRenderer::new,
+            register("syringe_projectile", SyringeProjectileEntity::new, () -> SyringeProjectileRenderer::new,
                     MobCategory.MISC, 4, 20, true, false, SyringeProjectileEntity::build).register();
 
 

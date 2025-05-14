@@ -1,12 +1,14 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
 import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.foundation.particle.AirParticleData;
 import net.electrisoma.bloodisfuel.api.utils.FluidUtils;
 import net.electrisoma.bloodisfuel.api.utils.ItemCapacityUtils;
 import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
 import net.electrisoma.bloodisfuel.api.utils.TooltipUtils;
 import net.electrisoma.bloodisfuel.registry.BEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -32,6 +34,16 @@ public class SyringeProjectileEntity extends AbstractHurtingProjectile
     @Override
     public boolean shouldRender(double x, double y, double z) {
         return true;
+    }
+
+    @Override
+    public boolean shouldBurn() {
+        return false;
+    }
+
+    @Override
+    protected ParticleOptions getTrailParticle() {
+        return new AirParticleData(1, 10);
     }
 
     public SyringeProjectileEntity(EntityType<? extends AbstractHurtingProjectile> type, Level level) {
@@ -78,7 +90,6 @@ public class SyringeProjectileEntity extends AbstractHurtingProjectile
 
         this.discard();
     }
-
 
     @Override
     protected void onHitBlock(BlockHitResult ray) {

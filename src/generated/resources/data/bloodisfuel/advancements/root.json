@@ -2,10 +2,6 @@
   "criteria": {
     "0": {
       "conditions": {},
-      "trigger": "bloodisfuel:root_builtin"
-    },
-    "drained_meat": {
-      "conditions": {},
       "trigger": "minecraft:inventory_changed"
     }
   },
@@ -27,9 +23,6 @@
     }
   },
   "requirements": [
-    [
-      "drained_meat"
-    ],
     [
       "0"
     ]

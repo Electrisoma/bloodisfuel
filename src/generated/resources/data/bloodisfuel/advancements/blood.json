@@ -1,10 +1,6 @@
 {
   "parent": "bloodisfuel:viscera",
   "criteria": {
-    "0": {
-      "conditions": {},
-      "trigger": "bloodisfuel:blood_builtin"
-    },
     "blood_bucket": {
       "conditions": {
         "items": [
@@ -37,9 +33,6 @@
   "requirements": [
     [
       "blood_bucket"
-    ],
-    [
-      "0"
     ]
   ],
   "sends_telemetry_event": true

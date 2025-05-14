@@ -3,6 +3,7 @@ package net.electrisoma.bloodisfuel.foundation.data.advancements;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,8 +44,7 @@ public class AdvancementBehavior extends BlockEntityBehaviour {
 
     public void setPlayer(UUID id) {
         Player player = getWorld().getPlayerByUUID(id);
-        if (player == null)
-            return;
+        if (player == null) return;
         playerId = id;
         removeAwarded();
         blockEntity.setChanged();
@@ -58,8 +58,7 @@ public class AdvancementBehavior extends BlockEntityBehaviour {
 
     private void removeAwarded() {
         Player player = getPlayer();
-        if (player == null)
-            return;
+        if (player == null) return;
         advancements.removeIf(c -> c.isAlreadyAwardedTo(player));
         if (advancements.isEmpty()) {
             playerId = null;
@@ -69,44 +68,38 @@ public class AdvancementBehavior extends BlockEntityBehaviour {
 
     public void awardPlayerIfNear(BAdvancement advancement, int maxDistance) {
         Player player = getPlayer();
-        if (player == null)
-            return;
-        if (player.distanceToSqr(Vec3.atCenterOf(getPos())) > maxDistance * maxDistance)
-            return;
+        if (player == null) return;
+        if (player.distanceToSqr(Vec3.atCenterOf(getPos())) > maxDistance * maxDistance) return;
         award(advancement, player);
     }
 
     public void awardPlayer(BAdvancement advancement) {
         Player player = getPlayer();
-        if (player == null)
-            return;
-        award(advancement, player);
+        if (player == null) return;
+        advancement.awardTo((ServerPlayer) player);
+        removeAwarded();
     }
 
     private void award(BAdvancement advancement, Player player) {
-        if (advancements.contains(advancement))
-            advancement.awardTo((ServerPlayer) player);
+        if (advancements.contains(advancement)) advancement.awardTo((ServerPlayer) player);
         removeAwarded();
     }
 
     private Player getPlayer() {
-        if (playerId == null)
-            return null;
+        if (playerId == null) return null;
         return getWorld().getPlayerByUUID(playerId);
     }
 
     @Override
     public void write(CompoundTag nbt, boolean clientPacket) {
         super.write(nbt, clientPacket);
-        if (playerId != null)
-            nbt.putUUID("Owner", playerId);
+        if (playerId != null) nbt.putUUID("Owner", playerId);
     }
 
     @Override
     public void read(CompoundTag nbt, boolean clientPacket) {
         super.read(nbt, clientPacket);
-        if (nbt.contains("Owner"))
-            playerId = nbt.getUUID("Owner");
+        if (nbt.contains("Owner")) playerId = nbt.getUUID("Owner");
     }
 
     @Override
@@ -116,18 +109,13 @@ public class AdvancementBehavior extends BlockEntityBehaviour {
 
     public static void tryAward(BlockGetter reader, BlockPos pos, BAdvancement advancement) {
         AdvancementBehavior behaviour = BlockEntityBehaviour.get(reader, pos, AdvancementBehavior.TYPE);
-        if (behaviour != null)
-            behaviour.awardPlayer(advancement);
+        if (behaviour != null) behaviour.awardPlayer(advancement);
     }
 
     public static void setPlacedBy(Level worldIn, BlockPos pos, LivingEntity placer) {
         AdvancementBehavior behaviour = BlockEntityBehaviour.get(worldIn, pos, TYPE);
-        if (behaviour == null)
-            return;
-        if (placer instanceof FakePlayer)
-            return;
-        if (placer instanceof ServerPlayer)
-            behaviour.setPlayer(placer.getUUID());
+        if (behaviour == null) return;
+        if (placer instanceof FakePlayer) return;
+        if (placer instanceof ServerPlayer) behaviour.setPlayer(placer.getUUID());
     }
-
 }

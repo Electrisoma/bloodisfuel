@@ -18,20 +18,15 @@ public class SyringeProjectileRenderer extends EntityRenderer<SyringeProjectileE
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
     }
 
-
     @Override
     public void render(SyringeProjectileEntity entity, float yaw, float pt, PoseStack ms, MultiBufferSource buffer, int light) {
         ms.pushPose();
 
         ms.translate(0, entity.getBoundingBox().getYsize() / 2 - 1 / 8f, 0);
 
-        renderRandomItem(ms, buffer, light);
+        //renderRandomItem(ms, buffer, light);
 
         ms.popPose();
-    }
-
-    private void renderRandomItem(PoseStack ms, MultiBufferSource buffer, int light) {
-
     }
 
     @Override

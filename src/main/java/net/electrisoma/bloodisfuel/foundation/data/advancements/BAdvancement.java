@@ -107,13 +107,10 @@ public class BAdvancement {
     /**
      * Awards this advancement to the given player, if not already completed.
      */
-    public void awardTo(Player player) {
-        if (!(player instanceof ServerPlayer sp))
-            return;
+    public void awardTo(ServerPlayer player) {
         if (builtinTrigger == null)
-            throw new UnsupportedOperationException(
-                    "Advancement " + id + " uses external Triggers, it cannot be awarded directly");
-        builtinTrigger.trigger(sp);
+            throw new UnsupportedOperationException("Advancement " + id + " uses external Triggers, it cannot be awarded directly");
+        builtinTrigger.trigger(player);
     }
 
     public static class Builder {
@@ -199,8 +196,7 @@ public class BAdvancement {
         }
 
         public Builder free() {
-            return criterion(icon.asItem().toString(),
-                    InventoryChangeTrigger.TriggerInstance.hasItems(new ItemLike[] {}));
+            return externalTrigger(InventoryChangeTrigger.TriggerInstance.hasItems(new ItemLike[] {}));
         }
 
         public Builder onItemCollected(TagKey<Item> tag) {
@@ -210,6 +206,7 @@ public class BAdvancement {
         }
 
         public Builder onItemCollected(ItemLike item) {
+            externalTriggerAdded = true;
             return criterion(item.asItem().toString(),
                     InventoryChangeTrigger.TriggerInstance.hasItems(item));
         }
@@ -235,6 +232,7 @@ public class BAdvancement {
 
         public Builder criterion(String key, CriterionTriggerInstance trigger) {
             criteriaTriggers.put(key, trigger);
+            externalTriggerAdded = true;
             return this;
         }
 

@@ -1,10 +1,6 @@
 {
   "parent": "bloodisfuel:enriched_blood",
   "criteria": {
-    "0": {
-      "conditions": {},
-      "trigger": "bloodisfuel:oil_enriched_blood_builtin"
-    },
     "oil_enriched_blood_bucket": {
       "conditions": {
         "items": [
@@ -37,9 +33,6 @@
   "requirements": [
     [
       "oil_enriched_blood_bucket"
-    ],
-    [
-      "0"
     ]
   ],
   "sends_telemetry_event": true
