@@ -1,0 +1,31 @@
+{
+  "parent": "bloodisfuel:syringe_blade",
+  "criteria": {
+    "0": {
+      "conditions": {},
+      "trigger": "bloodisfuel:medic_builtin"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "color": "#FFFFFF",
+      "translate": "advancement.bloodisfuel.medic.desc"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "item": "minecraft:potion"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bloodisfuel.medic"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

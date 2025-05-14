@@ -1,0 +1,31 @@
+{
+  "parent": "bloodisfuel:syringe_blade",
+  "criteria": {
+    "0": {
+      "conditions": {},
+      "trigger": "bloodisfuel:self_inflicted_science_builtin"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "color": "#FFFFFF",
+      "translate": "advancement.bloodisfuel.self_inflicted_science.desc"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "item": "minecraft:air"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bloodisfuel.self_inflicted_science"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

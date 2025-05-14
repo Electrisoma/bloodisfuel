@@ -1,0 +1,8 @@
+{
+  "color": 16777215,
+  "fluids": "bloodisfuel:diesel_infused_blood",
+  "freezing": {
+    "duration_seconds": 5,
+    "slow_amount": 5.0
+  }
+}
