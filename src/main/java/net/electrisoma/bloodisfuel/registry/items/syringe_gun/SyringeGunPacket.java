@@ -14,6 +14,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 
+@SuppressWarnings("unused")
 public class SyringeGunPacket extends ShootGadgetPacket {
 
     private float pitch;
