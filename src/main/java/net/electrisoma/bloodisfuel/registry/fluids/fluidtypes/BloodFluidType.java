@@ -1,7 +1,8 @@
 package net.electrisoma.bloodisfuel.registry.fluids.fluidtypes;
 
-import com.tterrag.registrate.builders.FluidBuilder.FluidTypeFactory;
 import net.createmod.catnip.theme.Color;
+
+import com.tterrag.registrate.builders.FluidBuilder.FluidTypeFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;

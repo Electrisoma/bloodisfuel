@@ -31,7 +31,6 @@ public class BTrigger extends BCriterionTrigger<BTrigger.Instance>{
     }
 
     public static class Instance extends BCriterionTrigger.Instance {
-
         public Instance(ResourceLocation idIn) {
             super(idIn, ContextAwarePredicate.ANY);
         }

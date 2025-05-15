@@ -1,8 +1,10 @@
 package net.electrisoma.bloodisfuel.config;
 
-import net.createmod.catnip.config.ConfigBase;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
+
+import net.createmod.catnip.config.ConfigBase;
+
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;

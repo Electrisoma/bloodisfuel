@@ -21,13 +21,28 @@
 			}
 		},
 		{
-			"name": "trigger",
-			"from": [5, 6.7, 8],
-			"to": [9, 8.7, 8],
-			"rotation": {"angle": 45, "axis": "z", "origin": [8.5, 7.5, 8.5]},
+			"name": "barrel",
+			"from": [9.5, 8, 7.5],
+			"to": [15.5, 9, 8.5],
+			"rotation": {"angle": 45, "axis": "x", "origin": [9.5, 8.5, 8]},
 			"faces": {
-				"north": {"uv": [4, 2, 6, 6], "rotation": 270, "texture": "#5"},
-				"south": {"uv": [6, 2, 4, 6], "rotation": 90, "texture": "#5"}
+				"north": {"uv": [12, 8, 11, 14], "rotation": 270, "texture": "#5"},
+				"east": {"uv": [8, 14, 9, 15], "texture": "#5"},
+				"south": {"uv": [9, 14, 10, 8], "rotation": 270, "texture": "#5"},
+				"west": {"uv": [9, 14, 10, 15], "texture": "#5"},
+				"up": {"uv": [11, 8, 10, 14], "rotation": 90, "texture": "#5"},
+				"down": {"uv": [8, 14, 9, 8], "rotation": 270, "texture": "#5"}
+			}
+		},
+		{
+			"name": "barrel bottom",
+			"from": [9.5, 8, 7.5],
+			"to": [13, 8.5, 8.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [9.5, 8.5, 8]},
+			"faces": {
+				"north": {"uv": [11.5, 14, 12, 10.5], "rotation": 90, "texture": "#5"},
+				"south": {"uv": [9.5, 14, 10, 10.5], "rotation": 270, "texture": "#5"},
+				"down": {"uv": [8.5, 14, 9.5, 10.5], "rotation": 270, "texture": "#5"}
 			}
 		},
 		{
@@ -36,10 +51,10 @@
 			"to": [14.5, 8.5, 9],
 			"rotation": {"angle": 0, "axis": "y", "origin": [13, 8.5, 8]},
 			"faces": {
-				"north": {"uv": [1, 13, 2, 14.5], "rotation": 270, "texture": "#5"},
-				"east": {"uv": [1, 9.5, 3, 10.5], "rotation": 180, "texture": "#5"},
+				"north": {"uv": [1, 13, 2, 14.5], "rotation": 90, "texture": "#5"},
+				"east": {"uv": [1, 9.5, 3, 10.5], "texture": "#5"},
 				"south": {"uv": [2, 13, 3, 14.5], "rotation": 90, "texture": "#5"},
-				"west": {"uv": [1, 10.5, 3, 11.5], "rotation": 180, "texture": "#5"},
+				"west": {"uv": [1, 10.5, 3, 11.5], "texture": "#5"},
 				"up": {"uv": [3, 9.5, 1, 8], "rotation": 90, "texture": "#5"},
 				"down": {"uv": [1, 13, 3, 11.5], "rotation": 90, "texture": "#5"}
 			}
@@ -59,81 +74,31 @@
 			}
 		},
 		{
-			"name": "barrel",
-			"from": [9.5, 8, 7.5],
-			"to": [15.5, 9, 8.5],
-			"rotation": {"angle": 45, "axis": "x", "origin": [9.5, 8.5, 8]},
-			"faces": {
-				"north": {"uv": [12, 8, 11, 14], "rotation": 270, "texture": "#5"},
-				"east": {"uv": [8, 14, 9, 15], "texture": "#5"},
-				"south": {"uv": [10, 8, 11, 14], "rotation": 90, "texture": "#5"},
-				"west": {"uv": [9, 14, 10, 15], "texture": "#5"},
-				"up": {"uv": [10, 14, 9, 8], "rotation": 270, "texture": "#5"},
-				"down": {"uv": [8, 14, 9, 8], "rotation": 270, "texture": "#5"}
-			}
-		},
-		{
-			"name": "cocking stirrup",
-			"from": [14.5, 8, 6.5],
-			"to": [16.5, 8, 9.5],
-			"rotation": {"angle": -22.5, "axis": "z", "origin": [14.5, 8.25, 8]},
-			"faces": {
-				"up": {"uv": [11, 6, 8, 8], "rotation": 90, "texture": "#5"},
-				"down": {"uv": [11, 6, 8, 8], "rotation": 90, "texture": "#5"}
-			}
-		},
-		{
-			"name": "handle",
-			"from": [9.5, 8, 7.5],
-			"to": [13, 8.5, 8.5],
-			"rotation": {"angle": 0, "axis": "y", "origin": [9.5, 8.5, 8]},
-			"faces": {
-				"north": {"uv": [6, 15, 6.5, 11.5], "rotation": 90, "texture": "#5"},
-				"east": {"uv": [15.5, 15, 16, 16], "rotation": 270, "texture": "#5"},
-				"south": {"uv": [5.5, 15, 6, 11.5], "rotation": 270, "texture": "#5"},
-				"down": {"uv": [5.5, 15, 6.5, 11.5], "rotation": 270, "texture": "#5"}
-			}
-		},
-		{
-			"name": "sight",
-			"from": [14, 9.175, 8],
-			"to": [15, 10.675, 8],
-			"rotation": {"angle": 0, "axis": "y", "origin": [13.5, 9.375, 8]},
-			"faces": {
-				"north": {"uv": [11, 6, 12, 7.5], "texture": "#5"},
-				"east": {"uv": [0, 0, 0, 1], "texture": "#5"},
-				"south": {"uv": [12, 6, 11, 7.5], "texture": "#5"},
-				"west": {"uv": [0, 0, 0, 1], "texture": "#5"},
-				"up": {"uv": [0, 0, 3, 0], "texture": "#5"},
-				"down": {"uv": [0, 0, 3, 0], "texture": "#5"}
-			}
-		},
-		{
 			"name": "right limb",
-			"from": [14, 8, 8],
-			"to": [15, 9, 13],
-			"rotation": {"angle": -22.5, "axis": "y", "origin": [14, 8.5, 8]},
+			"from": [14, 8.25, 8],
+			"to": [15, 8.75, 13],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [14, 8.75, 8]},
 			"faces": {
-				"north": {"uv": [13, 13, 14, 14], "texture": "#5"},
-				"east": {"uv": [15, 8, 14, 13], "rotation": 90, "texture": "#5"},
-				"south": {"uv": [12, 13, 13, 14], "texture": "#5"},
-				"west": {"uv": [16, 8, 15, 13], "rotation": 270, "texture": "#5"},
+				"north": {"uv": [13, 13, 14, 13.5], "texture": "#5"},
+				"east": {"uv": [14.5, 8, 14, 13], "rotation": 270, "texture": "#5"},
+				"south": {"uv": [12, 13, 13, 13.5], "texture": "#5"},
+				"west": {"uv": [15, 8, 15.5, 13], "rotation": 90, "texture": "#5"},
 				"up": {"uv": [13, 8, 12, 13], "rotation": 180, "texture": "#5"},
-				"down": {"uv": [13, 13, 14, 8], "texture": "#5"}
+				"down": {"uv": [13, 13, 14, 8], "rotation": 180, "texture": "#5"}
 			}
 		},
 		{
 			"name": "left limb",
-			"from": [14, 8, 3],
-			"to": [15, 9, 8],
-			"rotation": {"angle": 22.5, "axis": "y", "origin": [14, 8.5, 8]},
+			"from": [14, 8.25, 3],
+			"to": [15, 8.75, 8],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [14, 8.75, 8]},
 			"faces": {
-				"north": {"uv": [12, 13, 13, 14], "texture": "#5"},
-				"east": {"uv": [14, 8, 15, 13], "rotation": 270, "texture": "#5"},
-				"south": {"uv": [13, 13, 14, 14], "texture": "#5"},
-				"west": {"uv": [15, 8, 16, 13], "rotation": 90, "texture": "#5"},
+				"north": {"uv": [12, 13, 13, 13.5], "texture": "#5"},
+				"east": {"uv": [14, 8, 14.5, 13], "rotation": 90, "texture": "#5"},
+				"south": {"uv": [13, 13, 14, 13.5], "texture": "#5"},
+				"west": {"uv": [15.5, 8, 15, 13], "rotation": 270, "texture": "#5"},
 				"up": {"uv": [13, 13, 12, 8], "rotation": 180, "texture": "#5"},
-				"down": {"uv": [13, 8, 14, 13], "texture": "#5"}
+				"down": {"uv": [13, 8, 14, 13], "rotation": 180, "texture": "#5"}
 			}
 		}
 	],
@@ -177,19 +142,28 @@
 					"name": "handle",
 					"origin": [8, 8, 8],
 					"color": 0,
-					"children": [0, 1]
+					"children": [0]
 				},
 				{
 					"name": "body",
 					"origin": [8, 8, 8],
 					"color": 0,
-					"children": [2, 3, 4, 5, 6, 7]
+					"children": [
+						{
+							"name": "barrel",
+							"origin": [8, 8, 8],
+							"color": 0,
+							"children": [1, 2]
+						},
+						3,
+						4
+					]
 				},
 				{
 					"name": "limbs",
 					"origin": [8, 8, 8],
 					"color": 0,
-					"children": [8, 9]
+					"children": [5, 6]
 				}
 			]
 		}

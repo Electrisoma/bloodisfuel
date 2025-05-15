@@ -1,9 +1,11 @@
 package net.electrisoma.bloodisfuel.registry.particles;
 
 import net.electrisoma.bloodisfuel.api.data.ColorableDripParticleData;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+
 import net.minecraft.util.Mth;
+import net.minecraft.client.particle.*;
+import net.minecraft.client.multiplayer.ClientLevel;
+
 
 /**
  * A particle that drips and supports custom RGB coloring.

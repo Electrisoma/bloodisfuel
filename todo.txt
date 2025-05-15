@@ -25,3 +25,5 @@ add arms and swaying, add better animations, add color changing vial
 
 -crusader's crossbow:
 stores fluid, converts arrows into any fluid in realtime
+
+-Pehkui support for syringes

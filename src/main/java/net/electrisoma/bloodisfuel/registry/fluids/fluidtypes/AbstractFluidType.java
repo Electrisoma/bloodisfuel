@@ -1,10 +1,11 @@
 package net.electrisoma.bloodisfuel.registry.fluids.fluidtypes;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.BlockAndTintGetter;

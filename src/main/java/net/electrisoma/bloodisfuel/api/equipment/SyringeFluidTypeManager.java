@@ -10,19 +10,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
+
 
 /**
  * Expected datapack format:
@@ -65,6 +66,7 @@ public class SyringeFluidTypeManager {
     public static final SyringeFluidType POTION = new SyringeFluidType.Builder()
             .addFluids(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(Create.ID, "potion")))
             .color(0x9966FF)
+            .glowing(true)
             .build();
 
     public static final SyringeFluidType EMPTY = new SyringeFluidType.Builder()

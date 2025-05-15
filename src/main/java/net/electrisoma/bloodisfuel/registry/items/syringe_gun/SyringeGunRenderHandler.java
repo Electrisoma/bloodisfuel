@@ -1,10 +1,12 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.content.equipment.zapper.ShootableGadgetRenderHandler;
 import com.simibubi.create.foundation.particle.AirParticleData;
-import dev.engine_room.flywheel.lib.transform.TransformStack;
+import com.simibubi.create.content.equipment.zapper.ShootableGadgetRenderHandler;
+
 import net.createmod.catnip.math.VecHelper;
+
+import dev.engine_room.flywheel.lib.transform.TransformStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -12,6 +14,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
 
 public class SyringeGunRenderHandler extends ShootableGadgetRenderHandler {
 
@@ -45,7 +50,7 @@ public class SyringeGunRenderHandler extends ShootableGadgetRenderHandler {
 
     @Override
     protected void transformTool(PoseStack ms, float flip, float equipProgress, float recoil, float pt) {
-        ms.translate(flip * -.1f, 0, .14f);
+        ms.translate(flip * -.1f, -.05, .14f);
         ms.scale(1, 1, 1);
         TransformStack.of(ms)
                 .rotateXDegrees(recoil * 80);

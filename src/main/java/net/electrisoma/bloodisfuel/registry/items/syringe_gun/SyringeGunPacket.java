@@ -1,14 +1,18 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
+import net.electrisoma.bloodisfuel.BClient;
+
 import com.simibubi.create.content.equipment.zapper.ShootGadgetPacket;
 import com.simibubi.create.content.equipment.zapper.ShootableGadgetRenderHandler;
-import net.electrisoma.bloodisfuel.BClient;
-import net.minecraft.network.FriendlyByteBuf;
+
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.FriendlyByteBuf;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 public class SyringeGunPacket extends ShootGadgetPacket {
 

@@ -1,15 +1,15 @@
 package net.electrisoma.bloodisfuel.registry;
 
-import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
+import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeGunItem;
 import net.electrisoma.bloodisfuel.registry.items.syringe_blade.SyringeBladeItem;
 
 import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
-import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeGunItem;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.effect.MobEffects;

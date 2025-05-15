@@ -9,6 +9,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+
 /**
  * Holds RGB color data for the colorable drip particle.
  */

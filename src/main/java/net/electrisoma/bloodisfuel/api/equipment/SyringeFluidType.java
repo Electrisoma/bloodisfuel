@@ -28,6 +28,7 @@ import java.util.Optional;
 public record SyringeFluidType(
         HolderSet<Fluid> fluids,
         int color,
+        Optional<Boolean> isGlowing,
         Optional<Float> damage,
         Optional<Float> attackSpeed,
         Optional<FoodProperties> food,
@@ -40,6 +41,7 @@ public record SyringeFluidType(
     public static final Codec<SyringeFluidType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registries.FLUID).fieldOf("fluids").forGetter(SyringeFluidType::fluids),
             Codec.INT.fieldOf("color").forGetter(SyringeFluidType::color),
+            Codec.BOOL.optionalFieldOf("isGlowing").forGetter(SyringeFluidType::isGlowing),
             Codec.FLOAT.optionalFieldOf("damage").forGetter(SyringeFluidType::damage),
             Codec.FLOAT.optionalFieldOf("attack_speed").forGetter(SyringeFluidType::attackSpeed),
             BCodecs.FOOD_PROPERTIES.optionalFieldOf("food").forGetter(SyringeFluidType::food),
@@ -114,6 +116,7 @@ public record SyringeFluidType(
     public static class Builder {
         private final List<Holder<Fluid>> fluids = new ArrayList<>();
         private int color = 0xFFFFFF;
+        private Optional<Boolean> isGlowing = Optional.empty();
         private Optional<Float> damage = Optional.empty();
         private Optional<Float> attackSpeed = Optional.empty();
         private Optional<FoodProperties> food = Optional.empty();
@@ -138,6 +141,11 @@ public record SyringeFluidType(
          */
         public Builder color(int color) {
             this.color = color;
+            return this;
+        }
+
+        public Builder glowing(boolean value) {
+            this.isGlowing = Optional.of(value);
             return this;
         }
 
@@ -221,6 +229,7 @@ public record SyringeFluidType(
             return new SyringeFluidType(
                     HolderSet.direct(fluids),
                     color,
+                    isGlowing,
                     damage,
                     attackSpeed,
                     food,

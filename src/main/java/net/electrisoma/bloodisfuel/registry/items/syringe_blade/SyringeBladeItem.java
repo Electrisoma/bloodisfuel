@@ -1,13 +1,14 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
-import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
 import net.electrisoma.bloodisfuel.registry.BTags;
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.registry.enchantments.ChargesEnchantment;
+
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 import com.simibubi.create.content.equipment.armor.CapacityEnchantment;
+import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel.ArmPose;

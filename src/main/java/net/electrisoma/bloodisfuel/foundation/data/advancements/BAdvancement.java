@@ -72,9 +72,7 @@ public class BAdvancement {
     }
 
     public void save(Consumer<Advancement> output) {
-        if (parent != null) {
-            builder.parent(parent.datagenResult);
-        }
+        if (parent != null) builder.parent(parent.datagenResult);
         datagenResult = builder.save(output, BloodIsFuel.asResource(id).toString());
     }
 
@@ -92,13 +90,11 @@ public class BAdvancement {
     }
 
     public boolean isAlreadyAwardedTo(Player player) {
-        if (!(player instanceof ServerPlayer sp))
-            return true;
+        if (!(player instanceof ServerPlayer sp)) return true;
         Advancement advancement = sp.getServer()
                 .getAdvancements()
                 .getAdvancement(BloodIsFuel.asResource(id));
-        if (advancement == null)
-            return true;
+        if (advancement == null) return true;
         return sp.getAdvancements()
                 .getOrStartProgress(advancement)
                 .isDone();

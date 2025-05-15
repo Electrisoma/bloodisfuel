@@ -5,6 +5,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import java.util.LinkedList;
 import java.util.List;
 
+
 public class BTriggers {
     private static final List<BCriterionTrigger<?>> triggers = new LinkedList<>();
 

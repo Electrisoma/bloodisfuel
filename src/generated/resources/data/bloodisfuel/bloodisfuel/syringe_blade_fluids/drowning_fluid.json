@@ -1,8 +1,0 @@
-{
-  "color": 16777215,
-  "drowning": {
-    "damage_per_second": 4.0,
-    "duration_seconds": 5
-  },
-  "fluids": "bloodisfuel:gasoline_infused_blood"
-}

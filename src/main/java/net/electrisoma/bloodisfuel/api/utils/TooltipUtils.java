@@ -1,17 +1,20 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
-import com.simibubi.create.foundation.utility.CreateLang;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
+
+import com.simibubi.create.foundation.utility.CreateLang;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;

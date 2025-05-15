@@ -1,6 +1,7 @@
 package net.electrisoma.bloodisfuel.registry.enchantments;
 
 import com.simibubi.create.content.equipment.armor.CapacityEnchantment;
+
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;

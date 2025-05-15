@@ -1,14 +1,14 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
 import net.electrisoma.bloodisfuel.api.data.BurningData;
-import net.electrisoma.bloodisfuel.api.data.ColorableDripParticleData;
 import net.electrisoma.bloodisfuel.api.data.DrowningData;
 import net.electrisoma.bloodisfuel.api.data.FreezingData;
+import net.electrisoma.bloodisfuel.api.data.ColorableDripParticleData;
+import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
-import net.electrisoma.bloodisfuel.api.registry.BRegistries;
-import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
+import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -19,16 +19,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.effect.MobEffectInstance;
+
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -39,7 +40,7 @@ import java.util.UUID;
 
 
 @SuppressWarnings({"OptionalGetWithoutIsPresent", "DataFlowIssue", "RedundantSuppression"})
-public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUtils{
+public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUtils {
 
     default SyringeFluidType getMatchingFluid(LivingEntity target, RegistryAccess access) {
         return SyringeFluidTypeManager.getAll(access).stream()
@@ -91,13 +92,13 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
 
         if (fluid.getAmount() < ctx.useAmount()) return;
         if (!level.isClientSide) {
+            spawnBloodParticles(player.level(), player, stack, 5);
             applySyringeEffects(player, ctx);
 
             fluid.shrink(ctx.useAmount());
             writeFluid(stack, fluid);
             player.hurt(player.damageSources().generic(), 2.0F);
             playSound(level, player, SoundEvents.PLAYER_ATTACK_CRIT);
-            spawnBloodParticles(player.level(), player, stack, 5);
 
             if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), level.registryAccess()))
                 BAdvancements.LACTOSE_TOLERANT.awardTo((ServerPlayer) player);
@@ -125,6 +126,7 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
         }
 
         if (!player.level().isClientSide) {
+            spawnBloodParticles(player.level(), target, stack, 5);
             applySyringeEffects(target, ctx);
             ctx.fluid().shrink(ctx.useAmount());
             writeFluid(stack, ctx.fluid());
@@ -140,7 +142,6 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
 
             float damage = ctx.type() != null ? ctx.type().damage().orElse(2.0F) : 2.0F;
             target.hurt(player.damageSources().playerAttack(player), damage);
-            spawnBloodParticles(player.level(), target, stack, 5);
 
             if (player != target) {
                 if (isHelpful) BAdvancements.MEDIC.awardTo((ServerPlayer) player);

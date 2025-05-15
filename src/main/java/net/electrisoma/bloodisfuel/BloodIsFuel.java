@@ -1,8 +1,8 @@
 package net.electrisoma.bloodisfuel;
 
-import net.electrisoma.bloodisfuel.foundation.data.advancements.triggers.BTriggers;
 import net.electrisoma.bloodisfuel.registry.*;
 import net.electrisoma.bloodisfuel.infrastructure.data.BDatagen;
+import net.electrisoma.bloodisfuel.foundation.data.advancements.triggers.BTriggers;
 
 import net.createmod.catnip.lang.FontHelper;
 import net.createmod.catnip.lang.LangBuilder;

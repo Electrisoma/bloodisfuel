@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
 
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class BCriterionTrigger<T extends BCriterionTrigger.Instance> implements CriterionTrigger<T> {
@@ -44,9 +45,7 @@ public abstract class BCriterionTrigger<T extends BCriterionTrigger.Instance> im
         Set<Listener<T>> playerListeners = this.listeners.get(playerAdvancementsIn);
         if (playerListeners != null) {
             playerListeners.remove(listener);
-            if (playerListeners.isEmpty()) {
-                this.listeners.remove(playerAdvancementsIn);
-            }
+            if (playerListeners.isEmpty()) this.listeners.remove(playerAdvancementsIn);
         }
     }
 
@@ -65,16 +64,9 @@ public abstract class BCriterionTrigger<T extends BCriterionTrigger.Instance> im
         Set<Listener<T>> playerListeners = this.listeners.get(playerAdvancements);
         if (playerListeners != null) {
             List<Listener<T>> list = new LinkedList<>();
-
-            for (Listener<T> listener : playerListeners) {
-                if (listener.getTriggerInstance()
-                        .test(suppliers)) {
-                    list.add(listener);
-                }
-            }
-
+            for (Listener<T> listener : playerListeners) if (listener.getTriggerInstance()
+                    .test(suppliers)) list.add(listener);
             list.forEach(listener -> listener.run(playerAdvancements));
-
         }
     }
 

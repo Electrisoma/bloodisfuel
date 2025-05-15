@@ -6,9 +6,7 @@ import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
 import com.simibubi.create.AllFluids;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.api.data.BurningData;
-import net.electrisoma.bloodisfuel.api.data.DrowningData;
 import net.electrisoma.bloodisfuel.api.data.ExtinguishingData;
-import net.electrisoma.bloodisfuel.api.data.FreezingData;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
@@ -46,20 +44,6 @@ public class BSyringeFluidTypes {
                 .build()
         );
 
-        register(ctx, "drowning_fluid", new SyringeFluidType.Builder()
-                .addFluids(BFluids.GASOLINE_INFUSED_BLOOD.getSource())
-                .color(0xFFFFFF)
-                .drowning(new DrowningData(5,4F))
-                .build()
-        );
-
-        register(ctx, "powdered_snow", new SyringeFluidType.Builder()
-                .addFluids(BFluids.DIESEL_INFUSED_BLOOD.getSource())
-                .color(0xFFFFFF)
-                .freezing(new FreezingData(5,4F,5F))
-                .build()
-        );
-
         register(ctx, "water", new SyringeFluidType.Builder()
                 .addFluids(Fluids.WATER.getSource())
                 .color(0x0C17CD)
@@ -69,7 +53,8 @@ public class BSyringeFluidTypes {
 
         register(ctx, "lava", new SyringeFluidType.Builder()
                 .addFluids(Fluids.LAVA.getSource())
-                .color(0xCB4810)
+                .color(0xF76C0F)
+                .glowing(true)
                 .burning(new BurningData(15, 4F))
                 .build()
         );
