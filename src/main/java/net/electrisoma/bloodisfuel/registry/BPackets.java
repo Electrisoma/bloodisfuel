@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
 
 
+@SuppressWarnings("unused")
 public enum BPackets {
 
     SYRINGE_GUN(SyringeGunPacket.class, SyringeGunPacket::new, PLAY_TO_CLIENT);
@@ -63,11 +64,11 @@ public enum BPackets {
     private static class PacketType<T extends SimplePacketBase> {
         private static int index = 0;
 
-        private BiConsumer<T, FriendlyByteBuf> encoder;
-        private Function<FriendlyByteBuf, T> decoder;
-        private BiConsumer<T, Supplier<Context>> handler;
-        private Class<T> type;
-        private NetworkDirection direction;
+        private final BiConsumer<T, FriendlyByteBuf> encoder;
+        private final Function<FriendlyByteBuf, T> decoder;
+        private final BiConsumer<T, Supplier<Context>> handler;
+        private final Class<T> type;
+        private final NetworkDirection direction;
 
         private PacketType(Class<T> type, Function<FriendlyByteBuf, T> factory, NetworkDirection direction) {
             encoder = T::write;

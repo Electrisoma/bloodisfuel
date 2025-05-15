@@ -38,6 +38,7 @@ public class SyringeGunRenderHandler extends ShootableGadgetRenderHandler {
 
         ClientLevel world = Minecraft.getInstance().level;
         for (int i = 0; i < 2; i++) {
+            assert world != null;
             Vec3 m = VecHelper.offsetRandomly(motion.scale(0.1f), world.random, .025f);
             world.addParticle(new ItemParticleOption(ParticleTypes.ITEM, stack),
                     location.x, location.y, location.z, m.x, m.y, m.z);

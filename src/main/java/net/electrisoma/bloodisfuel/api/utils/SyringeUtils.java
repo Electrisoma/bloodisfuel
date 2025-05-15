@@ -39,7 +39,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-@SuppressWarnings({"OptionalGetWithoutIsPresent", "DataFlowIssue", "RedundantSuppression"})
+@SuppressWarnings({"OptionalGetWithoutIsPresent", "DataFlowIssue", "RedundantSuppression", "unused"})
 public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUtils {
 
     default SyringeFluidType getMatchingFluid(LivingEntity target, RegistryAccess access) {
