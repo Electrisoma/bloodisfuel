@@ -9,11 +9,11 @@ import dev.engine_room.flywheel.lib.transform.TransformStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 

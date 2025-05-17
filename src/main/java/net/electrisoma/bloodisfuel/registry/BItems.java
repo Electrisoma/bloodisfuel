@@ -39,30 +39,26 @@ public class BItems {
                                     .effect(new MobEffectInstance(MobEffects.POISON, 300, 2),0.8f)
                                     .build()))
                     .register();
-
     public static final ItemEntry<SyringeBladeItem> SYRINGE_BLADE =
             REGISTRATE.item("syringe_blade", p ->
                             new SyringeBladeItem(Tiers.IRON,3,-2.4f,p))
                     .model(AssetLookup.itemModelWithPartials())
                     .tag(BTags.BItemTags.SYRINGE_BLADE.tag)
                     .register();
-
+    public static final ItemEntry<SyringeGunItem> SYRINGE_GUN =
+            REGISTRATE.item("syringe_gun", SyringeGunItem::new)
+                    .model(AssetLookup.itemModelWithPartials())
+                    .properties(p -> p.stacksTo(1))
+                    .tag(BTags.BItemTags.SYRINGE_GUN.tag)
+                    .register();
     public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_BLADE =
             REGISTRATE.item("incomplete_syringe_blade", SequencedAssemblyItem::new)
                     .model(AssetLookup.itemModelWithPartials())
                     .lang("Incomplete Syringe Blade")
                     .register();
-
-    public static final ItemEntry<SyringeGunItem> SYRINGE_GUN =
-            REGISTRATE.item("syringe_gun", SyringeGunItem::new)
+    public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_GUN =
+            REGISTRATE.item("incomplete_syringe_gun", SequencedAssemblyItem::new)
                     .model(AssetLookup.itemModelWithPartials())
-                    .tag(BTags.BItemTags.SYRINGE_GUN.tag)
+                    .lang("Incomplete Syringe Gun")
                     .register();
-
-//    public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_GUN =
-//            REGISTRATE.item("incomplete_syringe_gun", SequencedAssemblyItem::new)
-//                    .model(AssetLookup.itemModelWithPartials())
-//                    .lang("Incomplete Syringe Gun")
-//                    .register();
-
 }

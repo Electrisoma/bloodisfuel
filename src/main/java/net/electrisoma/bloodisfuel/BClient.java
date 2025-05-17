@@ -1,6 +1,6 @@
 package net.electrisoma.bloodisfuel;
 
-import net.electrisoma.bloodisfuel.api.equipment.SyringeItemColor;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeItemColor;
 import net.electrisoma.bloodisfuel.registry.BItems;
 import net.electrisoma.bloodisfuel.registry.BParticles;
 import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeGunRenderHandler;
@@ -35,11 +35,9 @@ public class BClient {
     }
 
     public static void onRegisterItemColors(FMLClientSetupEvent event) {
-        // Register the color handler
         Minecraft.getInstance().getItemColors().register(
                 new SyringeItemColor(),
                 BItems.SYRINGE_BLADE.get(),
-                BItems.SYRINGE_GUN.get()
-        );
+                BItems.SYRINGE_GUN.get());
     }
 }

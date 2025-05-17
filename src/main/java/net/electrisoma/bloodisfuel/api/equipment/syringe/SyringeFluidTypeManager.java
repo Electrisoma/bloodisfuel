@@ -1,11 +1,13 @@
-package net.electrisoma.bloodisfuel.api.equipment;
+package net.electrisoma.bloodisfuel.api.equipment.syringe;
 
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
+import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
 import net.electrisoma.bloodisfuel.registry.BFluids;
 
 import com.simibubi.create.Create;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -55,7 +57,7 @@ import java.util.*;
  */
 
 // L warning lol -----------------V laugh at this fool
-@SuppressWarnings({"unused", "DataFlowIssue", "RedundantSuppression"})
+@SuppressWarnings({"unused", "RedundantSuppression"})
 public class SyringeFluidTypeManager {
 
     /**
@@ -64,15 +66,13 @@ public class SyringeFluidTypeManager {
      * Also, potions are dynamic anyway so this is just for hooking into that system.
      */
     public static final SyringeFluidType POTION = new SyringeFluidType.Builder()
-            .addFluids(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(Create.ID, "potion")))
+            .fluids(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(Create.ID, "potion")))
             .color(0x9966FF)
             .glowing(true)
             .build();
-
     public static final SyringeFluidType EMPTY = new SyringeFluidType.Builder()
-            .color(0xBD3228)
+            .color(0xFFFFFF)
             .build();
-
     private static final List<SyringeFluidType> HARDCODED = List.of(POTION);
 
     /**
@@ -81,17 +81,21 @@ public class SyringeFluidTypeManager {
     public static SyringeFluidType fromFluid(FluidStack stack, RegistryAccess access) {
         if (stack.isEmpty()) return EMPTY;
         Fluid fluid = stack.getFluid();
-
+        ResourceLocation fluidKey = ForgeRegistries.FLUIDS.getKey(fluid);
+        if (fluidKey == null) return EMPTY;
+        //noinspection deprecation
+        Holder<Fluid> holder = fluid.builtInRegistryHolder();
         Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUIDS);
         Optional<SyringeFluidType> dynamicMatch = registry.stream()
-                .filter(type -> type.fluids().stream().anyMatch(holder -> holder.value() == fluid))
+                .filter(type -> type.fluids().stream().anyMatch(holderSet -> holderSet.contains(holder)))
                 .findFirst();
-
-        return dynamicMatch.orElseGet(() ->
-                HARDCODED.stream()
-                        .filter(type -> type.fluids().stream().anyMatch(holder -> holder.value() == fluid))
-                        .findFirst()
-                        .orElse(EMPTY));
+        if (dynamicMatch.isPresent()) return dynamicMatch.get();
+        Optional<SyringeFluidType> hardcodedMatch = HARDCODED.stream()
+                .filter(type -> type.fluids().stream().anyMatch(holderSet -> holderSet.contains(holder)))
+                .findFirst();
+        if (hardcodedMatch.isPresent()) return hardcodedMatch.get();
+        if (registry.containsKey(BSyringeFluidTypes.FALLBACK)) return registry.get(BSyringeFluidTypes.FALLBACK);
+        return EMPTY;
     }
 
     /**
@@ -130,6 +134,7 @@ public class SyringeFluidTypeManager {
      */
     public static Fluid getFluidFor(SyringeFluidType type) {
         return type.fluids().stream()
+                .flatMap(HolderSet::stream)
                 .findFirst()
                 .map(Holder::value)
                 .orElse(BFluids.BLOOD.get());
@@ -154,6 +159,7 @@ public class SyringeFluidTypeManager {
     /**
      * Gets the burning properties.
      */
+    @SuppressWarnings("DataFlowIssue")
     public static void applyBurning(SyringeFluidType type, LivingEntity target) {
         type.burning().ifPresent(burning -> {
             target.setSecondsOnFire(burning.durationSeconds());
@@ -165,6 +171,7 @@ public class SyringeFluidTypeManager {
     /**
      * Gets the extinguishing properties.
      */
+    @SuppressWarnings("DataFlowIssue")
     public static void applyExtinguishing(SyringeFluidType type, LivingEntity target) {
         type.extinguishing().ifPresent(extinguishing -> {
             target.clearFire();

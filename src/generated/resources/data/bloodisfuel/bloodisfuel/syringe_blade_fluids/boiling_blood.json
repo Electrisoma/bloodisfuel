@@ -5,5 +5,8 @@
   },
   "color": 14750483,
   "damage": 6.0,
-  "fluids": "bloodisfuel:boiling_blood"
+  "fluids": [
+    "bloodisfuel:boiling_blood"
+  ],
+  "opaque": true
 }

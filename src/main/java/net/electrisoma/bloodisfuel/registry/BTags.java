@@ -194,6 +194,7 @@ public class BTags {
         DIESEL_INFUSED_BLOOD,
         GASOLINE_INFUSED_BLOOD,
         BOILING_BLOOD,
+        BLAZING_BLOOD,
         UBER_FLUID,
 
         DIVING_FLUID,

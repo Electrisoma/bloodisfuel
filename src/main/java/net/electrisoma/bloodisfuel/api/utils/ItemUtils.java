@@ -2,8 +2,8 @@ package net.electrisoma.bloodisfuel.api.utils;
 
 import net.electrisoma.bloodisfuel.api.data.DrowningData;
 import net.electrisoma.bloodisfuel.api.data.FreezingData;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidTypeManager;
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.api.data.BurningData;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;

@@ -1,0 +1,110 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "minecraft:crossbow"
+  },
+  "loops": 1,
+  "results": [
+    {
+      "item": "bloodisfuel:syringe_gun"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        },
+        {
+          "item": "minecraft:glass_bottle"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        },
+        {
+          "tag": "forge:plates/copper"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        },
+        {
+          "item": "create:electron_tube"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        },
+        {
+          "item": "create:precision_mechanism"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        },
+        {
+          "tag": "forge:plates/brass"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        }
+      ],
+      "results": [
+        {
+          "item": "bloodisfuel:incomplete_syringe_gun"
+        }
+      ]
+    }
+  ],
+  "transitionalItem": {
+    "item": "bloodisfuel:incomplete_syringe_gun"
+  }
+}

@@ -1,8 +1,9 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
-import com.simibubi.create.AllItems;
-import com.simibubi.create.AllTags;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
+
+import com.simibubi.create.AllTags;
+import com.simibubi.create.AllItems;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -19,7 +20,6 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public class BRecipeProvider extends RecipeProvider {
-
     protected final List<GeneratedRecipe> all = new ArrayList<>();
 
     public BRecipeProvider(PackOutput output) {
@@ -42,8 +42,7 @@ public class BRecipeProvider extends RecipeProvider {
         void register(Consumer<FinishedRecipe> consumer);
     }
 
-    protected static class Marker {
-    }
+    protected static class Marker {}
 
     protected static class I {
         static ItemLike leather() {
@@ -51,6 +50,9 @@ public class BRecipeProvider extends RecipeProvider {
         }
         static ItemLike ironSword() {
             return Items.IRON_SWORD;
+        }
+        static ItemLike crossbow() {
+            return Items.CROSSBOW;
         }
         static ItemLike bottle() {
             return Items.GLASS_BOTTLE;
@@ -64,14 +66,14 @@ public class BRecipeProvider extends RecipeProvider {
         static ItemLike precisionMechanism() {
             return AllItems.PRECISION_MECHANISM;
         }
-        static TagKey<Item> goldNugget() {
-            return AllTags.forgeItemTag("nuggets/gold");
-        }
-        static TagKey<Item> brassSheet() {
-            return AllTags.forgeItemTag("plates/brass");
+        static TagKey<Item> brassNugget() {
+            return AllTags.forgeItemTag("nuggets/brass");
         }
         static TagKey<Item> copperSheet() {
             return AllTags.forgeItemTag("plates/copper");
+        }
+        static TagKey<Item> brassSheet() {
+            return AllTags.forgeItemTag("plates/brass");
         }
     }
 }

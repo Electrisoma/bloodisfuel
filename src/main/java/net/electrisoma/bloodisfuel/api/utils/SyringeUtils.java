@@ -1,12 +1,9 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
-import net.electrisoma.bloodisfuel.api.data.BurningData;
-import net.electrisoma.bloodisfuel.api.data.DrowningData;
-import net.electrisoma.bloodisfuel.api.data.FreezingData;
-import net.electrisoma.bloodisfuel.api.data.ColorableDripParticleData;
+import net.electrisoma.bloodisfuel.api.data.*;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidTypeManager;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
 import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
 
@@ -35,8 +32,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import org.joml.Vector3f;
 
-import java.util.Optional;
 import java.util.UUID;
+import java.util.Optional;
 
 
 @SuppressWarnings({"OptionalGetWithoutIsPresent", "DataFlowIssue", "RedundantSuppression", "unused"})
@@ -100,8 +97,7 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
             player.hurt(player.damageSources().generic(), 2.0F);
             playSound(level, player, SoundEvents.PLAYER_ATTACK_CRIT);
 
-            if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), level.registryAccess()))
-                BAdvancements.LACTOSE_TOLERANT.awardTo((ServerPlayer) player);
+            advancementLogic(player, player, ctx);
         }
     }
     default boolean extractFromTarget(ItemStack stack, LivingEntity target, Player player, RegistryAccess access) {
@@ -124,7 +120,6 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
             target.hurt(player.damageSources().playerAttack(player), 2.0F);
             return true;
         }
-
         if (!player.level().isClientSide) {
             spawnBloodParticles(player.level(), target, stack, 5);
             applySyringeEffects(target, ctx);
@@ -132,220 +127,180 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
             writeFluid(stack, ctx.fluid());
 
             Optional<Float> optDamage = ctx.type() != null ? ctx.type().damage() : Optional.empty();
-            boolean isBurning = ctx.type() != null && ctx.type().hasBurning();
-            boolean isHelpful = ctx.type() != null &&
-                    SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid()).stream()
-                            .anyMatch(effect -> effect.getEffect().isBeneficial());
-            boolean isHarmful = ctx.type() != null &&
-                    SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid()).stream()
-                            .anyMatch(effect -> !effect.getEffect().isBeneficial());
-
             float damage = ctx.type() != null ? ctx.type().damage().orElse(2.0F) : 2.0F;
             target.hurt(player.damageSources().playerAttack(player), damage);
 
-            if (player != target) {
-                if (isHelpful) BAdvancements.MEDIC.awardTo((ServerPlayer) player);
-                else if (isHarmful) BAdvancements.MEDICAL_MALPRACTICE.awardTo((ServerPlayer) player);
-                if (isBurning) BAdvancements.FIRE_FIRE_FIRE.awardTo((ServerPlayer) player);
-            }
-            else BAdvancements.SELF_INFLICTED_SCIENCE.awardTo((ServerPlayer) player);
+            advancementLogic(player, target, ctx);
         }
         return true;
+    }
+
+    default void advancementLogic(Player source, LivingEntity target, CombatContext ctx) {
+        if (!(source instanceof ServerPlayer player)) return;
+        if (ctx == null || ctx.type() == null) return;
+
+        boolean isSelf = source == target;
+        boolean isMilk = SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), source.level().registryAccess());
+        boolean hasBurning = ctx.type().hasBurning();
+        boolean isHelpful = SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid()).stream()
+                .anyMatch(effect -> effect.getEffect().isBeneficial());
+        boolean isHarmful = SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid()).stream()
+                .anyMatch(effect -> !effect.getEffect().isBeneficial());
+
+        if (isSelf) {
+            if (isMilk) BAdvancements.LACTOSE_TOLERANT.awardTo(player);
+            BAdvancements.SELF_INFLICTED_SCIENCE.awardTo(player);
+        }
+        else {
+            if (isHelpful) BAdvancements.MEDIC.awardTo(player);
+            else if (isHarmful) BAdvancements.MEDICAL_MALPRACTICE.awardTo(player);
+            if (hasBurning) BAdvancements.FIRE_FIRE_FIRE.awardTo(player);
+        }
     }
 
     default void applySyringeEffects(LivingEntity entity, CombatContext ctx) {
         if (ctx.fluid().isEmpty()) return;
 
-        if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), entity.level().registryAccess())) {
-            entity.removeAllEffects();
-        }
-
         SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid())
                 .forEach(effect -> entity.addEffect(new MobEffectInstance(effect)));
 
-        if (ctx.type().hasBurning()) {
-            BurningData burningData = ctx.type().burning().get();
-            applyBurningEffect(entity, burningData);
-        }
-        if (ctx.type().hasExtinguishing()) {
-            applyExtinguishingEffect(entity, ctx.type());
-        }
-        if (ctx.type().hasFood()) {
-            applyFoodEffect(entity, ctx.type());
-        }
-        if (ctx.type().hasDrowning()) {
-            DrowningData drowningData = ctx.type().drowning().get();
-            applyDrowningEffect(entity, drowningData);
-        }
-        if (ctx.type().hasFreezing()) {
-            FreezingData freezingData = ctx.type().freezing().get();
-            applyFreezingEffect(entity, freezingData);
+        if (ctx.type().hasBurning()) applyBurningEffect(entity, ctx.type().burning().get());
+        if (ctx.type().hasDrowning()) applyDrowningEffect(entity, ctx.type().drowning().get());
+        if (ctx.type().hasFreezing()) applyFreezingEffect(entity, ctx.type().freezing().get());
+        if (ctx.type().hasFood()) applyFoodEffect(entity, ctx.type());
+        if (ctx.type().hasExtinguishing()) applyExtinguishingEffect(entity, ctx.type());
+
+        if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), entity.level().registryAccess())) {
+            entity.removeAllEffects();
         }
     }
-    default void applyBurningEffect(LivingEntity entity, BurningData burningData) {
-        if (entity == null || entity.level().isClientSide || burningData == null) return;
-        entity.setSecondsOnFire(burningData.durationSeconds());
-        if (burningData.damagePerSecond() > 0) {
-            entity.hurt(entity.damageSources().onFire(), burningData.damagePerSecond());
-        }
-
-        entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                SoundEvents.FIRE_AMBIENT, entity.getSoundSource(), 1.0F, 1.0F);
+    default void applyBurningEffect(LivingEntity entity, BurningData data) {
+        if (entity == null || entity.level().isClientSide || data == null) return;
+        entity.setSecondsOnFire(data.durationSeconds());
+        if (data.damagePerSecond() > 0)
+            entity.hurt(entity.damageSources().onFire(), data.damagePerSecond());
+        playSound(entity.level(), entity, SoundEvents.FIRE_AMBIENT);
     }
     default void applyExtinguishingEffect(LivingEntity entity, SyringeFluidType type) {
-        if (entity == null || entity.level().isClientSide) return;
-        if (type != null && type.hasExtinguishing() && entity.isOnFire()) {
-            SyringeFluidTypeManager.applyExtinguishing(type, entity);
-            entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                    SoundEvents.FIRE_EXTINGUISH, entity.getSoundSource(), 1.0F, 1.0F);
-        }
+        if (entity.level().isClientSide || type == null || !entity.isOnFire()) return;
+        SyringeFluidTypeManager.applyExtinguishing(type, entity);
+        playSound(entity.level(), entity, SoundEvents.FIRE_EXTINGUISH);
     }
     default void applyFoodEffect(LivingEntity entity, SyringeFluidType type) {
-        if (!(entity instanceof Player player) || entity.level().isClientSide || type == null || type.food().isEmpty()) return;
-
+        if (!(entity instanceof Player player) || type.food().isEmpty() || !player.getFoodData().needsFood()) return;
         FoodProperties food = type.food().get();
-        if (player.getFoodData().needsFood()) {
-            player.getFoodData().eat(food.getNutrition(), food.getSaturationModifier());
-            entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                    SoundEvents.GENERIC_EAT, SoundSource.PLAYERS, 1.0F, 1.0F);
-        }
+        player.getFoodData().eat(food.getNutrition(), food.getSaturationModifier());
+        playSound(player.level(), player, SoundEvents.GENERIC_EAT);
     }
-    default void applyDrowningEffect(LivingEntity entity, DrowningData drowningData) {
-        if (entity == null || entity.level().isClientSide || drowningData == null) return;
+    default void applyDrowningEffect(LivingEntity entity, DrowningData data) {
+        if (entity.level().isClientSide || data == null) return;
+        int durationTicks = data.durationSeconds() != null ? data.durationSeconds() * 20 : 100;
+        float damage = data.damagePerSecond();
 
-        float damagePerTick = drowningData.damagePerSecond();
-        int durationTicks = drowningData.durationSeconds() != null ? drowningData.durationSeconds() * 20 : 100;
+        entity.hurt(entity.damageSources().drown(), damage);
 
-        entity.hurt(entity.damageSources().drown(), damagePerTick);
-
-        if (entity instanceof Player player) {
-            if (!player.level().isClientSide && player.level() instanceof ServerLevel serverLevel) {
-                MinecraftServer server = serverLevel.getServer();
-                server.execute(() -> handleDrowning(player, damagePerTick, durationTicks));
-            }
+        if (entity instanceof Player player && entity.level() instanceof ServerLevel serverLevel) {
+            MinecraftServer server = serverLevel.getServer();
+            server.execute(() -> handleDrowning(player, damage, durationTicks));
         }
 
-        entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                SoundEvents.DROWNED_HURT, entity.getSoundSource(), 1.0F, 1.0F);
+        playSound(entity.level(), entity, SoundEvents.DROWNED_HURT);
     }
-    private void handleDrowning(LivingEntity entity, float damagePerTick, int durationTicks) {
-        final int[] ticksLeft = {durationTicks};
+    default void applyFreezingEffect(LivingEntity entity, FreezingData data) {
+        if (entity.level().isClientSide || data == null) return;
 
-        Runnable tickTask = new Runnable() {
+        int durationTicks = data.durationSeconds() != null ? data.durationSeconds() * 20 : 100;
+        float damage = Optional.ofNullable(data.damagePerSecond()).orElse(1.0f);
+        float slow = Optional.ofNullable(data.slowAmount()).orElse(0.5f);
+
+        entity.setTicksFrozen(entity.getTicksRequiredToFreeze() + durationTicks);
+        entity.hurt(entity.damageSources().freeze(), damage);
+
+        playSound(entity.level(), entity, SoundEvents.PLAYER_HURT_FREEZE);
+
+        if (entity instanceof Player player && entity.level() instanceof ServerLevel serverLevel) {
+            MinecraftServer server = serverLevel.getServer();
+            server.execute(() -> handleFreezing(player, slow, durationTicks));
+        }
+    }
+
+    private void handleDrowning(Player player, float damage, int ticks) {
+        final int[] ticksLeft = {ticks};
+        Runnable task = new Runnable() {
             @Override
             public void run() {
-                if (ticksLeft[0] > 0) {
-                    if (entity instanceof Player player) {
-                        int currentAir = player.getAirSupply();
-                        if (currentAir > 0) player.setAirSupply(currentAir - 1);
-                    }
-                    entity.hurt(entity.damageSources().drown(), damagePerTick);
-                    ticksLeft[0]--;
-                    entity.level().getServer().execute(this);
+                if (ticksLeft[0]-- > 0) {
+                    player.setAirSupply(Math.max(0, player.getAirSupply() - 1));
+                    player.hurt(player.damageSources().drown(), damage);
+                    player.level().getServer().execute(this);
+                } else {
+                    player.setAirSupply(0);
                 }
-                else if (entity instanceof Player player) player.setAirSupply(0);
+            }
+        };
+        player.level().getServer().execute(task);
+    }
+    private void handleFreezing(Player player, float slowAmount, int durationTicks) {
+        UUID slowId = UUID.nameUUIDFromBytes("bloodisfuel:freezing_slow".getBytes());
+        AttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+
+        if (attr != null && !attr.hasModifier(new AttributeModifier(slowId, "Freezing Slowness", -slowAmount, AttributeModifier.Operation.MULTIPLY_TOTAL))) {
+            attr.addTransientModifier(new AttributeModifier(slowId, "Freezing Slowness", -slowAmount, AttributeModifier.Operation.MULTIPLY_TOTAL));
+        }
+
+        Runnable task = new Runnable() {
+            int remaining = durationTicks;
+
+            @Override
+            public void run() {
+                if (--remaining <= 0) {
+                    if (attr != null) attr.removeModifier(slowId);
+                } else {
+                    player.level().getServer().tell(new TickTask(1, this));
+                }
             }
         };
 
-        entity.level().getServer().execute(tickTask);
-    }
-    default void applyFreezingEffect(LivingEntity entity, FreezingData freezingData) {
-        if (entity == null || entity.level().isClientSide || freezingData == null) return;
-        int durationTicks = freezingData.durationSeconds() != null ? freezingData.durationSeconds() * 20 : 100;
-        float damage = freezingData.damagePerSecond() != null ? freezingData.damagePerSecond() : 1.0f;
-        float slowAmount = freezingData.slowAmount() != null ? freezingData.slowAmount() : 0.5f;
-
-        int freezeThreshold = entity.getTicksRequiredToFreeze();
-        entity.setTicksFrozen(freezeThreshold + durationTicks);
-
-        entity.hurt(entity.damageSources().freeze(), damage);
-
-        UUID slowId = UUID.nameUUIDFromBytes("bloodisfuel:freezing_slow".getBytes());
-        AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (speedAttr != null) {
-            AttributeModifier slowMod = new AttributeModifier(slowId, "Freezing Slowness",
-                    -slowAmount, AttributeModifier.Operation.MULTIPLY_TOTAL);
-            if (!speedAttr.hasModifier(slowMod)) speedAttr.addTransientModifier(slowMod);
-        }
-
-        entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                SoundEvents.PLAYER_HURT_FREEZE, entity.getSoundSource(), 1.0F, 1.0F);
-
-        if (!entity.level().isClientSide && entity.level() instanceof ServerLevel serverLevel) {
-            MinecraftServer server = serverLevel.getServer();
-            server.execute(() ->
-                    serverLevel.getServer().tell(new TickTask(1, new Runnable() {
-                        int ticksLeft = durationTicks;
-                        @Override
-                        public void run() {
-                            if (--ticksLeft <= 0) {
-                                AttributeInstance attr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-                                if (attr != null) attr.removeModifier(slowId);
-                            }
-                            else serverLevel.getServer().tell(new TickTask(1, this));
-                        }
-                    }))
-            );
-        }
+        player.level().getServer().tell(new TickTask(1, task));
     }
 
     default void spawnBloodParticles(Level level, Entity entity, ItemStack stack, int count) {
-        if (!(level instanceof ServerLevel server)) return;
-        RegistryAccess access = level.registryAccess();
-        FluidStack fluidStack = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
-        int color = SyringeFluidTypeManager.getColor(type, fluidStack);
-        float r = ((color >> 16) & 0xFF) / 255.0F;
-        float g = ((color >> 8) & 0xFF) / 255.0F;
-        float b = (color & 0xFF) / 255.0F;
-        Vector3f particleColor = new Vector3f(r, g, b);
-        for (int i = 0; i < count; i++) {
-            double dx = (level.random.nextDouble() - 0.5) * 0.5;
-            double dy = level.random.nextDouble();
-            double dz = (level.random.nextDouble() - 0.5) * 0.5;
-            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
-                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
-                    1, 0.0, 0.0, 0.0, 0.0);
-        }
+        spawnColorParticles(level, entity, stack, count, 0.5, 1.0, 0.5);
     }
     default void spawnDrainingParticles(Level level, Entity entity, ItemStack stack, int count) {
-        if (!(level instanceof ServerLevel server)) return;
-        RegistryAccess access = level.registryAccess();
-        FluidStack fluidStack = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
-        int color = SyringeFluidTypeManager.getColor(type, fluidStack);
-        float r = ((color >> 16) & 0xFF) / 255.0F;
-        float g = ((color >> 8) & 0xFF) / 255.0F;
-        float b = (color & 0xFF) / 255.0F;
-        Vector3f particleColor = new Vector3f(r, g, b);
-        for (int i = 0; i < count; i++) {
-            double dx = (level.random.nextDouble() - 0.5) * 0.3;
-            double dy = level.random.nextDouble() * 0.2;
-            double dz = (level.random.nextDouble() - 0.5) * 0.3;
-            server.sendParticles(new DustParticleOptions(particleColor, 1.0F),
-                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
-                    1, 0.0, 0.0, 0.0, 0.0);
-        }
+        spawnColorParticles(level, entity, stack, count, 0.3, 0.2, 0.3);
     }
     default void spawnTrailParticles(Level level, Entity entity, ItemStack stack, int count) {
         if (!(level instanceof ServerLevel server)) return;
-        RegistryAccess access = level.registryAccess();
-        FluidStack fluidStack = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
-        int color = SyringeFluidTypeManager.getColor(type, fluidStack);
-        float r = ((color >> 16) & 0xFF) / 255.0F;
-        float g = ((color >> 8) & 0xFF) / 255.0F;
-        float b = (color & 0xFF) / 255.0F;
+        Vector3f color = getParticleColor(stack, level.registryAccess());
+
         for (int i = 0; i < count; i++) {
             double x = entity.getX() + (level.random.nextDouble() - 0.5) * 0.2;
             double y = entity.getY() + level.random.nextDouble() * 0.6 + 0.5;
             double z = entity.getZ() + (level.random.nextDouble() - 0.5) * 0.2;
-            server.sendParticles(
-                    new ColorableDripParticleData(r, g, b),
-                    x, y, z,
-                    5, 0.0, 0.0, 0.0, 0.0
-            );
+            server.sendParticles(new ColorableDripParticleData(color.x(), color.y(), color.z()), x, y, z, 5, 0, 0, 0, 0);
         }
+    }
+    default void spawnColorParticles(Level level, Entity entity, ItemStack stack, int count, double dxRange, double dyRange, double dzRange) {
+        if (!(level instanceof ServerLevel server)) return;
+        Vector3f color = getParticleColor(stack, level.registryAccess());
+
+        for (int i = 0; i < count; i++) {
+            double dx = (level.random.nextDouble() - 0.5) * dxRange;
+            double dy = level.random.nextDouble() * dyRange;
+            double dz = (level.random.nextDouble() - 0.5) * dzRange;
+            server.sendParticles(new DustParticleOptions(color, 1.0F), entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz, 1, 0, 0, 0, 0);
+        }
+    }
+
+    default Vector3f getParticleColor(ItemStack stack, RegistryAccess access) {
+        FluidStack fluidStack = readFluid(stack);
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
+        int color = SyringeFluidTypeManager.getColor(type, fluidStack);
+        float r = ((color >> 16) & 0xFF) / 255f;
+        float g = ((color >> 8) & 0xFF) / 255f;
+        float b = (color & 0xFF) / 255f;
+        return new Vector3f(r, g, b);
     }
 
     default void playSound(Level level, Entity entity, SoundEvent sound) {

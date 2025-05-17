@@ -4,5 +4,7 @@
     "duration_seconds": 1,
     "heal_per_second": 4.0
   },
-  "fluids": "minecraft:water"
+  "fluids": [
+    "minecraft:water"
+  ]
 }

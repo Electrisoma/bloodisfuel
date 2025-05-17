@@ -1,4 +1,4 @@
-package net.electrisoma.bloodisfuel.api.equipment;
+package net.electrisoma.bloodisfuel.api.equipment.syringe;
 
 import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
 

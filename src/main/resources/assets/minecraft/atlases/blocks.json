@@ -58,6 +58,14 @@
     },
     {
       "type": "single",
+      "resource": "bloodisfuel:fluid/blazing_blood_flow"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:fluid/blazing_blood_still"
+    },
+    {
+      "type": "single",
       "resource": "bloodisfuel:fluid/bloody_concoction_flow"
     },
     {

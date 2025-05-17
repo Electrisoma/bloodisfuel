@@ -1,8 +1,6 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-//import net.electrisoma.bloodisfuel.foundation.data.recipes.compat.DistillationRecipeGen;
-import net.electrisoma.bloodisfuel.infrastructure.utils.Mods;
 
 import net.createmod.catnip.platform.CatnipServices;
 
@@ -28,20 +26,13 @@ import java.util.function.UnaryOperator;
 
 @SuppressWarnings("all")
 public abstract class BProcessingRecipeGen extends BRecipeProvider {
-
     protected static final List<BProcessingRecipeGen> GENERATORS = new ArrayList<>();
-
 
     public static void registerAll(DataGenerator gen, PackOutput output) {
 
         GENERATORS.add(new MixingRecipeGen(output));
         GENERATORS.add(new EmptyingRecipeGen(output));
         GENERATORS.add(new CompactingRecipeGen(output));
-        //GENERATORS.add(new DistillationRecipeGen(output));
-
-        //if(ModList.get().isLoaded("createaddition"))
-        //    GENERATORS.add(new LiquidBurningGen(output));
-
 
         gen.addProvider(true, new DataProvider() {
 

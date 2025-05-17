@@ -1,7 +1,7 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidTypeManager;
 
 import com.simibubi.create.foundation.utility.CreateLang;
 
@@ -17,9 +17,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+
+import javax.annotation.Nullable;
 
 
 @SuppressWarnings({"DataFlowIssue", "RedundantSuppression", "BooleanMethodIsAlwaysInverted"})

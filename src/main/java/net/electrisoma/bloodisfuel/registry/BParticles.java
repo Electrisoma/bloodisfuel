@@ -33,9 +33,9 @@ public class BParticles {
     public static final RegistryObject<ParticleType<ColorableDripParticleData>> COLORABLE_DRIPPING =
             PARTICLES.register("colorable_dripping", () -> new ParticleType<>(false,
                     ColorableDripParticleData.DESERIALIZER) {
-                        @Override
-                        public Codec<ColorableDripParticleData> codec() {
-                            return BCodecs.COLORABLE_DRIP_CODEC;
-                        }
+                @Override
+                public Codec<ColorableDripParticleData> codec() {
+                    return BCodecs.COLORABLE_DRIP_CODEC;
+                }
             });
 }

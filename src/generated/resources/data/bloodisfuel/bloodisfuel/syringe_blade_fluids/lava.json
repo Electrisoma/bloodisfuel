@@ -3,7 +3,10 @@
     "damage_per_second": 4.0,
     "duration_seconds": 15
   },
-  "color": 16215055,
-  "fluids": "minecraft:lava",
-  "isGlowing": true
+  "color": 16738816,
+  "fluids": [
+    "minecraft:lava"
+  ],
+  "glowing": true,
+  "opaque": true
 }

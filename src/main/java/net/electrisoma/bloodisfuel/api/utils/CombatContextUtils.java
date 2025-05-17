@@ -1,7 +1,7 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidTypeManager;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -19,9 +19,7 @@ public interface CombatContextUtils extends FluidUtils {
     default CombatContext getCombatContext(ItemStack stack, @Nullable RegistryAccess access) {
         FluidStack fluidStack = readFluid(stack);
         SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
-        int capacity = getCapacity(stack);
-        int charges = getChargeCount(stack);
-        int useAmount = getUseAmount(capacity, charges);
+        int useAmount = getUseAmount(stack);
         int currentFill = fluidStack.getAmount();
         List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluidStack);
         boolean onlyBeneficial = effects.stream().allMatch(e -> e.getEffect().isBeneficial());

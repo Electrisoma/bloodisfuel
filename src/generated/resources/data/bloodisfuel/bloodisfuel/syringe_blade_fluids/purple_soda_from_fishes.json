@@ -1,6 +1,8 @@
 {
   "color": 8323327,
-  "fluids": "alexscaves:purple_soda",
+  "fluids": [
+    "alexscaves:purple_soda"
+  ],
   "food": {
     "nutrition": 2,
     "saturation": 0.4

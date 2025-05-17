@@ -19,13 +19,11 @@ import net.minecraft.world.level.material.Fluid;
 
 
 //tw: this file contains horrors beyond human comprehension, you will be scarred
-@SuppressWarnings({"unused", "deprecation"})
+@SuppressWarnings({"unused", "deprecation", "RedundantSuppression"})
 public class BRegistrateTags {
-
 	private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
 
 	public static void addGenerators() {
-
 		REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, BRegistrateTags::genItemTags);
 		REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, BRegistrateTags::genBlockTags);
 		REGISTRATE.addDataGenerator(ProviderType.FLUID_TAGS, BRegistrateTags::genFluidTags);
@@ -185,7 +183,6 @@ public class BRegistrateTags {
 				.add(TagEntry.element(BItems.DRAINED_MEAT.getId()))
 		;
 	}
-
 	private static void genBlockTags(RegistrateTagsProvider<Block> provIn) {
 
 		TagGen.CreateTagsProvider<Block> prov = new TagGen.CreateTagsProvider<>(provIn, Block::builtInRegistryHolder);
@@ -208,12 +205,10 @@ public class BRegistrateTags {
 				.addOptionalTag(Utils.location("alexscaves:rock_candies"))
 		;
 	}
-
 	private static void genEntityTags(RegistrateTagsProvider<EntityType<?>> provIn) {
 
 		TagGen.CreateTagsProvider<EntityType<?>> prov = new TagGen.CreateTagsProvider<>(provIn, EntityType::builtInRegistryHolder);
 	}
-
 	private static void genFluidTags(RegistrateTagsProvider<Fluid> provIn) {
 
 		TagGen.CreateTagsProvider<Fluid> prov = new TagGen.CreateTagsProvider<>(provIn, Fluid::builtInRegistryHolder);

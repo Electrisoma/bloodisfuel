@@ -4,8 +4,8 @@ import net.electrisoma.bloodisfuel.BClient;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.BRenderTypes;
 import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidType;
-import net.electrisoma.bloodisfuel.api.equipment.SyringeFluidTypeManager;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidTypeManager;
 
 import com.simibubi.create.foundation.item.render.CustomRenderedItemModel;
 import com.simibubi.create.foundation.item.render.CustomRenderedItemModelRenderer;
@@ -15,15 +15,16 @@ import net.createmod.catnip.animation.AnimationTickHolder;
 
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 
+import net.minecraft.util.Mth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemDisplayContext;
+
 import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -33,6 +34,7 @@ import com.mojang.math.Axis;
 public class SyringeGunItemRenderer extends CustomRenderedItemModelRenderer implements SyringeUtils {
 
     protected static final PartialModel VIAL = PartialModel.of(BloodIsFuel.asResource("item/syringe_gun/vial"));
+    protected static final PartialModel VIAL_OPAQUE = PartialModel.of(BloodIsFuel.asResource("item/syringe_gun/vial_opaque"));
     protected static final PartialModel TRIGGER = PartialModel.of(BloodIsFuel.asResource("item/syringe_gun/trigger"));
     protected static final PartialModel ACCENTS = PartialModel.of(BloodIsFuel.asResource("item/syringe_gun/accents"));
 
@@ -69,7 +71,8 @@ public class SyringeGunItemRenderer extends CustomRenderedItemModelRenderer impl
         RegistryAccess access = Minecraft.getInstance().level.registryAccess();
         SyringeFluidType fluidType = SyringeFluidTypeManager.fromFluid(fluidStack, access);
 
-        boolean glowing = fluidType.isGlowing().orElse(false);
+        boolean glowing = fluidType.glowing().orElse(false);
+        boolean opaque = fluidType.opaque().orElse(false);
         RenderType vialRenderType = BRenderTypes.tintedTranslucent(glowing);
 
         ms.pushPose();
@@ -77,7 +80,8 @@ public class SyringeGunItemRenderer extends CustomRenderedItemModelRenderer impl
         ms.mulPose(Axis.XP.rotationDegrees(angle));
         ms.translate(0, -offset, 0);
 
-        renderer.render(VIAL.get(), vialRenderType, light);
+        if (opaque) renderer.render(VIAL_OPAQUE.get(), vialRenderType, light);
+        else renderer.render(VIAL.get(), vialRenderType, light);
         ms.popPose();
     }
 }

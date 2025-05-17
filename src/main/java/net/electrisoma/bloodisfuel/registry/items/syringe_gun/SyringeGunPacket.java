@@ -5,9 +5,9 @@ import net.electrisoma.bloodisfuel.BClient;
 import com.simibubi.create.content.equipment.zapper.ShootGadgetPacket;
 import com.simibubi.create.content.equipment.zapper.ShootableGadgetRenderHandler;
 
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.network.FriendlyByteBuf;
 
 import net.minecraftforge.api.distmarker.Dist;

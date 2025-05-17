@@ -34,11 +34,11 @@ import java.util.function.UnaryOperator;
 
 @SuppressWarnings("unused")
 public class StandardRecipeGen extends BRecipeProvider {
-
     private final Marker COOKING = enterFolder();
-
     GeneratedRecipe
-            DRAINED_MEAT_TO_LEATHER = create(() -> Items.LEATHER).viaCooking().inSmoker()
+
+    DRAINED_MEAT_TO_LEATHER = create(() -> Items.LEATHER).viaCooking().inSmoker()
+
     ;
 
     String currentFolder = "";
@@ -51,11 +51,9 @@ public class StandardRecipeGen extends BRecipeProvider {
     GeneratedRecipeBuilder create(Supplier<ItemLike> result) {
         return new GeneratedRecipeBuilder(currentFolder, result);
     }
-
     GeneratedRecipeBuilder create(ResourceLocation result) {
         return new GeneratedRecipeBuilder(currentFolder, result);
     }
-
     GeneratedRecipeBuilder create(ItemProviderEntry<? extends ItemLike> result) {
         return create(result::get);
     }
@@ -71,7 +69,6 @@ public class StandardRecipeGen extends BRecipeProvider {
     }
 
     public class GeneratedRecipeBuilder {
-
         private final String path;
         private String suffix;
         private Supplier<? extends ItemLike> result;
@@ -87,12 +84,10 @@ public class StandardRecipeGen extends BRecipeProvider {
             this.suffix = "";
             this.amount = 1;
         }
-
         public GeneratedRecipeBuilder(String path, Supplier<? extends ItemLike> result) {
             this(path);
             this.result = result;
         }
-
         public GeneratedRecipeBuilder(String path, ResourceLocation result) {
             this(path);
             this.compatDatagenOutput = result;
@@ -102,39 +97,32 @@ public class StandardRecipeGen extends BRecipeProvider {
             this.amount = amount;
             return this;
         }
-
         GeneratedRecipeBuilder unlockedBy() {
             this.unlockedBy = () -> ItemPredicate.Builder.item()
                     .of(((Supplier<? extends ItemLike>) BItems.DRAINED_MEAT).get())
                     .build();
             return this;
         }
-
         GeneratedRecipeBuilder unlockedByTag(Supplier<TagKey<Item>> tag) {
             this.unlockedBy = () -> ItemPredicate.Builder.item()
                     .of(tag.get())
                     .build();
             return this;
         }
-
         GeneratedRecipeBuilder whenModLoaded(String modid) {
             return withCondition(new ModLoadedCondition(modid));
         }
-
         GeneratedRecipeBuilder whenModMissing(String modid) {
             return withCondition(new NotCondition(new ModLoadedCondition(modid)));
         }
-
         GeneratedRecipeBuilder withCondition(ICondition condition) {
             recipeConditions.add(condition);
             return this;
         }
-
         GeneratedRecipeBuilder withSuffix(String suffix) {
             this.suffix = suffix;
             return this;
         }
-
         GeneratedRecipe viaShaped(UnaryOperator<ShapedRecipeBuilder> builder) {
             return register(consumer -> {
                 ShapedRecipeBuilder b = builder.apply(ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result.get(), amount));
@@ -143,7 +131,6 @@ public class StandardRecipeGen extends BRecipeProvider {
                 b.save(consumer, createLocation());
             });
         }
-
         GeneratedRecipe viaShapeless(UnaryOperator<ShapelessRecipeBuilder> builder) {
             return register(consumer -> {
                 ShapelessRecipeBuilder b = builder.apply(ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result.get(), amount));
@@ -156,11 +143,9 @@ public class StandardRecipeGen extends BRecipeProvider {
         private ResourceLocation createSimpleLocation(String recipeType) {
             return BloodIsFuel.asResource(recipeType + "/" + getRegistryName().getPath() + suffix);
         }
-
         private ResourceLocation createLocation() {
             return BloodIsFuel.asResource("crafting" + "/" + path + "/" + getRegistryName().getPath() + suffix);
         }
-
         private ResourceLocation getRegistryName() {
             return compatDatagenOutput == null ? CatnipServices.REGISTRIES.getKeyOrThrow(result.get()
                     .asItem()) : compatDatagenOutput;
@@ -169,17 +154,14 @@ public class StandardRecipeGen extends BRecipeProvider {
         GeneratedRecipeBuilder.GeneratedCookingRecipeBuilder viaCooking() {
             return unlockedBy().viaCookingIngredient(() -> Ingredient.of(((Supplier<? extends ItemLike>) BItems.DRAINED_MEAT).get()));
         }
-
         GeneratedRecipeBuilder.GeneratedCookingRecipeBuilder viaCookingTag(Supplier<TagKey<Item>> tag) {
             return unlockedByTag(tag).viaCookingIngredient(() -> Ingredient.of(tag.get()));
         }
-
         GeneratedRecipeBuilder.GeneratedCookingRecipeBuilder viaCookingIngredient(Supplier<Ingredient> ingredient) {
             return new GeneratedRecipeBuilder.GeneratedCookingRecipeBuilder(ingredient);
         }
 
         class GeneratedCookingRecipeBuilder {
-
             private final Supplier<Ingredient> ingredient;
             private float exp;
             private int cookingTime;
@@ -200,7 +182,6 @@ public class StandardRecipeGen extends BRecipeProvider {
                 cookingTime = duration;
                 return this;
             }
-
             GeneratedRecipeBuilder.GeneratedCookingRecipeBuilder rewardXP(float xp) {
                 exp = xp;
                 return this;
@@ -209,11 +190,9 @@ public class StandardRecipeGen extends BRecipeProvider {
             GeneratedRecipe inFurnace() {
                 return inFurnace(b -> b);
             }
-
             GeneratedRecipe inFurnace(UnaryOperator<SimpleCookingRecipeBuilder> builder) {
                 return create(FURNACE, builder, 1);
             }
-
             GeneratedRecipe inSmoker() {
                 return inSmoker(b -> b);
             }
@@ -229,7 +208,6 @@ public class StandardRecipeGen extends BRecipeProvider {
                 create(CAMPFIRE, builder, 3);
                 return create(SMOKER, builder, 1f);
             }
-
             GeneratedRecipe inBlastFurnace() {
                 return inBlastFurnace(b -> b);
             }
@@ -245,7 +223,8 @@ public class StandardRecipeGen extends BRecipeProvider {
             }
 
             private GeneratedRecipe create(SimpleCookingSerializer<?> serializer,
-                                           UnaryOperator<SimpleCookingRecipeBuilder> builder, float cookingTimeModifier) {
+                                           UnaryOperator<SimpleCookingRecipeBuilder> builder,
+                                           float cookingTimeModifier) {
                 return register(consumer -> {
                     boolean isOtherMod = compatDatagenOutput != null;
 
@@ -261,23 +240,14 @@ public class StandardRecipeGen extends BRecipeProvider {
         }
     }
 
-    private static class ModdedCookingRecipeResult implements FinishedRecipe {
-
-        private final FinishedRecipe wrapped;
-        private final ResourceLocation outputOverride;
-        private final List<ICondition> conditions;
-
-        public ModdedCookingRecipeResult(FinishedRecipe wrapped, ResourceLocation outputOverride,
-                                         List<ICondition> conditions) {
-            this.wrapped = wrapped;
-            this.outputOverride = outputOverride;
-            this.conditions = conditions;
-        }
-
+    private record ModdedCookingRecipeResult(FinishedRecipe wrapped,
+                                             ResourceLocation outputOverride,
+                                             List<ICondition> conditions)
+            implements FinishedRecipe {
         @Override
         public ResourceLocation getId() {
-            return wrapped.getId();
-        }
+                return wrapped.getId();
+            }
 
         @Override
         public RecipeSerializer<?> getType() {
@@ -307,7 +277,7 @@ public class StandardRecipeGen extends BRecipeProvider {
 
     @Override
     public String getName() {
-        return BloodIsFuel.NAME + "Standard Recipes";
+        return BloodIsFuel.NAME + " Standard Recipes";
     }
 
     public StandardRecipeGen(PackOutput generator) {

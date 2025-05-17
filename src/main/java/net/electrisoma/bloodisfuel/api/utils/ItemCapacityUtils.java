@@ -1,36 +1,33 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
-import net.electrisoma.bloodisfuel.registry.BEnchantments;
-
 import com.simibubi.create.AllEnchantments;
-
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import javax.annotation.Nullable;
 
-
 @SuppressWarnings("unused")
 public interface ItemCapacityUtils {
-
-    default int getBaseCapacity(ItemStack stack) { return 1000; }
-    default int getCapacityEnchantmentAddition(ItemStack stack) { return 1000; }
+    default int getBaseCapacity(ItemStack stack) {
+        return 1000;
+    }
+    default int getCapacityEnchantmentAddition(ItemStack stack) {
+        return 1000;
+    }
     default int getCapacity(ItemStack stack) {
-        int enchantLevel = stack.getEnchantmentLevel(AllEnchantments.CAPACITY.get());
-        return getBaseCapacity(stack) + getCapacityEnchantmentAddition(stack) * enchantLevel;
+        int level = stack.getEnchantmentLevel(AllEnchantments.CAPACITY.get());
+        return getBaseCapacity(stack) + getCapacityEnchantmentAddition(stack) * level;
     }
 
     default int getChargeCount(ItemStack stack) {
-        int baseCharges = 4;
-        int extraLevel = stack.getEnchantmentLevel(BEnchantments.EXTRA_VIALS.get());
-        return baseCharges + (extraLevel * 2);
-    }
-    default int getUseAmount(int capacity, int charges) {
-        return (int) Math.ceil((double) capacity / charges);
+        int capacity = getCapacity(stack);
+        return Math.min(capacity / 250, 10);
     }
     default int getUseAmount(ItemStack stack) {
-        return getUseAmount(getCapacity(stack), getChargeCount(stack));
+        int charges = getChargeCount(stack);
+        int capacity = getCapacity(stack);
+        return capacity / charges;
     }
 
     class FuelItems extends Item {

@@ -9,12 +9,12 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
-import net.minecraft.world.level.Level;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,10 +22,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
 
 
 public class SyringeGunItem extends ProjectileWeaponItem
@@ -60,9 +61,7 @@ public class SyringeGunItem extends ProjectileWeaponItem
         }
 
         FluidStack fluid = readFluid(stack);
-        int capacity = getCapacity(stack);
-        int charges = getChargeCount(stack);
-        int useAmount = getUseAmount(capacity, charges);
+        int useAmount = getUseAmount(stack);
 
         if (fluid.getAmount() < useAmount) return;
 

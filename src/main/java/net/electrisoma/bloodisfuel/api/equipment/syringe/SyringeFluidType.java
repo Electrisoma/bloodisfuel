@@ -1,9 +1,11 @@
-package net.electrisoma.bloodisfuel.api.equipment;
+package net.electrisoma.bloodisfuel.api.equipment.syringe;
 
 import net.electrisoma.bloodisfuel.api.data.*;
 
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.food.FoodProperties;
@@ -26,9 +28,10 @@ import java.util.Optional;
  */
 @SuppressWarnings("unused")
 public record SyringeFluidType(
-        HolderSet<Fluid> fluids,
+        List<HolderSet<Fluid>> fluids,
         int color,
-        Optional<Boolean> isGlowing,
+        Optional<Boolean> glowing,
+        Optional<Boolean> opaque,
         Optional<Float> damage,
         Optional<Float> attackSpeed,
         Optional<FoodProperties> food,
@@ -39,9 +42,10 @@ public record SyringeFluidType(
         Optional<DrowningData> drowning,
         Optional<FreezingData> freezing) {
     public static final Codec<SyringeFluidType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            RegistryCodecs.homogeneousList(Registries.FLUID).fieldOf("fluids").forGetter(SyringeFluidType::fluids),
+            Codec.list(RegistryCodecs.homogeneousList(Registries.FLUID)).fieldOf("fluids").forGetter(SyringeFluidType::fluids),
             Codec.INT.fieldOf("color").forGetter(SyringeFluidType::color),
-            Codec.BOOL.optionalFieldOf("isGlowing").forGetter(SyringeFluidType::isGlowing),
+            Codec.BOOL.optionalFieldOf("glowing").forGetter(SyringeFluidType::glowing),
+            Codec.BOOL.optionalFieldOf("opaque").forGetter(SyringeFluidType::opaque),
             Codec.FLOAT.optionalFieldOf("damage").forGetter(SyringeFluidType::damage),
             Codec.FLOAT.optionalFieldOf("attack_speed").forGetter(SyringeFluidType::attackSpeed),
             BCodecs.FOOD_PROPERTIES.optionalFieldOf("food").forGetter(SyringeFluidType::food),
@@ -114,9 +118,10 @@ public record SyringeFluidType(
 
     @SuppressWarnings({"deprecation", "OptionalUsedAsFieldOrParameterType", "RedundantSuppression"})
     public static class Builder {
-        private final List<Holder<Fluid>> fluids = new ArrayList<>();
+        private final List<HolderSet<Fluid>> fluidSets = new ArrayList<>();
         private int color = 0xFFFFFF;
-        private Optional<Boolean> isGlowing = Optional.empty();
+        private Optional<Boolean> glowing = Optional.empty();
+        private Optional<Boolean> opaque = Optional.empty();
         private Optional<Float> damage = Optional.empty();
         private Optional<Float> attackSpeed = Optional.empty();
         private Optional<FoodProperties> food = Optional.empty();
@@ -128,11 +133,23 @@ public record SyringeFluidType(
         private Optional<FreezingData> freezing = Optional.empty();
 
         /**
-         * Adds one or more fluids that this type applies to.
+         * Adds specific fluids that this type applies to.
          */
-        public Builder addFluids(Fluid... fluids) {
+        public Builder fluids(Fluid... fluids) {
+            List<Holder<Fluid>> holders = new ArrayList<>();
             for (Fluid fluid : fluids)
-                this.fluids.add(fluid.builtInRegistryHolder());
+                holders.add(fluid.builtInRegistryHolder());
+            fluidSets.add(HolderSet.direct(holders));
+            return this;
+        }
+
+        /**
+         * Adds fluid tags that this type applies to.
+         */
+        public Builder fluidTag(ResourceLocation tagId, HolderLookup.RegistryLookup<Fluid> lookup) {
+            TagKey<Fluid> tag = TagKey.create(Registries.FLUID, tagId);
+            HolderSet.Named<Fluid> tagSet = lookup.getOrThrow(tag);
+            fluidSets.add(tagSet);
             return this;
         }
 
@@ -144,8 +161,19 @@ public record SyringeFluidType(
             return this;
         }
 
+        /**
+         * Sets the vial glowing status of the fluid type.
+         */
         public Builder glowing(boolean value) {
-            this.isGlowing = Optional.of(value);
+            this.glowing = Optional.of(value);
+            return this;
+        }
+
+        /**
+         * Sets the vial opaque status of the fluid type.
+         */
+        public Builder opaque(boolean value) {
+            this.opaque = Optional.of(value);
             return this;
         }
 
@@ -184,7 +212,7 @@ public record SyringeFluidType(
         /**
          * Adds mobs associated with the fluid type.
          */
-        public Builder addMobs(EntityType<?>... types) {
+        public Builder mobs(EntityType<?>... types) {
             for (EntityType<?> type : types)
                 ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(mobs::add);
             return this;
@@ -227,9 +255,10 @@ public record SyringeFluidType(
          */
         public SyringeFluidType build() {
             return new SyringeFluidType(
-                    HolderSet.direct(fluids),
+                    fluidSets,
                     color,
-                    isGlowing,
+                    glowing,
+                    opaque,
                     damage,
                     attackSpeed,
                     food,
