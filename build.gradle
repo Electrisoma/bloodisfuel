@@ -160,6 +160,9 @@ dependencies {
     //implementation fg.deobf("curse.maven:mantle-74924:6041712")
     //implementation fg.deobf("curse.maven:tinkers-construct-74072:6041763")
 
+    modRuntimeOnly("curse.maven:embeddium-908741:5681725")
+//    modRuntimeOnly("curse.maven:oculus-581495:6020952")
+
     if (!Boolean.getBoolean('idea.sync.active')) {
         annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
     }

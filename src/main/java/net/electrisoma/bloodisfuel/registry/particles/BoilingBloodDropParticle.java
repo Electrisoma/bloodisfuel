@@ -40,13 +40,10 @@ public class BoilingBloodDropParticle extends TextureSheetParticle {
         if (this.age < this.lifetime * 0.25F) this.gravity = 0F;
         else {
             this.gravity = 1F;
-            if (onGround) {
-                onGroundTime++;
-            }
+            if (onGround) onGroundTime++;
         }
 
         this.setSprite(sprites.get(this.onGround ? 1 : 0, 1));
-
         if (onGroundTime > 5) {
             this.remove();
             level.addParticle(ParticleTypes.SMOKE.getType(), x, y, z, 0, 0, 0);

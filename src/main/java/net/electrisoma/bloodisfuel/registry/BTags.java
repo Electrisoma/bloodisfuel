@@ -203,6 +203,7 @@ public class BTags {
 
         CRUDE_OIL(FORGE),
         FUEL(FORGE),
+        NUTRIENTS_FLUID(BF),
 
         ;
 

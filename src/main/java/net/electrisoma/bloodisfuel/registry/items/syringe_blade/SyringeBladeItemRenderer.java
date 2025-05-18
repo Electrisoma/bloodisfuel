@@ -36,7 +36,7 @@ public class SyringeBladeItemRenderer extends CustomRenderedItemModelRenderer im
                           ItemDisplayContext transformType, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
 
         renderer.render(model.getOriginalModel(), RenderType.solid(), light);
-        renderer.render(HANDLE_GUARD.get(), RenderType.translucent(), light);
+        renderer.render(HANDLE_GUARD.get(), RenderType.cutout(), light);
 
         FluidStack fluidStack = readFluid(stack);
         assert Minecraft.getInstance().level != null;

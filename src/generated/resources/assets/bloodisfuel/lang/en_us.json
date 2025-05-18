@@ -46,7 +46,6 @@
   "death.attack.bloodisfuel.syringe_blade.item": "%1$s was stabbed by %2$s using %3$s",
   "death.attack.bloodisfuel.syringe_gun": "%1$s was shot by %2$s's Syringe Gun",
   "death.attack.bloodisfuel.syringe_gun.item": "%1$s was shot by %2$s using %3$s",
-  "enchantment.bloodisfuel.extra_vials": "Extra Vials",
   "entity.bloodisfuel.syringe_projectile": "Syringe Projectile",
   "fluid.bloodisfuel.blazing_blood": "Blazing Blood",
   "fluid.bloodisfuel.blood": "Blood",

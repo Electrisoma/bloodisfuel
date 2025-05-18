@@ -1,0 +1,13 @@
+{
+  "color": 6413866,
+  "fluids": [
+    "#forge:acid"
+  ],
+  "glowing": true,
+  "on_entity_hit": {
+    "amplifier": 1,
+    "duration": 300,
+    "effect": "minecraft:wither"
+  },
+  "opaque": true
+}

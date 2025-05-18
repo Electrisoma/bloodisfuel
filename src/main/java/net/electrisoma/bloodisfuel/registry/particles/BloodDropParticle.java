@@ -23,27 +23,22 @@ public class BloodDropParticle extends TextureSheetParticle {
         this.speedUpWhenYMotionIsBlocked = true;
         this.hasPhysics = true;
 
-        // Set scale
         float scale = SIZE_MIN + random.nextFloat() * (SIZE_MAX - SIZE_MIN);
         this.quadSize *= scale;
 
-        // Lifetime range: 100–139 ticks
         this.lifetime = Math.max(100 + random.nextInt(40), 1);
         this.setSpriteFromAge(sprites);
     }
 
     @Override
     public void tick() {
-        // Delay gravity for a short time
         if (age < lifetime * 0.25F) gravity = 0;
         else {
             gravity = 1F;
             if (onGround) onGroundTime++;
         }
 
-        // Sprite swap based on ground contact
         this.setSprite(sprites.get(onGround ? 1 : 0, 1));
-
         if (onGroundTime > 5) remove();
 
         super.tick();

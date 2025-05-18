@@ -38,7 +38,6 @@ import java.util.Optional;
 
 @SuppressWarnings({"OptionalGetWithoutIsPresent", "DataFlowIssue", "RedundantSuppression", "unused"})
 public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUtils {
-
     default SyringeFluidType getMatchingFluid(LivingEntity target, RegistryAccess access) {
         return SyringeFluidTypeManager.getAll(access).stream()
                 .filter(type -> ForgeRegistries.ENTITY_TYPES.getHolder(target.getType())

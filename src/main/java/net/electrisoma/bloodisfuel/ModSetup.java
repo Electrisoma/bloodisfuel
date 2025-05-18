@@ -25,7 +25,7 @@ public class ModSetup {
         BItems.register();
         BFluids.register();
         BTags.register();
-        BEnchantments.register();
+//        BEnchantments.register();
 
         BPackets.registerPackets();
     }

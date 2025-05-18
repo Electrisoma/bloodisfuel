@@ -11,7 +11,6 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 @SuppressWarnings("DataFlowIssue")
 public class BRenderTypes extends RenderStateShard {
-
     private static final RenderType TINTED_TRANSLUCENT =
             RenderType.create(bloodisfuelLayerName("tinted_translucent"),
             DefaultVertexFormat.NEW_ENTITY,
@@ -26,9 +25,7 @@ public class BRenderTypes extends RenderStateShard {
                     .setOverlayState(OVERLAY)
                     .setWriteMaskState(COLOR_DEPTH_WRITE)
                     .setCullState(CULL)
-                    .createCompositeState(true)
-    );
-
+                    .createCompositeState(true));
     public static final RenderType TINTED_GLOWING_TRANSLUCENT =
             RenderType.create(bloodisfuelLayerName("tinted_glowing_translucent"),
             DefaultVertexFormat.NEW_ENTITY,
@@ -39,15 +36,33 @@ public class BRenderTypes extends RenderStateShard {
                     .setShaderState(RenderType.RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                    .setLightmapState(LIGHTMAP)
+                    .setLightmapState(NO_LIGHTMAP)
                     .setOverlayState(OVERLAY)
                     .setWriteMaskState(COLOR_DEPTH_WRITE)
                     .setCullState(CULL)
-                    .createCompositeState(true)
-    );
+                    .createCompositeState(true));
+    private static final RenderType TINTED_GLOWING_OPAQUE =
+            RenderType.create(bloodisfuelLayerName("tinted_glowing_opaque"),
+                    DefaultVertexFormat.NEW_ENTITY,
+                    VertexFormat.Mode.QUADS,
+                    256,
+                    true, true,
+                    RenderType.CompositeState.builder()
+                            .setShaderState(RenderType.RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                            .setTextureState(RenderType.BLOCK_SHEET)
+                            .setTransparencyState(RenderType.NO_TRANSPARENCY)
+                            .setLightmapState(RenderType.NO_LIGHTMAP)
+                            .setOverlayState(RenderType.OVERLAY)
+                            .setWriteMaskState(RenderType.COLOR_DEPTH_WRITE)
+                            .setCullState(RenderType.CULL)
+                            .createCompositeState(true));
 
     public static RenderType tintedTranslucent(boolean glowing) {
         return glowing ? TINTED_GLOWING_TRANSLUCENT : TINTED_TRANSLUCENT;
+    }
+
+    public static RenderType opaqueTintedGlowing() {
+        return TINTED_GLOWING_OPAQUE;
     }
 
     private static String bloodisfuelLayerName(String name) {

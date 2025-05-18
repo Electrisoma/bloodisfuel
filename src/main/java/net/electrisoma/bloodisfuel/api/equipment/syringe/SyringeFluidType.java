@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.api.equipment.syringe;
 
+import com.simibubi.create.Create;
 import net.electrisoma.bloodisfuel.api.data.*;
 
 import net.minecraft.core.*;
@@ -18,6 +19,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -61,10 +63,11 @@ public record SyringeFluidType(
      * Returns true if this fluid type is a potion-based fluid.
      */
     public boolean isPotionType() {
+        ResourceLocation potionFluidId = new ResourceLocation(Create.ID, "potion");
         return fluids().stream()
-                .anyMatch(holder -> holder.unwrapKey()
-                        .map(key -> "potion".equals(key.location().getPath()))
-                        .orElse(false));
+                .flatMap(HolderSet::stream)
+                .map(Holder::value)
+                .anyMatch(fluid -> Objects.equals(ForgeRegistries.FLUIDS.getKey(fluid), potionFluidId));
     }
 
     /**

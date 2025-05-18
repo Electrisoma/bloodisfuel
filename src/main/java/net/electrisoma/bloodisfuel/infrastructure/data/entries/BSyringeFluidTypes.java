@@ -16,6 +16,7 @@ import com.github.alexmodguy.alexscaves.server.block.fluid.ACFluidRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.level.material.Fluid;
@@ -88,7 +89,7 @@ public class BSyringeFluidTypes {
                 .build());
         register(ctx, "blood", new SyringeFluidType.Builder()
                 .fluids(BFluids.BLOOD.getSource())
-                .color(0xF10B0B)
+                .color(0x880000)
                 .opaque(true)
                 .damage(6)
                 .attackSpeed(-2.5F)
@@ -110,6 +111,13 @@ public class BSyringeFluidTypes {
                 .attackSpeed(-2.5F)
                 .burning(new BurningData(4, 4F))
                 .build());
+        register(ctx, "acid", new SyringeFluidType.Builder()
+                .fluidTag(new ResourceLocation("forge", "acid"), fluidLookup)
+                .color(0x61DE2A)
+                .opaque(true)
+                .glowing(true)
+                .onEntityHitEffect(new MobEffectInstance(MobEffects.WITHER, 300, 1, false, true))
+                .build());
         register(ctx, "purple_soda_from_fishes", new SyringeFluidType.Builder()
                 .fluids(ACFluidRegistry.PURPLE_SODA_FLUID_SOURCE.get())
                 .mobs(ACEntityRegistry.SWEETISH_FISH.get())
@@ -119,6 +127,15 @@ public class BSyringeFluidTypes {
                         .saturationMod(0.4f)
                         .build())
                 .onEntityHitEffect(new MobEffectInstance(ACEffectRegistry.SUGAR_RUSH.get(), 500, 1, false, true))
+                .build());
+        register(ctx, "nutrients_fluid", new SyringeFluidType.Builder()
+                .fluidTag(new ResourceLocation("biofactory", "nutrients_fluid"), fluidLookup)
+                .color(0x495C22)
+                .food(new FoodProperties.Builder()
+                        .nutrition(9)
+                        .saturationMod(1.2f)
+                        .build())
+                .opaque(true)
                 .build());
     }
     private static void register(BootstapContext<SyringeFluidType> ctx, String name, SyringeFluidType type) {

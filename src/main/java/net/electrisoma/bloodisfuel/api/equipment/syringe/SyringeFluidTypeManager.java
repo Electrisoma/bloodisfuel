@@ -57,7 +57,7 @@ import java.util.*;
  */
 
 // L warning lol -----------------V laugh at this fool
-@SuppressWarnings({"unused", "RedundantSuppression"})
+//@SuppressWarnings({"unused", "RedundantSuppression"})
 public class SyringeFluidTypeManager {
 
     /**
@@ -105,7 +105,8 @@ public class SyringeFluidTypeManager {
         if (type.isPotionType()) {
             CompoundTag tag = stack.getOrCreateTag();
             return PotionUtils.getColor(PotionUtils.getAllEffects(tag)) | 0xFF000000;
-        } return type.color();
+        }
+        return type.color();
     }
 
     /**

@@ -31,7 +31,6 @@ public class BRegistrateTags {
 	}
 
 	private static void genItemTags(RegistrateTagsProvider<Item> provIn) {
-
 		TagGen.CreateTagsProvider<Item> prov = new TagGen.CreateTagsProvider<>(provIn, Item::builtInRegistryHolder);
 
 		prov.tag(BTags.BItemTags.CARBOHYDRATES.tag)
@@ -179,12 +178,9 @@ public class BRegistrateTags {
 		;
 
 		//Biomancy meat
-		prov.tag(BTags.BItemTags.RAW_MEATS.tag)
-				.add(TagEntry.element(BItems.DRAINED_MEAT.getId()))
-		;
+		prov.tag(BTags.BItemTags.RAW_MEATS.tag).add(TagEntry.element(BItems.DRAINED_MEAT.getId()));
 	}
 	private static void genBlockTags(RegistrateTagsProvider<Block> provIn) {
-
 		TagGen.CreateTagsProvider<Block> prov = new TagGen.CreateTagsProvider<>(provIn, Block::builtInRegistryHolder);
 
 		prov.tag(BTags.BBlockTags.CARBOHYDRATES.tag)
@@ -206,11 +202,9 @@ public class BRegistrateTags {
 		;
 	}
 	private static void genEntityTags(RegistrateTagsProvider<EntityType<?>> provIn) {
-
 		TagGen.CreateTagsProvider<EntityType<?>> prov = new TagGen.CreateTagsProvider<>(provIn, EntityType::builtInRegistryHolder);
 	}
 	private static void genFluidTags(RegistrateTagsProvider<Fluid> provIn) {
-
 		TagGen.CreateTagsProvider<Fluid> prov = new TagGen.CreateTagsProvider<>(provIn, Fluid::builtInRegistryHolder);
 
 		prov.tag(BTags.BFluidTags.VISCERA.tag)
@@ -256,5 +250,8 @@ public class BRegistrateTags {
 				//Biofactory
 				.addOptional(Utils.location("biofactory:nutrients_fluid"))
 		;
+
+		// compat tag (for syringe system)
+		prov.tag(BTags.BFluidTags.NUTRIENTS_FLUID.tag).addOptional(Utils.location("biofactory:nutrients_fluid"));
 	}
 }

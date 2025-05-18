@@ -47,13 +47,9 @@ public class ColorableDripParticle extends TextureSheetParticle {
 
     @Override
     public void tick() {
-        if (age > lifetime * floatTime) {
-            gravity = 1.0F;
-        }
-
+        if (age > lifetime * floatTime) gravity = 1.0F;
         if (onGround) onGroundTime++;
         if (onGroundTime > GROUND_TICKS_BEFORE_REMOVAL) remove();
-
         this.setSprite(sprites.get(onGround ? 1 : 0, 1));
 
         super.tick();

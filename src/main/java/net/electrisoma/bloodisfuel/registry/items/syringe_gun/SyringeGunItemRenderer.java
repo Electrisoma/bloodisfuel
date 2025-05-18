@@ -32,7 +32,6 @@ import com.mojang.math.Axis;
 
 
 public class SyringeGunItemRenderer extends CustomRenderedItemModelRenderer implements SyringeUtils {
-
     protected static final PartialModel VIAL = PartialModel.of(BloodIsFuel.asResource("item/syringe_gun/vial"));
     protected static final PartialModel VIAL_OPAQUE = PartialModel.of(BloodIsFuel.asResource("item/syringe_gun/vial_opaque"));
     protected static final PartialModel TRIGGER = PartialModel.of(BloodIsFuel.asResource("item/syringe_gun/trigger"));

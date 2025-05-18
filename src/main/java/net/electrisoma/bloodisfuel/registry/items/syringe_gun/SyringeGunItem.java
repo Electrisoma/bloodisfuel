@@ -2,6 +2,7 @@ package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
 import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
 
+import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 
@@ -10,6 +11,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -105,6 +107,25 @@ public class SyringeGunItem extends ProjectileWeaponItem
     @Override
     public int getUseDuration(ItemStack stack) {
         return 72000;
+    }
+
+    // is it enchantable? :shrug:
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return true;
+    }
+
+    // valid enchantments
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        if (enchantment == AllEnchantments.CAPACITY.get()) return true;
+
+        return super.canApplyAtEnchantingTable(stack, enchantment);
+    }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return false;
     }
 
     @Override

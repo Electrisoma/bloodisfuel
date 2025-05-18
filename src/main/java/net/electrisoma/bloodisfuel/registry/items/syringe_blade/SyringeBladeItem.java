@@ -2,7 +2,6 @@ package net.electrisoma.bloodisfuel.registry.items.syringe_blade;
 
 import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
 import net.electrisoma.bloodisfuel.registry.BTags;
-import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.registry.enchantments.ChargesEnchantment;
 
 import com.simibubi.create.AllEnchantments;
@@ -176,12 +175,16 @@ public class SyringeBladeItem extends SwordItem
     // valid enchantments
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        if (enchantment == BEnchantments.EXTRA_VIALS.get()) return true;
         if (enchantment == AllEnchantments.CAPACITY.get()) return true;
         if (enchantment == Enchantments.SHARPNESS) return true;
         if (enchantment == Enchantments.FIRE_ASPECT) return true;
 
         return super.canApplyAtEnchantingTable(stack, enchantment);
+    }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return false;
     }
 
     // lets it be used as a fluids container
