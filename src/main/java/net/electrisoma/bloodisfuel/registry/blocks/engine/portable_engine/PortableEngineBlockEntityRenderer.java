@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 
 
+@SuppressWarnings("unused")
 public class PortableEngineBlockEntityRenderer extends ShaftRenderer<PortableEngineBlockEntity> {
     public PortableEngineBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super(context);

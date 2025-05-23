@@ -1,6 +1,5 @@
 package net.electrisoma.bloodisfuel.infrastructure.data.entries;
 
-import com.simibubi.create.Create;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
@@ -15,7 +14,6 @@ import com.github.alexmodguy.alexscaves.server.block.fluid.ACFluidRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;

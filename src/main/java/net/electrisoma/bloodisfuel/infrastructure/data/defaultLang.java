@@ -12,7 +12,6 @@ public class defaultLang {
 
     static String tab = "itemGroup";
     static String dm = "death.attack";
-    static String ds = "display_source";
 
     public static void provideLang(BiConsumer<String, String> consumer) {
 

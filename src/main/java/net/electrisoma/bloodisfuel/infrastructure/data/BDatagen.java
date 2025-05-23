@@ -1,7 +1,6 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
 import net.electrisoma.bloodisfuel.foundation.data.recipes.*;
 
@@ -9,7 +8,6 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import com.tterrag.registrate.providers.ProviderType;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.core.HolderLookup;

@@ -57,7 +57,7 @@ import java.util.*;
  */
 
 // L warning lol -----------------V laugh at this fool
-//@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings({"unused", "RedundantSuppression"})
 public class SyringeFluidTypeManager {
     public static final SyringeFluidType EMPTY = new SyringeFluidType.Builder()
             .color(0xFFFFFF)

@@ -28,6 +28,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 
 import java.util.Objects;
 
+@SuppressWarnings({"deprecation", "RedundantSuppression"})
 public abstract class AbstractEngineBlock<T extends BlockEntity> extends DirectionalKineticBlock implements IBE<T>, ProperWaterloggedBlock, BKinetics {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty ENCHANTED = BooleanProperty.create("enchanted");
@@ -62,7 +63,7 @@ public abstract class AbstractEngineBlock<T extends BlockEntity> extends Directi
 
     @Override public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
-        if (level.isClientSide || stack == null)
+        if (level.isClientSide)
             return;
 
         withBlockEntityDo(level, pos, be -> {

@@ -1,15 +1,18 @@
 package net.electrisoma.bloodisfuel.infrastructure.data.entries;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.api.engine.EngineFluidType;
-import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.registry.BFluids;
+import net.electrisoma.bloodisfuel.api.registry.BRegistries;
+import net.electrisoma.bloodisfuel.api.engine.EngineFluidType;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.material.Fluid;
 
+
+@SuppressWarnings("unused")
 public class BEngineFluidTypes {
     public static final ResourceKey<EngineFluidType> FALLBACK =
             ResourceKey.create(BRegistries.ENGINE_FLUIDS, BloodIsFuel.asResource("fallback"));

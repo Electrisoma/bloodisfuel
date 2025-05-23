@@ -11,6 +11,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+
 public class PortableEngineBlock extends AbstractEngineBlock<PortableEngineBlockEntity> {
     public PortableEngineBlock(Properties properties) {
         super(properties);
@@ -26,6 +27,7 @@ public class PortableEngineBlock extends AbstractEngineBlock<PortableEngineBlock
         return BBlockEntityTypes.PORTABLE_ENGINE.get();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         Direction facing = state.getValue(FACING);

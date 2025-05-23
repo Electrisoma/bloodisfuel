@@ -10,6 +10,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.Objects;
 
+
+@SuppressWarnings("unused")
 public interface EngineUtils extends TooltipUtils {
     SmartFluidTankBehaviour getTank();
     int getTick();
