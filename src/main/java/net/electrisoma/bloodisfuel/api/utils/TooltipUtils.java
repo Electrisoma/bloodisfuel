@@ -25,7 +25,6 @@ import javax.annotation.Nullable;
 
 @SuppressWarnings({"DataFlowIssue", "RedundantSuppression", "BooleanMethodIsAlwaysInverted"})
 public interface TooltipUtils extends CombatContextUtils, FluidUtils {
-
     default String formatDuration(int ticks) {
         int seconds = ticks / 20;
         int minutes = seconds / 60;
@@ -53,10 +52,8 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
         return SyringeFluidTypeManager.getColor(type, fluidStack);
     }
 
-    default void tooltipMaker(java.util.List<Component> tooltip, ItemStack stack, @Nullable RegistryAccess registryAccess) {
+    default void tooltipMaker(java.util.List<Component> tooltip, ItemStack stack) {
         FluidStack fluid = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluid, registryAccess);
-        java.util.List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluid);
         // empty
         if (stack.getTag() == null || fluid.isEmpty()) {
             tooltip.add(Component.translatable("bloodisfuel.tooltip.empty").withStyle(ChatFormatting.GRAY));
@@ -71,6 +68,12 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
                 .append(" / ")
                 .append(CreateLang.number(getCapacity(stack)).style(ChatFormatting.GRAY).component())
                 .append(Component.translatable("create.generic.unit.millibuckets").withStyle(ChatFormatting.GRAY)));
+    }
+    default void itemToolTipMaker(List<Component> tooltip, ItemStack stack, @Nullable RegistryAccess registryAccess) {
+        FluidStack fluid = readFluid(stack);
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluid, registryAccess);
+        java.util.List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluid);
+
         // mob effect
         for (MobEffectInstance effect : effects) {
             Component effectName = Component.translatable(effect.getDescriptionId())
@@ -99,10 +102,10 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
                         .append(Component.translatable("bloodisfuel.tooltip.burning").withStyle(ChatFormatting.RED))
                         .append(": ");
 
-                if (duration > 0) 
+                if (duration > 0)
                     line.append(Component.literal(String.valueOf(duration)).withStyle(ChatFormatting.GOLD))
                             .append(Component.translatable("bloodisfuel.tooltip.seconds").withStyle(ChatFormatting.GOLD));
-                
+
                 if (damage > 0) {
                     if (duration > 0) line.append(" ");
                     line.append(Component.literal("(" + damage + " ").withStyle(ChatFormatting.RED))

@@ -21,7 +21,8 @@ public class BEntriesProvider extends DatapackBuiltinEntriesProvider {
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(Registries.DAMAGE_TYPE, BDamageTypes::bootstrap)
             .add(CreateRegistries.POTATO_PROJECTILE_TYPE, BPotatoCannonProjectiles::bootstrap)
-            .add(BRegistries.SYRINGE_BLADE_FLUIDS, BSyringeFluidTypes::bootstrap)
+            .add(BRegistries.SYRINGE_FLUIDS, BSyringeFluidTypes::bootstrap)
+            .add(BRegistries.ENGINE_FLUIDS, BEngineFluidTypes::bootstrap)
     ;
 
     public BEntriesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {

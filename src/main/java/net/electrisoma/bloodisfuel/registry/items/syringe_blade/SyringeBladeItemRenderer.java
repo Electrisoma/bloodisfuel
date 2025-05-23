@@ -29,14 +29,12 @@ public class SyringeBladeItemRenderer extends CustomRenderedItemModelRenderer im
 
     protected static final PartialModel VIAL = PartialModel.of(BloodIsFuel.asResource("item/syringe_blade/vial"));
     protected static final PartialModel VIAL_OPAQUE = PartialModel.of(BloodIsFuel.asResource("item/syringe_blade/vial_opaque"));
-    protected static final PartialModel HANDLE_GUARD = PartialModel.of(BloodIsFuel.asResource("item/syringe_blade/handle_guard"));
 
     @Override
     protected void render(ItemStack stack, CustomRenderedItemModel model, PartialItemModelRenderer renderer,
                           ItemDisplayContext transformType, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
 
-        renderer.render(model.getOriginalModel(), RenderType.solid(), light);
-        renderer.render(HANDLE_GUARD.get(), RenderType.cutout(), light);
+        renderer.render(model.getOriginalModel(), RenderType.cutout(), light);
 
         FluidStack fluidStack = readFluid(stack);
         assert Minecraft.getInstance().level != null;
@@ -47,12 +45,12 @@ public class SyringeBladeItemRenderer extends CustomRenderedItemModelRenderer im
         boolean opaque = fluidType.opaque().orElse(false);
         RenderType vialRenderType = BRenderTypes.tintedTranslucent(glowing);
 
-        ms.pushPose();
+        ms.pushPose(); // vial pose start
         TransformStack.of(ms)
                 .translate(0.0, 0.0, 0.0);
 
         if (opaque) renderer.render(VIAL_OPAQUE.get(), vialRenderType, light);
         else renderer.render(VIAL.get(), vialRenderType, light);
-        ms.popPose();
+        ms.popPose(); // vial pose end
     }
 }

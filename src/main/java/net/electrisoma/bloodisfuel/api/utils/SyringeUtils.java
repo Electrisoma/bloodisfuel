@@ -46,7 +46,7 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
                 .findFirst().orElse(null);
     }
     default SyringeFluidType getFallback(RegistryAccess access) {
-        return access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUIDS)
+        return access.registryOrThrow(BRegistries.SYRINGE_FLUIDS)
                 .getOptional(BSyringeFluidTypes.FALLBACK)
                 .orElse(null);
     }

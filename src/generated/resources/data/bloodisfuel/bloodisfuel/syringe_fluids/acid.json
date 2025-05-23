@@ -1,0 +1,13 @@
+{
+  "color": 6413866,
+  "effect": {
+    "amplifier": 1,
+    "duration": 300,
+    "effect": "minecraft:wither"
+  },
+  "fluids": [
+    "#forge:acid"
+  ],
+  "glowing": true,
+  "opaque": true
+}

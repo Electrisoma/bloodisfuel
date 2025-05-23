@@ -7,6 +7,7 @@ import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.food.FoodProperties;
@@ -37,7 +38,7 @@ public record SyringeFluidType(
         Optional<Float> damage,
         Optional<Float> attackSpeed,
         Optional<FoodProperties> food,
-        Optional<MobEffectInstance> onEntityHitEffect,
+        Optional<MobEffectInstance> effect,
         Optional<HolderSet<EntityType<?>>> mobs,
         Optional<BurningData> burning,
         Optional<ExtinguishingData> extinguishing,
@@ -51,7 +52,7 @@ public record SyringeFluidType(
             Codec.FLOAT.optionalFieldOf("damage").forGetter(SyringeFluidType::damage),
             Codec.FLOAT.optionalFieldOf("attack_speed").forGetter(SyringeFluidType::attackSpeed),
             BCodecs.FOOD_PROPERTIES.optionalFieldOf("food").forGetter(SyringeFluidType::food),
-            BCodecs.MOB_EFFECT_INSTANCE.optionalFieldOf("on_entity_hit").forGetter(SyringeFluidType::onEntityHitEffect),
+            BCodecs.MOB_EFFECT_INSTANCE.optionalFieldOf("effect").forGetter(SyringeFluidType::effect),
             RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).optionalFieldOf("mobs").forGetter(SyringeFluidType::mobs),
             BCodecs.BURNING_DATA.optionalFieldOf("burning").forGetter(SyringeFluidType::burning),
             BCodecs.EXTINGUISHING_DATA.optionalFieldOf("extinguishing").forGetter(SyringeFluidType::extinguishing),
@@ -128,7 +129,7 @@ public record SyringeFluidType(
         private Optional<Float> damage = Optional.empty();
         private Optional<Float> attackSpeed = Optional.empty();
         private Optional<FoodProperties> food = Optional.empty();
-        private MobEffectInstance onEntityHitEffect;
+        private MobEffectInstance effect;
         private final List<Holder<EntityType<?>>> mobs = new ArrayList<>();
         private Optional<BurningData> burning = Optional.empty();
         private Optional<ExtinguishingData> extinguishing = Optional.empty();
@@ -149,6 +150,14 @@ public record SyringeFluidType(
         /**
          * Adds fluid tags that this type applies to.
          */
+        public Builder fluidTag(String namespace, String tag, HolderLookup.RegistryLookup<Fluid> lookup) {
+            ResourceLocation tagLocation = new ResourceLocation(namespace, tag);
+            return fluidTag(tagLocation, lookup);
+        }
+        public Builder fluidTag(String path, HolderLookup.RegistryLookup<Fluid> lookup) {
+            ResourceLocation tagLocation = new ResourceLocation(path);
+            return fluidTag(tagLocation, lookup);
+        }
         public Builder fluidTag(ResourceLocation tagId, HolderLookup.RegistryLookup<Fluid> lookup) {
             TagKey<Fluid> tag = TagKey.create(Registries.FLUID, tagId);
             HolderSet.Named<Fluid> tagSet = lookup.getOrThrow(tag);
@@ -157,48 +166,56 @@ public record SyringeFluidType(
         }
 
         /**
-         * Sets the display color of the fluid type.
+         * Sets appearance of the fluid type.
          */
+        public Builder appearance(int color, boolean opaque) {
+            this.color = color;
+            this.opaque = Optional.of(opaque);
+            return this;
+        }
+        public Builder appearance(int color, boolean opaque, boolean glowing) {
+            this.color = color;
+            this.opaque = Optional.of(opaque);
+            this.glowing = Optional.of(glowing);
+            return this;
+        }
         public Builder color(int color) {
             this.color = color;
             return this;
         }
-
-        /**
-         * Sets the vial glowing status of the fluid type.
-         */
-        public Builder glowing(boolean value) {
-            this.glowing = Optional.of(value);
+        public Builder opaque(boolean opaque) {
+            this.opaque = Optional.of(opaque);
+            return this;
+        }
+        public Builder glowing(boolean glowing) {
+            this.glowing = Optional.of(glowing);
             return this;
         }
 
         /**
-         * Sets the vial opaque status of the fluid type.
+         * Sets the stats that the item or projectile does on hit.
          */
-        public Builder opaque(boolean value) {
-            this.opaque = Optional.of(value);
+        public Builder stats(float damage, float attackSpeed) {
+            this.damage = Optional.of(damage);
+            this.attackSpeed = Optional.of(attackSpeed);
             return this;
         }
-
-        /**
-         * Sets the damage that the item or projectile does on hit.
-         */
-        public Builder damage(float value) {
-            this.damage = Optional.of(value);
+        public Builder damage(float damage) {
+            this.damage = Optional.of(damage);
             return this;
         }
-
-        /**
-         * Sets the attack speed that an item has.
-         */
-        public Builder attackSpeed(float value) {
-            this.attackSpeed = Optional.of(value);
+        public Builder attackSpeed(float attackSpeed) {
+            this.attackSpeed = Optional.of(attackSpeed);
             return this;
         }
 
         /**
          * Defines the food properties applied when the fluid type hits an entity.
          */
+        public Builder food(int nutrition, float saturationMod) {
+            new FoodProperties.Builder().nutrition(nutrition).saturationMod(saturationMod).build();
+            return this;
+        }
         public Builder food(FoodProperties foodProperties) {
             this.food = Optional.ofNullable(foodProperties);
             return this;
@@ -207,8 +224,20 @@ public record SyringeFluidType(
         /**
          * Defines the effect applied when the fluid type hits an entity.
          */
-        public Builder onEntityHitEffect(MobEffectInstance effect) {
-            this.onEntityHitEffect = effect;
+        public Builder effect(MobEffect effect, int duration) {
+            this.effect = new MobEffectInstance(effect, duration, 0, false, true);
+            return this;
+        }
+        public Builder effect(MobEffect effect, int duration, int amplifier) {
+            this.effect = new MobEffectInstance(effect, duration, amplifier, false, true);
+            return this;
+        }
+        public Builder effect(MobEffect effect, int duration, int amplifier, boolean ambient, boolean visible) {
+            this.effect = new MobEffectInstance(effect, duration, amplifier, ambient, visible);
+            return this;
+        }
+        public Builder effect(MobEffectInstance effect) {
+            this.effect = effect;
             return this;
         }
 
@@ -222,32 +251,39 @@ public record SyringeFluidType(
         }
 
         /**
-         * Adds a burning effect to the fluid type.
+         * Adds status effects to the fluid type.
          */
+        public Builder burning(int durationSeconds, float damagePerSecond) {
+            new BurningData(durationSeconds, damagePerSecond);
+            return this;
+        }
         public Builder burning(BurningData burningData) {
             this.burning = Optional.ofNullable(burningData);
             return this;
         }
 
-        /**
-         * Adds an extinguishing effect to the fluid type.
-         */
+        public Builder extinguishing(int durationSeconds, float healthPerSecond) {
+            new ExtinguishingData(durationSeconds, healthPerSecond);
+            return this;
+        }
         public Builder extinguishing(ExtinguishingData extinguishingData) {
             this.extinguishing = Optional.ofNullable(extinguishingData);
             return this;
         }
 
-        /**
-         * Adds a drowning effect to the fluid type.
-         */
+        public Builder drowning(int durationSeconds, float damagePerSecond) {
+            new DrowningData(durationSeconds, damagePerSecond);
+            return this;
+        }
         public Builder drowning(DrowningData drowningData) {
             this.drowning = Optional.ofNullable(drowningData);
             return this;
         }
 
-        /**
-         * Adds a freezing effect to the fluid type.
-         */
+        public Builder freezing(int durationSeconds, float damagePerSecond, float slowAmount) {
+            new FreezingData(durationSeconds, damagePerSecond, slowAmount);
+            return this;
+        }
         public Builder freezing(FreezingData freezingData) {
             this.freezing = Optional.ofNullable(freezingData);
             return this;
@@ -265,7 +301,7 @@ public record SyringeFluidType(
                     damage,
                     attackSpeed,
                     food,
-                    Optional.ofNullable(onEntityHitEffect),
+                    Optional.ofNullable(effect),
                     mobs.isEmpty() ? Optional.empty() : Optional.of(HolderSet.direct(mobs)),
                     burning,
                     extinguishing,

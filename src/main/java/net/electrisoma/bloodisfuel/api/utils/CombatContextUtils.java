@@ -13,9 +13,7 @@ import java.util.List;
 
 
 public interface CombatContextUtils extends FluidUtils {
-
     record CombatContext(FluidStack fluid, SyringeFluidType type, int useAmount, boolean canAttack, boolean onlyBeneficial) {}
-
     default CombatContext getCombatContext(ItemStack stack, @Nullable RegistryAccess access) {
         FluidStack fluidStack = readFluid(stack);
         SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);

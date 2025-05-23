@@ -1,0 +1,48 @@
+{
+  "variants": {
+    "facing=down,waterlogged=false": {
+      "model": "bloodisfuel:block/portable_engine/block_vertical",
+      "x": 180
+    },
+    "facing=down,waterlogged=true": {
+      "model": "bloodisfuel:block/portable_engine/block_vertical",
+      "x": 180
+    },
+    "facing=east,waterlogged=false": {
+      "model": "bloodisfuel:block/portable_engine/block",
+      "y": 270
+    },
+    "facing=east,waterlogged=true": {
+      "model": "bloodisfuel:block/portable_engine/block",
+      "y": 270
+    },
+    "facing=north,waterlogged=false": {
+      "model": "bloodisfuel:block/portable_engine/block",
+      "y": 180
+    },
+    "facing=north,waterlogged=true": {
+      "model": "bloodisfuel:block/portable_engine/block",
+      "y": 180
+    },
+    "facing=south,waterlogged=false": {
+      "model": "bloodisfuel:block/portable_engine/block"
+    },
+    "facing=south,waterlogged=true": {
+      "model": "bloodisfuel:block/portable_engine/block"
+    },
+    "facing=up,waterlogged=false": {
+      "model": "bloodisfuel:block/portable_engine/block_vertical"
+    },
+    "facing=up,waterlogged=true": {
+      "model": "bloodisfuel:block/portable_engine/block_vertical"
+    },
+    "facing=west,waterlogged=false": {
+      "model": "bloodisfuel:block/portable_engine/block",
+      "y": 90
+    },
+    "facing=west,waterlogged=true": {
+      "model": "bloodisfuel:block/portable_engine/block",
+      "y": 90
+    }
+  }
+}

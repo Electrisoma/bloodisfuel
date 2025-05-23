@@ -19,7 +19,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 
 @SuppressWarnings({"all"})
 public class BItems {
-
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
 
     static {REGISTRATE.setCreativeTab(BModTabs.BASE_CREATIVE_TAB);}

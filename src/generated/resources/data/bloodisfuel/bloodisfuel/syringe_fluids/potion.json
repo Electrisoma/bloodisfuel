@@ -1,0 +1,8 @@
+{
+  "color": 16777215,
+  "fluids": [
+    "create:potion"
+  ],
+  "glowing": true,
+  "opaque": false
+}

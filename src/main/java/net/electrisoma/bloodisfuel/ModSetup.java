@@ -17,15 +17,14 @@ public class ModSetup {
 
         BModTabs.register(modEventBus);
         BParticles.register(modEventBus);
-
         BConfigs.register(modLoadingContext);
 
-        //BBlocks.register();
+        BBlockEntityTypes.register();
+        BBlocks.register();
         BEntityTypes.register();
         BItems.register();
         BFluids.register();
         BTags.register();
-//        BEnchantments.register();
 
         BPackets.registerPackets();
     }

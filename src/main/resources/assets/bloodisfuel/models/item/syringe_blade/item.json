@@ -7,6 +7,26 @@
 	},
 	"elements": [
 		{
+			"name": "handle guard",
+			"from": [5, 5, 8],
+			"to": [9, 8, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [2, -3, 0.25]},
+			"faces": {
+				"north": {"uv": [6.5, 3.5, 9.5, 7.5], "rotation": 270, "texture": "#5"},
+				"south": {"uv": [9.5, 3.5, 6.5, 7.5], "rotation": 90, "texture": "#5"}
+			}
+		},
+		{
+			"name": "saw",
+			"from": [9, 6, 8],
+			"to": [15, 7.5, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [2, -3, 0.25]},
+			"faces": {
+				"north": {"uv": [11.5, 8, 13, 14], "rotation": 90, "texture": "#5"},
+				"south": {"uv": [11.5, 8, 10, 14], "rotation": 270, "texture": "#5"}
+			}
+		},
+		{
 			"name": "handle",
 			"from": [6.75, 3.75, 7.5],
 			"to": [7.75, 8.75, 8.5],
@@ -92,7 +112,7 @@
 			"name": "accent vertical",
 			"from": [13.5, 8.75, 7.5],
 			"to": [15, 8.75, 8.5],
-			"rotation": {"angle": 0, "axis": "x", "origin": [13.5, 8.75, 7.975]},
+			"rotation": {"angle": 0, "axis": "y", "origin": [13.5, 8.75, 7.975]},
 			"faces": {
 				"north": {"uv": [0, 0, 0, 0], "rotation": 180, "texture": "#5"},
 				"east": {"uv": [0, 0, 0, 0], "rotation": 90, "texture": "#5"},
@@ -126,8 +146,8 @@
 		},
 		"gui": {
 			"rotation": [27, -45, -8],
-			"translation": [-3, 1, 0],
-			"scale": [1.09453, 1.09453, 1.09453]
+			"translation": [-3.25, 1, 0],
+			"scale": [1.1845, 1.1845, 1.1845]
 		},
 		"fixed": {
 			"rotation": [0, 180, 0]
@@ -143,14 +163,24 @@
 					"name": "handle",
 					"origin": [8, 8, 8],
 					"color": 0,
-					"children": [0, 1, 2]
+					"children": [
+						{
+							"name": "handle_guard",
+							"origin": [8, 8, 8],
+							"color": 0,
+							"children": [0, 1]
+						},
+						2,
+						3,
+						4
+					]
 				},
-				3,
+				5,
 				{
 					"name": "needle",
 					"origin": [8, 8, 8],
 					"color": 0,
-					"children": [4, 5, 6]
+					"children": [6, 7, 8]
 				}
 			]
 		}

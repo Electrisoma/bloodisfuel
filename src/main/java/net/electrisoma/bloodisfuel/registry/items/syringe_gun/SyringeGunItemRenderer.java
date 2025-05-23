@@ -43,17 +43,15 @@ public class SyringeGunItemRenderer extends CustomRenderedItemModelRenderer impl
                           PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
         renderer.render(model.getOriginalModel(), RenderType.solid(), light);
         renderer.render(TRIGGER.get(), RenderType.translucent(), light);
-        renderer.render(ACCENTS.get(), RenderType.translucent(), light);
+        renderer.render(ACCENTS.get(), RenderType.cutout(), light);
 
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
 
         float angle = AnimationTickHolder.getRenderTime() * -2.5f;
-
         if (player != null) {
             boolean inMainHand = player.getMainHandItem() == stack;
             boolean inOffHand = player.getOffhandItem() == stack;
-
             if (inMainHand || inOffHand) {
                 boolean leftHanded = player.getMainArm() == HumanoidArm.LEFT;
                 float speed = BClient.SYRINGE_GUN_RENDER_HANDLER.getAnimation(inMainHand ^ leftHanded,
@@ -74,13 +72,13 @@ public class SyringeGunItemRenderer extends CustomRenderedItemModelRenderer impl
         boolean opaque = fluidType.opaque().orElse(false);
         RenderType vialRenderType = BRenderTypes.tintedTranslucent(glowing);
 
-        ms.pushPose();
+        ms.pushPose(); // vial pose start
         ms.translate(0, offset, 0);
         ms.mulPose(Axis.XP.rotationDegrees(angle));
         ms.translate(0, -offset, 0);
 
         if (opaque) renderer.render(VIAL_OPAQUE.get(), vialRenderType, light);
         else renderer.render(VIAL.get(), vialRenderType, light);
-        ms.popPose();
+        ms.popPose(); // vial pose end
     }
 }

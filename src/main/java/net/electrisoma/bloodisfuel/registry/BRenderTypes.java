@@ -2,11 +2,11 @@ package net.electrisoma.bloodisfuel.registry;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderStateShard;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 
 
 @SuppressWarnings("DataFlowIssue")
@@ -41,28 +41,9 @@ public class BRenderTypes extends RenderStateShard {
                     .setWriteMaskState(COLOR_DEPTH_WRITE)
                     .setCullState(CULL)
                     .createCompositeState(true));
-    private static final RenderType TINTED_GLOWING_OPAQUE =
-            RenderType.create(bloodisfuelLayerName("tinted_glowing_opaque"),
-                    DefaultVertexFormat.NEW_ENTITY,
-                    VertexFormat.Mode.QUADS,
-                    256,
-                    true, true,
-                    RenderType.CompositeState.builder()
-                            .setShaderState(RenderType.RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
-                            .setTextureState(RenderType.BLOCK_SHEET)
-                            .setTransparencyState(RenderType.NO_TRANSPARENCY)
-                            .setLightmapState(RenderType.NO_LIGHTMAP)
-                            .setOverlayState(RenderType.OVERLAY)
-                            .setWriteMaskState(RenderType.COLOR_DEPTH_WRITE)
-                            .setCullState(RenderType.CULL)
-                            .createCompositeState(true));
 
     public static RenderType tintedTranslucent(boolean glowing) {
         return glowing ? TINTED_GLOWING_TRANSLUCENT : TINTED_TRANSLUCENT;
-    }
-
-    public static RenderType opaqueTintedGlowing() {
-        return TINTED_GLOWING_OPAQUE;
     }
 
     private static String bloodisfuelLayerName(String name) {

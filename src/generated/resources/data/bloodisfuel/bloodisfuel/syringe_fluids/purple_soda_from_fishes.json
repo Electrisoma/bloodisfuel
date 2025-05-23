@@ -1,0 +1,12 @@
+{
+  "color": 8323327,
+  "effect": {
+    "amplifier": 1,
+    "duration": 500,
+    "effect": "alexscaves:sugar_rush"
+  },
+  "fluids": [
+    "alexscaves:purple_soda"
+  ],
+  "mobs": "alexscaves:sweetish_fish"
+}

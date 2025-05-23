@@ -144,8 +144,10 @@ public class SyringeBladeItem extends SwordItem
 
     // tooltip stuff, like the amount counter
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        tooltipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
+        tooltipMaker(tooltip, stack);
+        itemToolTipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
     }
 
     // bar color stuff based on fluids

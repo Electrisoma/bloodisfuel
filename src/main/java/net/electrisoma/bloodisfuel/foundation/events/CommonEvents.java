@@ -1,7 +1,10 @@
 package net.electrisoma.bloodisfuel.foundation.events;
 
+import com.simibubi.create.api.behaviour.spouting.BlockSpoutingBehaviour;
 import net.electrisoma.bloodisfuel.infrastructure.data.entries.BDamageTypes;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
+import net.electrisoma.bloodisfuel.registry.BBlockEntityTypes;
+import net.electrisoma.bloodisfuel.registry.blocks.engine.portable_engine.PortableEngineSpoutBehavior;
 import net.electrisoma.bloodisfuel.registry.fluids.blocks.AbstractFluidBlock;
 
 import net.minecraft.core.BlockPos;
@@ -18,10 +21,16 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 
 @Mod.EventBusSubscriber
 public class CommonEvents {
+    @SubscribeEvent
+    public static void setup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> BlockSpoutingBehaviour.BY_BLOCK_ENTITY
+                .register(BBlockEntityTypes.PORTABLE_ENGINE.get(), new PortableEngineSpoutBehavior()));
+    }
 
     @SubscribeEvent
     public static void onPlayerDeath(LivingDeathEvent event) {

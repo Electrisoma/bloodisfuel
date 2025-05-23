@@ -21,8 +21,11 @@ public class SyringeGunPacket extends ShootGadgetPacket {
     private Vec3 motion;
     private ItemStack item;
 
-    public SyringeGunPacket(Vec3 location, InteractionHand hand, boolean self) {
+    public SyringeGunPacket(Vec3 location, Vec3 motion, ItemStack item, InteractionHand hand, float pitch, boolean self) {
         super(location, hand, self);
+        this.motion = motion;
+        this.item = item;
+        this.pitch = pitch;
     }
 
     public SyringeGunPacket(FriendlyByteBuf buffer) {

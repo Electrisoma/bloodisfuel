@@ -59,21 +59,9 @@ import java.util.*;
 // L warning lol -----------------V laugh at this fool
 //@SuppressWarnings({"unused", "RedundantSuppression"})
 public class SyringeFluidTypeManager {
-
-    /**
-     * Hardcoded values, the color is only a placeholder.
-     * The actual fluid color is reflected properly.
-     * Also, potions are dynamic anyway so this is just for hooking into that system.
-     */
-    public static final SyringeFluidType POTION = new SyringeFluidType.Builder()
-            .fluids(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(Create.ID, "potion")))
-            .color(0x9966FF)
-            .glowing(true)
-            .build();
     public static final SyringeFluidType EMPTY = new SyringeFluidType.Builder()
             .color(0xFFFFFF)
             .build();
-    private static final List<SyringeFluidType> HARDCODED = List.of(POTION);
 
     /**
      * Gets the SyringeFluidType for a given FluidStack.
@@ -85,15 +73,12 @@ public class SyringeFluidTypeManager {
         if (fluidKey == null) return EMPTY;
         //noinspection deprecation
         Holder<Fluid> holder = fluid.builtInRegistryHolder();
-        Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUIDS);
+        Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_FLUIDS);
         Optional<SyringeFluidType> dynamicMatch = registry.stream()
                 .filter(type -> type.fluids().stream().anyMatch(holderSet -> holderSet.contains(holder)))
                 .findFirst();
         if (dynamicMatch.isPresent()) return dynamicMatch.get();
-        Optional<SyringeFluidType> hardcodedMatch = HARDCODED.stream()
-                .filter(type -> type.fluids().stream().anyMatch(holderSet -> holderSet.contains(holder)))
-                .findFirst();
-        if (hardcodedMatch.isPresent()) return hardcodedMatch.get();
+        if (registry.containsKey(BSyringeFluidTypes.POTION)) return registry.get(BSyringeFluidTypes.POTION);
         if (registry.containsKey(BSyringeFluidTypes.FALLBACK)) return registry.get(BSyringeFluidTypes.FALLBACK);
         return EMPTY;
     }
@@ -113,11 +98,11 @@ public class SyringeFluidTypeManager {
      * Returns the list of effects this fluid should apply on hit.
      */
     public static List<MobEffectInstance> getEffects(SyringeFluidType type, FluidStack stack) {
-        if (isMilk(stack.getFluid(), null)) return type.onEntityHitEffect()
+        if (isMilk(stack.getFluid(), null)) return type.effect()
                 .map(effect -> List.of(new MobEffectInstance(effect)))
                 .orElse(List.of());
         if (type.isPotionType() && stack.hasTag()) return PotionUtils.getAllEffects(stack.getTag());
-        return type.onEntityHitEffect()
+        return type.effect()
                 .map(effect -> List.of(new MobEffectInstance(effect)))
                 .orElse(List.of());
     }
@@ -126,7 +111,7 @@ public class SyringeFluidTypeManager {
      * Returns all dynamically registered fluid types.
      */
     public static List<SyringeFluidType> getAll(RegistryAccess access) {
-        Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_BLADE_FLUIDS);
+        Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_FLUIDS);
         return registry.stream().toList();
     }
 
@@ -222,9 +207,7 @@ public class SyringeFluidTypeManager {
                         freezeEffect, AttributeModifier.Operation.ADDITION));
             }
 
-            if (damagePerSecond > 0) {
-                target.hurt(target.damageSources().freeze(), damagePerSecond * duration);
-            }
+            if (damagePerSecond > 0) target.hurt(target.damageSources().freeze(), damagePerSecond * duration);
         });
     }
 }

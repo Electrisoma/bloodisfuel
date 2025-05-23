@@ -1,0 +1,9 @@
+{
+  "attack_speed": -2.5,
+  "color": 14750483,
+  "damage": 6.0,
+  "fluids": [
+    "bloodisfuel:boiling_blood"
+  ],
+  "opaque": true
+}

@@ -1,0 +1,8 @@
+{
+  "color": 16738816,
+  "fluids": [
+    "minecraft:lava"
+  ],
+  "glowing": true,
+  "opaque": true
+}

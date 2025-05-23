@@ -10,7 +10,6 @@ import java.util.function.Function;
 
 
 public interface FluidUtils extends ItemCapacityUtils {
-
     default FluidStack readFluid(ItemStack stack) {
         return FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("Fluid"));
     }

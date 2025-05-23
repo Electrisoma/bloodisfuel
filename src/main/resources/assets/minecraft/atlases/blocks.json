@@ -79,6 +79,10 @@
     {
       "type": "single",
       "resource": "bloodisfuel:fluid/uber_fluid_still"
+    },
+    {
+      "type": "single",
+      "resource": "bloodisfuel:block/engine"
     }
   ]
 }

@@ -1,0 +1,8 @@
+{
+  "color": 16760576,
+  "fluids": [
+    "create:honey"
+  ],
+  "mobs": "minecraft:bee",
+  "opaque": true
+}

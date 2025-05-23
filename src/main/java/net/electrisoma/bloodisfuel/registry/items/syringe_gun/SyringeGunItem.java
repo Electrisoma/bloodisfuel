@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.registry.items.syringe_gun;
 
+import com.simibubi.create.content.equipment.zapper.ShootableGadgetItemMethods;
 import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
 
 import com.simibubi.create.AllEnchantments;
@@ -8,6 +9,7 @@ import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
@@ -18,6 +20,8 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -67,25 +71,37 @@ public class SyringeGunItem extends ProjectileWeaponItem
 
         if (fluid.getAmount() < useAmount) return;
 
-        if (!level.isClientSide) {
-            double velocityX = player.getLookAngle().x * 2.5;
-            double velocityY = player.getLookAngle().y * 2.5;
-            double velocityZ = player.getLookAngle().z * 20;
+        InteractionHand hand = player.getUsedItemHand();
 
-            SyringeProjectileEntity projectile = new SyringeProjectileEntity(level, player, velocityX, velocityY, velocityZ);
+        if (!level.isClientSide) {
+            Vec3 velocity = player.getLookAngle().scale(2.5);
+            SyringeProjectileEntity projectile = new SyringeProjectileEntity(level, player, velocity.x, velocity.y, velocity.z);
             projectile.setFluid(fluid.copy());
             projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5F, 1.0F);
             level.addFreshEntity(projectile);
 
             fluid.shrink(useAmount);
             writeFluid(stack, fluid);
-            player.getCooldowns().addCooldown(this, cooldown);
+
+            ShootableGadgetItemMethods.applyCooldown(player, stack, hand,
+                    s -> s.getItem() instanceof SyringeGunItem, this.cooldown);
+
         }
+//        else {
+//            Vec3 location = player.getEyePosition();
+//            Vec3 motion = player.getLookAngle().scale(2.5);
+//            float pitch = player.getXRot();
+//
+//            SyringeGunRenderHandler renderHandler = new SyringeGunRenderHandler();
+//            renderHandler.beforeShoot(pitch, location, motion, stack);
+//        }
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        tooltipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
+        tooltipMaker(tooltip, stack);
+        itemToolTipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
         projectileTooltipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
     }
 
@@ -97,6 +113,16 @@ public class SyringeGunItem extends ProjectileWeaponItem
     @Override
     public int getDefaultProjectileRange() {
         return 15;
+    }
+
+    @Override
+    public boolean canAttackBlock(BlockState state, Level world, BlockPos pos, Player player) {
+        return false;
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged || newStack.getItem() != oldStack.getItem();
     }
 
     @Override

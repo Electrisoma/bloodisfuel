@@ -1,12 +1,14 @@
 package net.electrisoma.bloodisfuel;
 
-import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeItemColor;
+import net.electrisoma.bloodisfuel.registry.BBlocks;
 import net.electrisoma.bloodisfuel.registry.BItems;
 import net.electrisoma.bloodisfuel.registry.BParticles;
-import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeGunRenderHandler;
 import net.electrisoma.bloodisfuel.registry.particles.*;
+import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeGunRenderHandler;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeItemColor;
 
 import net.minecraft.client.Minecraft;
+
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -38,6 +40,7 @@ public class BClient {
         Minecraft.getInstance().getItemColors().register(
                 new SyringeItemColor(),
                 BItems.SYRINGE_BLADE.get(),
-                BItems.SYRINGE_GUN.get());
+                BItems.SYRINGE_GUN.get(),
+                BBlocks.PORTABLE_ENGINE.get());
     }
 }

@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
+import net.electrisoma.bloodisfuel.api.engine.EngineFluidType;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
 
@@ -15,9 +16,14 @@ public class BRegistriesImpl {
     @SubscribeEvent
     public static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(
-                BRegistries.SYRINGE_BLADE_FLUIDS,
+                BRegistries.SYRINGE_FLUIDS,
                 SyringeFluidType.CODEC,
                 SyringeFluidType.CODEC
+        );
+        event.dataPackRegistry(
+                BRegistries.ENGINE_FLUIDS,
+                EngineFluidType.CODEC,
+                EngineFluidType.CODEC
         );
     }
 }

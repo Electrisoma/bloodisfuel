@@ -1,0 +1,12 @@
+{
+  "color": 16777215,
+  "effect": {
+    "duration": 100,
+    "effect": "minecraft:strength"
+  },
+  "fluids": [
+    "#forge:milk"
+  ],
+  "mobs": "minecraft:cow",
+  "opaque": true
+}
