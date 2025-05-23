@@ -1,6 +1,6 @@
 package net.electrisoma.bloodisfuel.api.engine.abstract_engine;
 
-import net.electrisoma.bloodisfuel.api.utils.EngineUtils;
+import net.electrisoma.bloodisfuel.api.utils.EngineBlockEntityUtils;
 
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 
+import net.electrisoma.bloodisfuel.api.utils.EngineBlockUtils;
 import net.minecraft.util.Mth;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,6 +18,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.capabilities.Capability;
@@ -26,14 +28,14 @@ import java.util.List;
 
 
 @SuppressWarnings("unused")
-public abstract class AbstractEngineBlockEntity extends GeneratingKineticBlockEntity implements EngineUtils {
+public abstract class AbstractEngineBlockEntity extends GeneratingKineticBlockEntity implements EngineBlockEntityUtils {
     protected CapacityEnchantedFluidTankBehaviour tank;
     protected Component customName;
     protected ListTag enchantmentTag;
     protected int capacityEnchantLevel;
     protected int fuelTick;
 
-    public AbstractEngineBlockEntity(BlockEntityType<?> type, BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+    public AbstractEngineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 

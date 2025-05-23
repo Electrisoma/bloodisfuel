@@ -10,7 +10,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 @SuppressWarnings({"deprecation", "RedundantSuppression"})
 public class BCodecs {
-
     /**
      * Codec for serializing MobEffectInstance objects with optional duration and amplifier fields.
      */
@@ -19,7 +18,6 @@ public class BCodecs {
             Codec.INT.optionalFieldOf("duration", 1).forGetter(MobEffectInstance::getDuration),
             Codec.INT.optionalFieldOf("amplifier", 0).forGetter(MobEffectInstance::getAmplifier)
     ).apply(instance, MobEffectInstance::new));
-
     /**
      * Codec for serializing BurningData objects with optional duration and damage fields.
      */
@@ -27,7 +25,6 @@ public class BCodecs {
             Codec.INT.optionalFieldOf("duration_seconds", 4).forGetter(BurningData::durationSeconds),
             Codec.FLOAT.optionalFieldOf("damage_per_second", 1.0f).forGetter(BurningData::damagePerSecond)
     ).apply(instance, BurningData::new));
-
     /**
      * Codec for serializing ExtinguishingData objects with optional duration and health fields.
      */
@@ -35,7 +32,6 @@ public class BCodecs {
             Codec.INT.optionalFieldOf("duration_seconds", 4).forGetter(ExtinguishingData::durationSeconds),
             Codec.FLOAT.optionalFieldOf("heal_per_second", 1.0f).forGetter(ExtinguishingData::healPerSecond)
     ).apply(instance, ExtinguishingData::new));
-
     /**
      * Codec for serializing FoodProperties objects with optional nutrition, saturation and health fields.
      */
@@ -46,7 +42,6 @@ public class BCodecs {
             .nutrition(nutrition).saturationMod(saturation)
             .build()
     ));
-
     /**
      * Codec for serializing ColorableDripParticleData objects with rgb fields.
      */
@@ -55,7 +50,6 @@ public class BCodecs {
             Codec.FLOAT.fieldOf("g").forGetter(ColorableDripParticleData::g),
             Codec.FLOAT.fieldOf("b").forGetter(ColorableDripParticleData::b)
     ).apply(instance, ColorableDripParticleData::new));
-
     /**
      * Codec for serializing DrowningData objects with optional duration and damage fields.
      */
@@ -63,7 +57,6 @@ public class BCodecs {
             Codec.INT.optionalFieldOf("duration_seconds", 4).forGetter(DrowningData::durationSeconds),
             Codec.FLOAT.optionalFieldOf("damage_per_second", 1.0f).forGetter(DrowningData::damagePerSecond)
     ).apply(instance, DrowningData::new));
-
     /**
      * Codec for serializing FreezingData objects with optional duration and slowness fields.
      */

@@ -15,7 +15,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
  */
 @SuppressWarnings({"deprecation", "RedundantSuppression"})
 public record ColorableDripParticleData(float r, float g, float b) implements ParticleOptions {
-
     public static final Deserializer<ColorableDripParticleData> DESERIALIZER = new Deserializer<>() {
         @Override
         public ColorableDripParticleData fromCommand(ParticleType<ColorableDripParticleData> type, StringReader reader)
@@ -34,20 +33,15 @@ public record ColorableDripParticleData(float r, float g, float b) implements Pa
         }
     };
 
-    @Override
-    public ParticleType<?> getType() {
+    @Override public ParticleType<?> getType() {
         return BParticles.COLORABLE_DRIPPING.get();
     }
-
-    @Override
-    public void writeToNetwork(FriendlyByteBuf buf) {
+    @Override public void writeToNetwork(FriendlyByteBuf buf) {
         buf.writeFloat(r);
         buf.writeFloat(g);
         buf.writeFloat(b);
     }
-
-    @Override
-    public String writeToString() {
+    @Override public String writeToString() {
         return String.format("%.3f %.3f %.3f", r, g, b);
     }
 }

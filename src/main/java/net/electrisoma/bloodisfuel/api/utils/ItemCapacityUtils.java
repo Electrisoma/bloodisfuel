@@ -1,6 +1,7 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
 import com.simibubi.create.AllEnchantments;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;

@@ -33,7 +33,6 @@ public record EngineFluidType(
         private float speed;
         private float strength;
         private float burnRate;
-
         /**
          * Adds specific fluids that this type applies to.
          */
@@ -45,7 +44,6 @@ public record EngineFluidType(
             fluidSets.add(HolderSet.direct(holders));
             return this;
         }
-
         /**
          * Adds fluid tags that this type applies to.
          */
@@ -63,7 +61,6 @@ public record EngineFluidType(
             fluidSets.add(tagSet);
             return this;
         }
-
         /**
          * Adds fuel stats to this type.
          */
@@ -85,7 +82,9 @@ public record EngineFluidType(
             this.burnRate = burnRate;
             return this;
         }
-
+        /**
+         * Builds the EngineFluidType instance.
+         */
         public EngineFluidType build() {
             return new EngineFluidType(
                     fluidSets,

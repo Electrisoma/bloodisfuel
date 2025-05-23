@@ -1,7 +1,8 @@
-package net.electrisoma.bloodisfuel.api.engine.abstract_engine;
+package net.electrisoma.bloodisfuel.api.utils;
+
 
 @SuppressWarnings("unused")
-public interface BKinetics {
+public interface EngineBlockUtils {
     float getDefaultStressCapacity();
     float getDefaultStressStressImpact();
     float getDefaultSpeed();

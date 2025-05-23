@@ -32,14 +32,12 @@ import static net.electrisoma.bloodisfuel.registry.BTags.NameSpace.*;
 
 @SuppressWarnings("all")
 public class BTags {
-
     public static void register() {
         BBlockTags.register();
         BItemTags.register();
         BFluidTags.register();
         BEntityTags.register();
         BRecipeSerializerTags.register();
-
         BloodIsFuel.LOGGER.info("Registering tags for " + BloodIsFuel.NAME);
     }
 
@@ -71,7 +69,6 @@ public class BTags {
             this.alwaysDatagenDefault = alwaysDatagenDefault;
         }
     }
-
     public enum BBlockTags {
 
         CARBOHYDRATES,
@@ -125,7 +122,6 @@ public class BTags {
 
         private static void register() {}
     }
-
     public enum BItemTags {
 
         SYRINGE_BLADE,
@@ -184,7 +180,6 @@ public class BTags {
 
         private static void register() {}
     }
-
     public enum BFluidTags {
 
         VISCERA,
@@ -247,7 +242,6 @@ public class BTags {
 
         private static void register() {}
     }
-
     public enum BEntityTags {
 
         ;
@@ -291,7 +285,6 @@ public class BTags {
 
         private static void register() {}
     }
-
     public enum BRecipeSerializerTags {
 
         ;

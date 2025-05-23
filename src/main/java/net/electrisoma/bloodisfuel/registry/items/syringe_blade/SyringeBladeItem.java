@@ -48,7 +48,6 @@ import javax.annotation.Nullable;
 public class SyringeBladeItem extends SwordItem
         implements CustomArmPoseItem, CapacityEnchantment.ICapacityEnchantable,
         ChargesEnchantment.ICapacityEnchantable, SyringeUtils {
-
     private boolean isOnCooldown;
     private boolean offHandPower;
 
@@ -56,9 +55,7 @@ public class SyringeBladeItem extends SwordItem
         super(tier, attackDamageModifier, attackSpeedModifier, properties);
     }
 
-    // attributes and stuff
-    @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+    @Override public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         if (slot != EquipmentSlot.MAINHAND)
             return super.getAttributeModifiers(slot, stack);
 
@@ -86,19 +83,14 @@ public class SyringeBladeItem extends SwordItem
 
         return builder.build();
     }
-
-    // we cant just have the item not have a cooldown or anything, that would be unbalanced
-    @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+    @Override public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if (BTags.BItemTags.SYRINGE_BLADE.matches(stack) && entity instanceof Player player && isSelected) {
             isOnCooldown = player.getCooldowns().isOnCooldown(stack.getItem());
             offHandPower = BTags.BItemTags.SYRINGE_BLADE.matches(player.getOffhandItem().getItem());
         }
     }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    @Override public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (player.isShiftKeyDown()) {
@@ -110,10 +102,7 @@ public class SyringeBladeItem extends SwordItem
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(stack);
     }
-
-    // self inflicted charge
-    @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
+    @Override public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         if (!(entityLiving instanceof Player player)) return;
 
         int useDuration = getUseDuration(stack) - player.getUseItemRemainingTicks();
@@ -128,10 +117,7 @@ public class SyringeBladeItem extends SwordItem
         player.getCooldowns().addCooldown(this, 40);
         isOnCooldown = false;
     }
-
-    // what happens when the player attacks mobs
-    @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    @Override public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (!(attacker instanceof Player player)) return false;
 
         RegistryAccess access = attacker.level().registryAccess();
@@ -141,80 +127,50 @@ public class SyringeBladeItem extends SwordItem
 
         return super.hurtEnemy(stack, target, attacker);
     }
+    @Override public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+        return getFluidHandler(stack);
+    }
 
-    // tooltip stuff, like the amount counter
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    @Override public int getBarColor(ItemStack stack) {
+        return SyringeUtils.super.getBarColor(stack);
+    }
+    @Override public boolean isBarVisible(ItemStack stack) {
+        return SyringeUtils.super.isBarVisible(stack);
+    }
+    @Override public int getBarWidth(ItemStack stack) {
+        return SyringeUtils.super.getBarWidth(stack);
+    }
+    @Override @OnlyIn(Dist.CLIENT) public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         tooltipMaker(tooltip, stack);
         itemToolTipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
     }
-
-    // bar color stuff based on fluids
-    @Override
-    public int getBarColor(ItemStack stack) {
-        return SyringeUtils.super.getBarColor(stack);
+    @Override @OnlyIn(Dist.CLIENT) public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(SimpleCustomRenderer.create(this, new SyringeBladeItemRenderer()));
     }
 
-    // bar visibility based on the presence of fluids
-    @Override
-    public boolean isBarVisible(ItemStack stack) {
-        return SyringeUtils.super.isBarVisible(stack);
-    }
-
-    // bar progress based on fluids amount
-    @Override
-    public int getBarWidth(ItemStack stack) {
-        return SyringeUtils.super.getBarWidth(stack);
-    }
-
-    // is it enchantable? :shrug:
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
+    @Override public boolean isEnchantable(ItemStack stack) {
         return true;
     }
-
-    // valid enchantments
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+    @Override public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         if (enchantment == AllEnchantments.CAPACITY.get()) return true;
         if (enchantment == Enchantments.SHARPNESS) return true;
         if (enchantment == Enchantments.FIRE_ASPECT) return true;
 
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }
-
-    @Override
-    public boolean isFoil(ItemStack stack) {
+    @Override public boolean isFoil(ItemStack stack) {
         return false;
     }
 
-    // lets it be used as a fluids container
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return getFluidHandler(stack);
-    }
 
-    @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    @Override public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.BOW;
     }
-
-    @Override
-    public int getUseDuration(ItemStack stack) {
+    @Override public int getUseDuration(ItemStack stack) {
         return 72000;
     }
-
-    @Override
-    @Nullable
-    public ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
+    @Override @Nullable public ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
         return (player.isUsingItem() && player.getUseItem() == stack && player.getUsedItemHand() == hand)
                 ? ArmPose.BOW_AND_ARROW : ArmPose.ITEM;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(SimpleCustomRenderer.create(this, new SyringeBladeItemRenderer()));
     }
 }

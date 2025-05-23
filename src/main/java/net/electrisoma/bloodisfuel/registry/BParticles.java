@@ -16,13 +16,11 @@ import com.mojang.serialization.Codec;
 
 
 public class BParticles {
-
     public static final DeferredRegister<ParticleType<?>> PARTICLES =
             DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, BloodIsFuel.MOD_ID);
 
     public static void register(IEventBus modEventBus) {
         PARTICLES.register(modEventBus);
-
         BloodIsFuel.LOGGER.info("Registering particles for " + BloodIsFuel.NAME);
     }
 

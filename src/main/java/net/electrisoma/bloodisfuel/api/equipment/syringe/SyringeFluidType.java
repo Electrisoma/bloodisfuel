@@ -1,7 +1,8 @@
 package net.electrisoma.bloodisfuel.api.equipment.syringe;
 
-import com.simibubi.create.Create;
 import net.electrisoma.bloodisfuel.api.data.*;
+
+import com.simibubi.create.Create;
 
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;

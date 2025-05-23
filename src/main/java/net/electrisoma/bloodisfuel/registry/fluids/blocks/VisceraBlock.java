@@ -17,7 +17,6 @@ import java.util.function.Supplier;
 
 
 public class VisceraBlock extends AbstractFluidBlock {
-
     public VisceraBlock(Supplier<? extends FlowingFluid> fluid, Properties properties) {
         super(fluid, properties);
     }
@@ -31,33 +30,22 @@ public class VisceraBlock extends AbstractFluidBlock {
         }
     }
 
-    @Override
-    protected SoundEvent getStepSound() {
+    @Override protected SoundEvent getStepSound() {
         return SoundEvents.SLIME_SQUISH;
     }
-
-    @Override
-    protected float getStepSoundVolume() {
+    @Override protected float getStepSoundVolume() {
         return 0.2F;
     }
-
-    @Override
-    protected float getStepSoundPitch(Level level) {
+    @Override protected float getStepSoundPitch(Level level) {
         return 0.2F + level.random.nextFloat() * 0.3F;
     }
-
-    @Override
-    protected int getStepSoundCooldown(LivingEntity entity) {
+    @Override protected int getStepSoundCooldown(LivingEntity entity) {
         return 30 + entity.level().random.nextInt(20); // 40–60 ticks
     }
-
-    @Override
-    protected double thickness() {
+    @Override protected double thickness() {
         return 0.6;
     }
-
-    @Override
-    public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
+    @Override public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
         return false;
     }
 }

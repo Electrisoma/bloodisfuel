@@ -6,7 +6,6 @@ import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 
 
 public class BPartialModels {
-
     public static void register() {
         BloodIsFuel.LOGGER.info("Registering partial models for " + BloodIsFuel.NAME);
     }

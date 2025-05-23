@@ -25,38 +25,31 @@ import net.minecraft.server.level.ServerPlayer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class BCriterionTrigger<T extends BCriterionTrigger.Instance> implements CriterionTrigger<T> {
-
     public BCriterionTrigger(String id) {
         this.id = BloodIsFuel.asResource(id);
     }
 
     private final ResourceLocation id;
+    @Override public ResourceLocation getId() {
+        return id;
+    }
+
     protected final Map<PlayerAdvancements, Set<Listener<T>>> listeners = Maps.newHashMap();
 
-    @Override
-    public void addPlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<T> listener) {
+    @Override public void addPlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<T> listener) {
         Set<Listener<T>> playerListeners = this.listeners.computeIfAbsent(playerAdvancementsIn, k -> new HashSet<>());
 
         playerListeners.add(listener);
     }
-
-    @Override
-    public void removePlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<T> listener) {
+    @Override public void removePlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<T> listener) {
         Set<Listener<T>> playerListeners = this.listeners.get(playerAdvancementsIn);
         if (playerListeners != null) {
             playerListeners.remove(listener);
             if (playerListeners.isEmpty()) this.listeners.remove(playerAdvancementsIn);
         }
     }
-
-    @Override
-    public void removePlayerListeners(PlayerAdvancements playerAdvancementsIn) {
+    @Override public void removePlayerListeners(PlayerAdvancements playerAdvancementsIn) {
         this.listeners.remove(playerAdvancementsIn);
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return id;
     }
 
     protected void trigger(ServerPlayer player, @Nullable List<Supplier<Object>> suppliers) {
@@ -71,11 +64,9 @@ public abstract class BCriterionTrigger<T extends BCriterionTrigger.Instance> im
     }
 
     public abstract static class Instance extends AbstractCriterionTriggerInstance {
-
         public Instance(ResourceLocation idIn, ContextAwarePredicate predicate) {
             super(idIn, predicate);
         }
-
         protected abstract boolean test(@Nullable List<Supplier<Object>> suppliers);
     }
 

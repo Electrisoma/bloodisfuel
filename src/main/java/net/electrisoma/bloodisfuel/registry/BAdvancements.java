@@ -27,7 +27,6 @@ import net.minecraftforge.common.ForgeMod;
 
 @SuppressWarnings("all")
 public class BAdvancements implements DataProvider {
-
     public static final List<BAdvancement> ENTRIES = new ArrayList<BAdvancement>();
 
     public static void register() {
@@ -180,7 +179,6 @@ public class BAdvancements implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
-
         PathProvider pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "advancements");
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
@@ -198,7 +196,6 @@ public class BAdvancements implements DataProvider {
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
-
 
     public static void provideLang(BiConsumer<String, String> consumer) {
         for (BAdvancement advancement : ENTRIES) advancement.provideLang(consumer);

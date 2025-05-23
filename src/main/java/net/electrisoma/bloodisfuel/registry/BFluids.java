@@ -17,9 +17,7 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 @SuppressWarnings("unused")
 public class BFluids {
-
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
-
     static {REGISTRATE.setCreativeTab(BModTabs.BASE_CREATIVE_TAB);}
 
     public static void register() {

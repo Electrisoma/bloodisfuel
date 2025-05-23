@@ -12,27 +12,21 @@ import static net.electrisoma.bloodisfuel.registry.blocks.engine.portable_engine
 
 
 public class PortableEngineValueBox extends ValueBoxTransform.Sided {
-
-    @Override
-    protected boolean isSideActive(BlockState state, Direction side) {
+    @Override protected boolean isSideActive(BlockState state, Direction side) {
         if(state.getValue(FACING) == Direction.UP)
             return side == Direction.WEST;
         if(state.getValue(FACING) == Direction.DOWN)
             return side == Direction.NORTH;
         return side == Direction.UP;
     }
-
-    @Override
-    public Vec3 getLocalOffset(LevelAccessor level, BlockPos pos, BlockState state) {
+    @Override public Vec3 getLocalOffset(LevelAccessor level, BlockPos pos, BlockState state) {
         if(state.getValue(FACING) == Direction.UP)
             return VecHelper.voxelSpace(3, 8, 8);
         if(state.getValue(FACING) == Direction.DOWN)
             return VecHelper.voxelSpace(8, 8, 3);
         return  VecHelper.voxelSpace(8, 13, 8);
     }
-
-    @Override
-    protected Vec3 getSouthLocation() {
+    @Override protected Vec3 getSouthLocation() {
         return Vec3.ZERO;
     }
 }

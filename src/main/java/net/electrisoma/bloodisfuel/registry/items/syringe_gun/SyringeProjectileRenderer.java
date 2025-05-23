@@ -12,7 +12,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 @SuppressWarnings("unused")
 public class SyringeProjectileRenderer extends EntityRenderer<SyringeProjectileEntity> {
-
     public SyringeProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();

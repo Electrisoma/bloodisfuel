@@ -1,8 +1,8 @@
 package net.electrisoma.bloodisfuel.api.equipment.syringe;
 
+import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
-import net.electrisoma.bloodisfuel.registry.BFluids;
 
 import com.simibubi.create.Create;
 
@@ -62,7 +62,6 @@ public class SyringeFluidTypeManager {
     public static final SyringeFluidType EMPTY = new SyringeFluidType.Builder()
             .color(0xFFFFFF)
             .build();
-
     /**
      * Gets the SyringeFluidType for a given FluidStack.
      */
@@ -82,7 +81,6 @@ public class SyringeFluidTypeManager {
         if (registry.containsKey(BSyringeFluidTypes.FALLBACK)) return registry.get(BSyringeFluidTypes.FALLBACK);
         return EMPTY;
     }
-
     /**
      * Gets the display color of the fluid, including potion.
      */
@@ -93,7 +91,6 @@ public class SyringeFluidTypeManager {
         }
         return type.color();
     }
-
     /**
      * Returns the list of effects this fluid should apply on hit.
      */
@@ -106,7 +103,6 @@ public class SyringeFluidTypeManager {
                 .map(effect -> List.of(new MobEffectInstance(effect)))
                 .orElse(List.of());
     }
-
     /**
      * Returns all dynamically registered fluid types.
      */
@@ -114,7 +110,6 @@ public class SyringeFluidTypeManager {
         Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_FLUIDS);
         return registry.stream().toList();
     }
-
     /**
      * Gets the default fluid associated with a type.
      */
@@ -125,7 +120,6 @@ public class SyringeFluidTypeManager {
                 .map(Holder::value)
                 .orElse(BFluids.BLOOD.get());
     }
-
     /**
      * Check if the fluid is vanilla milk.
      */
@@ -133,7 +127,6 @@ public class SyringeFluidTypeManager {
         ResourceLocation fluidKey = ForgeRegistries.FLUIDS.getKey(fluid);
         return fluidKey != null && fluidKey.equals(new ResourceLocation("minecraft", "milk"));
     }
-
     /**
      * Check if the fluid is a potion.
      */
@@ -141,7 +134,6 @@ public class SyringeFluidTypeManager {
         ResourceLocation fluidKey = ForgeRegistries.FLUIDS.getKey(fluid);
         return fluidKey != null && fluidKey.equals(new ResourceLocation(Create.ID, "potion"));
     }
-
     /**
      * Gets the burning properties.
      */
@@ -153,7 +145,6 @@ public class SyringeFluidTypeManager {
                 target.hurt(target.damageSources().onFire(), burning.damagePerSecond() * burning.durationSeconds());
         });
     }
-
     /**
      * Gets the extinguishing properties.
      */
@@ -167,7 +158,6 @@ public class SyringeFluidTypeManager {
             }
         });
     }
-
     /**
      * Gets the food properties.
      */
@@ -179,7 +169,6 @@ public class SyringeFluidTypeManager {
             }
         });
     }
-
     /**
      * Applies drowning effects.
      */
@@ -191,7 +180,6 @@ public class SyringeFluidTypeManager {
             }
         });
     }
-
     /**
      * Applies freezing effects.
      */

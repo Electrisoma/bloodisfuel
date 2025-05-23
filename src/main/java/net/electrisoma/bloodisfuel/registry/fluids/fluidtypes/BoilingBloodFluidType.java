@@ -17,7 +17,6 @@ import java.util.function.Supplier;
 
 
 public class BoilingBloodFluidType extends AbstractFluidType {
-
     private Vector3f fogColor;
     private Supplier<Float> fogDistance;
 
@@ -34,23 +33,16 @@ public class BoilingBloodFluidType extends AbstractFluidType {
         super(properties, stillTexture, flowingTexture, overlayType);
     }
 
-    @Override
-    protected int getTintColor(FluidStack stack) {
+    @Override protected int getTintColor(FluidStack stack) {
         return NO_TINT;
     }
-
-    @Override
-    public int getTintColor(FluidState state, BlockAndTintGetter world, BlockPos pos) {
+    @Override public int getTintColor(FluidState state, BlockAndTintGetter world, BlockPos pos) {
         return 0x00ffffff;
     }
-
-    @Override
-    protected Vector3f getCustomFogColor() {
+    @Override protected Vector3f getCustomFogColor() {
         return fogColor;
     }
-
-    @Override
-    protected float getFogDistanceModifier() {
+    @Override protected float getFogDistanceModifier() {
         return fogDistance.get();
     }
 }

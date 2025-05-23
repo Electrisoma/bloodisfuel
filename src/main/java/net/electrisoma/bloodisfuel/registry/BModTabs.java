@@ -42,13 +42,11 @@ import it.unimi.dsi.fastutil.objects.*;
 
 @SuppressWarnings({"unused","MismatchedQueryAndUpdateOfCollection"})
 public class BModTabs {
-
     private static final DeferredRegister<CreativeModeTab> REGISTER =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, BloodIsFuel.MOD_ID);
 
     public static void register(IEventBus modEventBus) {
         REGISTER.register(modEventBus);
-
         BloodIsFuel.LOGGER.info("Registering tabs for " + BloodIsFuel.NAME);
     }
 

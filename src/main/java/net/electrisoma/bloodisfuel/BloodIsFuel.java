@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 @SuppressWarnings("unused")
 @Mod(BloodIsFuel.MOD_ID)
 public class BloodIsFuel {
-
     public static final String NAME = "Create: Blood is Fuel!";
     public static final String MOD_ID = "bloodisfuel";
     public static final String SERVER_START = "HELL IS FULL";

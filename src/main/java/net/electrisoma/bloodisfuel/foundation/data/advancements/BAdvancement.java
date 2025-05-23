@@ -23,7 +23,6 @@ import com.google.common.collect.Maps;
 
 @SuppressWarnings("all")
 public class BAdvancement {
-
     private static final String LANG = "advancement." + BloodIsFuel.MOD_ID + ".";
     private static final String SECRET_SUFFIX = "\n§7(Hidden Advancement)";
 
@@ -89,6 +88,14 @@ public class BAdvancement {
         consumer.accept(descriptionKey(), description);
     }
 
+    /**
+     * Awards this advancement to the given player, if not already completed.
+     */
+    public void awardTo(ServerPlayer player) {
+        if (builtinTrigger == null)
+            throw new UnsupportedOperationException("Advancement " + id + " uses external Triggers, it cannot be awarded directly");
+        builtinTrigger.trigger(player);
+    }
     public boolean isAlreadyAwardedTo(Player player) {
         if (!(player instanceof ServerPlayer sp)) return true;
         Advancement advancement = sp.getServer()
@@ -98,15 +105,6 @@ public class BAdvancement {
         return sp.getAdvancements()
                 .getOrStartProgress(advancement)
                 .isDone();
-    }
-
-    /**
-     * Awards this advancement to the given player, if not already completed.
-     */
-    public void awardTo(ServerPlayer player) {
-        if (builtinTrigger == null)
-            throw new UnsupportedOperationException("Advancement " + id + " uses external Triggers, it cannot be awarded directly");
-        builtinTrigger.trigger(player);
     }
 
     public static class Builder {
@@ -132,30 +130,10 @@ public class BAdvancement {
             this.id = id;
             this.icon = icon;
         }
-
-        public Builder externalTrigger(CriterionTriggerInstance trigger) {
-            String externalKey = String.valueOf(keyIndex);
-            criteriaTriggers.put(externalKey, trigger);
-            externalTriggerAdded = true;
-            keyIndex++;
-            return this;
-        }
-
-        public Builder withBuiltinTrigger(BTrigger trigger) {
-            this.builtinTrigger = trigger;
-            return this;
-        }
-
-        public Builder after(BAdvancement parent) {
-            this.parent = parent;
-            return this;
-        }
-
         public Builder name(String name) {
             this.name = name;
             return this;
         }
-
         public Builder description(String description) {
             this.description = description;
             return this;
@@ -165,12 +143,10 @@ public class BAdvancement {
             this.frame = frame;
             return this;
         }
-
         public Builder goal() {
             this.announce();
             return frame("goal");
         }
-
         public Builder challenge() {
             this.announce();
             return frame("challenge");
@@ -180,52 +156,58 @@ public class BAdvancement {
             this.toasts = false;
             return this;
         }
-
         public Builder announce() {
             this.announces = true;
             return this;
         }
-
         public Builder secret() {
             this.hidden = true;
             return this;
         }
 
+        public Builder externalTrigger(CriterionTriggerInstance trigger) {
+            String externalKey = String.valueOf(keyIndex);
+            criteriaTriggers.put(externalKey, trigger);
+            externalTriggerAdded = true;
+            keyIndex++;
+            return this;
+        }
+        public Builder withBuiltinTrigger(BTrigger trigger) {
+            this.builtinTrigger = trigger;
+            return this;
+        }
+        public Builder after(BAdvancement parent) {
+            this.parent = parent;
+            return this;
+        }
         public Builder free() {
             return externalTrigger(InventoryChangeTrigger.TriggerInstance.hasItems(new ItemLike[] {}));
         }
-
         public Builder onItemCollected(TagKey<Item> tag) {
             return criterion(tag.location().toString(),
                     InventoryChangeTrigger.TriggerInstance.hasItems(
                             ItemPredicate.Builder.item().of(tag).build()));
         }
-
         public Builder onItemCollected(ItemLike item) {
             externalTriggerAdded = true;
             return criterion(item.asItem().toString(),
                     InventoryChangeTrigger.TriggerInstance.hasItems(item));
         }
-
         public Builder onIconCollected() {
             return onItemCollected(icon);
         }
-
         public Builder onItemConsumed(TagKey<Item> tag) {
             return criterion(tag.location().toString(),
                     ConsumeItemTrigger.TriggerInstance.usedItem(
                             ItemPredicate.Builder.item().of(tag).build()));
         }
-
         public Builder onItemConsumed(ItemLike item) {
             return criterion(item.asItem().toString(),
                     ConsumeItemTrigger.TriggerInstance.usedItem(item));
         }
-
         public Builder onIconConsumed() {
             return onItemConsumed(icon);
         }
-
         public Builder criterion(String key, CriterionTriggerInstance trigger) {
             criteriaTriggers.put(key, trigger);
             externalTriggerAdded = true;

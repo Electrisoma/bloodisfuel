@@ -27,7 +27,6 @@ import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 
 public class BBlocks {
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
-
     static {REGISTRATE.setCreativeTab(BModTabs.BASE_CREATIVE_TAB);}
 
     public static void register() {

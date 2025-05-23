@@ -17,19 +17,15 @@ public class PortableEngineBlock extends AbstractEngineBlock<PortableEngineBlock
         super(properties);
     }
 
-    @Override
-    public Class<PortableEngineBlockEntity> getBlockEntityClass() {
+    @Override public Class<PortableEngineBlockEntity> getBlockEntityClass() {
         return PortableEngineBlockEntity.class;
     }
-
-    @Override
-    public BlockEntityType<? extends PortableEngineBlockEntity> getBlockEntityType() {
+    @Override public BlockEntityType<? extends PortableEngineBlockEntity> getBlockEntityType() {
         return BBlockEntityTypes.PORTABLE_ENGINE.get();
     }
 
     @SuppressWarnings("deprecation")
-    @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    @Override public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         Direction facing = state.getValue(FACING);
         return switch (facing) {
             case NORTH, SOUTH, EAST, WEST -> BShapes.ENGINE_HORIZONTAL.get(facing);

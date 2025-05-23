@@ -25,7 +25,6 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("all")
 public abstract class AbstractFluidType extends FluidType {
-
     protected static final int NO_TINT = 0xffffffff;
     private final ResourceLocation stillTexture;
     private final ResourceLocation flowingTexture;
@@ -40,10 +39,6 @@ public abstract class AbstractFluidType extends FluidType {
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;
         this.overlayTexture = generateOverlayTexture(overlayType);
-    }
-
-    private ResourceLocation generateOverlayTexture(String overlayType) {
-        return new ResourceLocation(BloodIsFuel.MOD_ID, "textures/misc/" + overlayType + "_overlay.png");
     }
 
     @Override
@@ -94,15 +89,14 @@ public abstract class AbstractFluidType extends FluidType {
             }
         });
     }
-
+    private ResourceLocation generateOverlayTexture(String overlayType) {
+        return new ResourceLocation(BloodIsFuel.MOD_ID, "textures/misc/" + overlayType + "_overlay.png");
+    }
     protected abstract int getTintColor(FluidStack stack);
-
     protected abstract int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos);
-
     protected Vector3f getCustomFogColor() {
         return null;
     }
-
     protected float getFogDistanceModifier() {
         return 1f;
     }

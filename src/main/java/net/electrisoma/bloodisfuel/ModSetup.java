@@ -9,23 +9,20 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 
 public class ModSetup {
-
     static ModLoadingContext modLoadingContext = ModLoadingContext.get();
     static IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
     public static void register() {
-
         BModTabs.register(modEventBus);
         BParticles.register(modEventBus);
         BConfigs.register(modLoadingContext);
 
-        BBlockEntityTypes.register();
         BBlocks.register();
+        BBlockEntityTypes.register();
         BEntityTypes.register();
-        BItems.register();
         BFluids.register();
-        BTags.register();
-
+        BItems.register();
         BPackets.registerPackets();
+        BTags.register();
     }
 }

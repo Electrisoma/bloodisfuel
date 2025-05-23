@@ -10,21 +10,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.generators.ModelFile;
 
 public class PortableEngineGenerator extends SpecialBlockStateGen {
-
-    @Override
-    protected int getXRotation(BlockState state) {
+    @Override protected int getXRotation(BlockState state) {
         return state.getValue(PortableEngineBlock.FACING) == Direction.DOWN ? 180 : 0;
     }
-
-    @Override
-    protected int getYRotation(BlockState state) {
+    @Override protected int getYRotation(BlockState state) {
         return state.getValue(PortableEngineBlock.FACING)
                 .getAxis()
                 .isVertical() ? 0 : horizontalAngle(state.getValue(PortableEngineBlock.FACING));
     }
-
-    @Override
-    public <T extends Block> ModelFile getModel(DataGenContext<Block, T> ctx,
+    @Override public <T extends Block> ModelFile getModel(DataGenContext<Block, T> ctx,
                                                 RegistrateBlockstateProvider prov,
                                                 BlockState state) {
         return state.getValue(PortableEngineBlock.FACING)

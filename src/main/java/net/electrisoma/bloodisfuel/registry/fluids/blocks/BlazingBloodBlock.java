@@ -27,8 +27,7 @@ public class BlazingBloodBlock extends AbstractFluidBlock {
         super(fluid, properties);
     }
 
-    @Override
-    public void entityInsideProxy(Level level, BlockPos pos, Entity entity) {
+    @Override public void entityInsideProxy(Level level, BlockPos pos, Entity entity) {
         super.entityInsideProxy(level, pos, entity);
         FluidState fluidState = level.getFluidState(pos);
         float fluidHeight = fluidState.getHeight(level, pos);
@@ -59,9 +58,7 @@ public class BlazingBloodBlock extends AbstractFluidBlock {
             }
         }
     }
-
-    @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+    @Override public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         BlockPos blockpos = pos.above();
         if (level.getBlockState(blockpos).isAir() && !level.getBlockState(blockpos).isSolidRender(level, blockpos)) {
             if (random.nextInt(100) == 0) {
@@ -87,13 +84,10 @@ public class BlazingBloodBlock extends AbstractFluidBlock {
         }
     }
 
-    @Override
-    protected boolean shouldExtinguishFire() {
+    @Override protected boolean shouldExtinguishFire() {
         return false;
     }
-
-    @Override
-    public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
+    @Override public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
         return false;
     }
 }

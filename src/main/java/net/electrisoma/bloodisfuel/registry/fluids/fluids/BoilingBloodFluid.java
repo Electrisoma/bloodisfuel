@@ -10,13 +10,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 
 @SuppressWarnings("unused")
 public class BoilingBloodFluid extends AbstractFluid {
-
     public BoilingBloodFluid(Properties properties) {
         super(properties);
     }
 
-    @Override
-    public ParticleOptions getDripParticle() {
+    @Override public ParticleOptions getDripParticle() {
         return BParticles.BOILING_BLOOD_DROP.orElse(null);
     }
 
@@ -24,22 +22,18 @@ public class BoilingBloodFluid extends AbstractFluid {
         public Flowing(Properties properties) {
             super(properties);
         }
-
         protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> FluidState) {
             super.createFluidStateDefinition(FluidState);
             FluidState.add(LEVEL);
         }
-
         public int getAmount(FluidState fluidState) {
             return fluidState.getValue(LEVEL);
         }
     }
-
     public static class Source extends BoilingBloodFluid {
         public Source(Properties properties) {
             super(properties);
         }
-
         public boolean isSource(FluidState fluidState) {
             return true;
         }

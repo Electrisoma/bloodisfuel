@@ -21,7 +21,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 
 public class BEntityTypes {
-
     public static final EntityEntry<SyringeProjectileEntity> SYRINGE_PROJECTILE =
             register("syringe_projectile", SyringeProjectileEntity::new, () -> SyringeProjectileRenderer::new,
                     MobCategory.MISC, 4, 20, true, false, SyringeProjectileEntity::build).register();
@@ -45,6 +44,6 @@ public class BEntityTypes {
 
 
     public static void register() {
-
+        BloodIsFuel.LOGGER.info("Registering entity types for " + BloodIsFuel.NAME);
     }
 }

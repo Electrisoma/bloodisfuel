@@ -19,19 +19,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 
 public class SyringeGunRenderHandler extends ShootableGadgetRenderHandler {
-
     private float nextPitch;
 
-    @Override
-    protected void playSound(InteractionHand hand, Vec3 position) {
-        SyringeProjectileEntity.playLaunchSound(Minecraft.getInstance().level, position, nextPitch);
-    }
-
-    @Override
-    protected boolean appliesTo(ItemStack stack) {
+    @Override protected boolean appliesTo(ItemStack stack) {
         return stack.getItem() instanceof SyringeGunItem;
     }
-
     public void beforeShoot(float nextPitch, Vec3 location, Vec3 motion, ItemStack stack) {
         this.nextPitch = nextPitch;
         if (stack.isEmpty()) return;
@@ -48,17 +40,17 @@ public class SyringeGunRenderHandler extends ShootableGadgetRenderHandler {
                     location.x, location.y, location.z, m2.x, m2.y, m2.z);
         }
     }
+    @Override protected void playSound(InteractionHand hand, Vec3 position) {
+        SyringeProjectileEntity.playLaunchSound(Minecraft.getInstance().level, position, nextPitch);
+    }
 
-    @Override
-    protected void transformTool(PoseStack ms, float flip, float equipProgress, float recoil, float pt) {
+    @Override protected void transformTool(PoseStack ms, float flip, float equipProgress, float recoil, float pt) {
         ms.translate(flip * -.1f, -.05, .14f);
         ms.scale(1, 1, 1);
         TransformStack.of(ms)
                 .rotateXDegrees(recoil * 80);
     }
-
-    @Override
-    protected void transformHand(PoseStack ms, float flip, float equipProgress, float recoil, float pt) {
+    @Override protected void transformHand(PoseStack ms, float flip, float equipProgress, float recoil, float pt) {
         ms.translate(flip * -.09, -.275, -.25);
         TransformStack.of(ms)
                 .rotateZDegrees(flip * -10);

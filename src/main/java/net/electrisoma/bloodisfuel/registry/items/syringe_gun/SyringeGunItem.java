@@ -37,15 +37,13 @@ import javax.annotation.Nullable;
 
 public class SyringeGunItem extends ProjectileWeaponItem
         implements CustomArmPoseItem, SyringeUtils {
-
     public int cooldown = 40;
 
     public SyringeGunItem(Properties properties) {
         super(properties);
     }
 
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    @Override public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (player.isShiftKeyDown()) {
@@ -56,9 +54,7 @@ public class SyringeGunItem extends ProjectileWeaponItem
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(stack);
     }
-
-    @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
+    @Override public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         if (!(entityLiving instanceof Player player)) return;
 
         if (readFluid(stack).isEmpty()) {
@@ -96,93 +92,61 @@ public class SyringeGunItem extends ProjectileWeaponItem
 //            renderHandler.beforeShoot(pitch, location, motion, stack);
 //        }
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        tooltipMaker(tooltip, stack);
-        itemToolTipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
-        projectileTooltipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
-    }
-
-    @Override
-    public Predicate<ItemStack> getAllSupportedProjectiles() {
-        return ARROW_ONLY;
-    }
-
-    @Override
-    public int getDefaultProjectileRange() {
-        return 15;
-    }
-
-    @Override
-    public boolean canAttackBlock(BlockState state, Level world, BlockPos pos, Player player) {
+    @Override public boolean canAttackBlock(BlockState state, Level world, BlockPos pos, Player player) {
         return false;
     }
 
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+    @Override public Predicate<ItemStack> getAllSupportedProjectiles() {
+        return ARROW_ONLY;
+    }
+    @Override public int getDefaultProjectileRange() {
+        return 15;
+    }
+    @Override public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+        return getFluidHandler(stack);
+    }
+
+    @Override public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged || newStack.getItem() != oldStack.getItem();
     }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    @Override public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.NONE;
     }
-
-    @Override
-    public int getUseDuration(ItemStack stack) {
+    @Override public HumanoidModel.ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
+        return (player.isUsingItem() && player.getUseItem() == stack && player.getUsedItemHand() == hand)
+                ? HumanoidModel.ArmPose.CROSSBOW_CHARGE : HumanoidModel.ArmPose.ITEM;
+    }
+    @Override public int getUseDuration(ItemStack stack) {
         return 72000;
     }
 
-    // is it enchantable? :shrug:
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
+    @Override public boolean isEnchantable(ItemStack stack) {
         return true;
     }
-
-    // valid enchantments
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+    @Override public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         if (enchantment == AllEnchantments.CAPACITY.get()) return true;
 
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }
-
-    @Override
-    public boolean isFoil(ItemStack stack) {
+    @Override public boolean isFoil(ItemStack stack) {
         return false;
     }
 
-    @Override
-    public HumanoidModel.ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
-        return (player.isUsingItem() && player.getUseItem() == stack && player.getUsedItemHand() == hand)
-                ? HumanoidModel.ArmPose.CROSSBOW_CHARGE : HumanoidModel.ArmPose.ITEM;
-    }
-
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return getFluidHandler(stack);
-    }
-
-    @Override
-    public boolean isBarVisible(ItemStack stack) {
+    @Override public boolean isBarVisible(ItemStack stack) {
         return SyringeUtils.super.isBarVisible(stack);
     }
-
-    @Override
-    public int getBarWidth(ItemStack stack) {
+    @Override public int getBarWidth(ItemStack stack) {
         return SyringeUtils.super.getBarWidth(stack);
     }
-
-    @Override
-    public int getBarColor(ItemStack stack) {
+    @Override public int getBarColor(ItemStack stack) {
         return SyringeUtils.super.getBarColor(stack);
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+    @Override @OnlyIn(Dist.CLIENT) public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        tooltipMaker(tooltip, stack);
+        itemToolTipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
+        projectileTooltipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
+    }
+    @Override @OnlyIn(Dist.CLIENT) public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(SimpleCustomRenderer.create(this, new SyringeGunItemRenderer()));
     }
 }

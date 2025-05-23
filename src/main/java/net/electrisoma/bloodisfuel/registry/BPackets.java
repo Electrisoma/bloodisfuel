@@ -25,7 +25,6 @@ import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
 
 @SuppressWarnings("unused")
 public enum BPackets {
-
     SYRINGE_GUN(SyringeGunPacket.class, SyringeGunPacket::new, PLAY_TO_CLIENT);
 
     public static final ResourceLocation CHANNEL_NAME = BloodIsFuel.asResource("main");

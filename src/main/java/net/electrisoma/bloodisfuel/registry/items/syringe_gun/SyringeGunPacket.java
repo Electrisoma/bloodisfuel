@@ -16,7 +16,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @SuppressWarnings("unused")
 public class SyringeGunPacket extends ShootGadgetPacket {
-
     private float pitch;
     private Vec3 motion;
     private ItemStack item;
@@ -27,20 +26,16 @@ public class SyringeGunPacket extends ShootGadgetPacket {
         this.item = item;
         this.pitch = pitch;
     }
-
     public SyringeGunPacket(FriendlyByteBuf buffer) {
         super(buffer);
     }
 
-    @Override
-    protected void readAdditional(FriendlyByteBuf buffer) {
+    @Override protected void readAdditional(FriendlyByteBuf buffer) {
         pitch = buffer.readFloat();
         motion = new Vec3(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         item = buffer.readItem();
     }
-
-    @Override
-    protected void writeAdditional(FriendlyByteBuf buffer) {
+    @Override protected void writeAdditional(FriendlyByteBuf buffer) {
         buffer.writeFloat(pitch);
         buffer.writeFloat((float) motion.x);
         buffer.writeFloat((float) motion.y);
@@ -48,15 +43,10 @@ public class SyringeGunPacket extends ShootGadgetPacket {
         buffer.writeItem(item);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    protected void handleAdditional() {
+    @Override @OnlyIn(Dist.CLIENT) protected void handleAdditional() {
         BClient.SYRINGE_GUN_RENDER_HANDLER.beforeShoot(pitch, location, motion, item);
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    protected ShootableGadgetRenderHandler getHandler() {
+    @Override @OnlyIn(Dist.CLIENT) protected ShootableGadgetRenderHandler getHandler() {
         return BClient.SYRINGE_GUN_RENDER_HANDLER;
     }
 }

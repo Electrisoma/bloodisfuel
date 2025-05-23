@@ -22,8 +22,7 @@ public class PortableEngineBlockEntity extends AbstractEngineBlockEntity {
         super(type, pos, state);
     }
 
-    @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    @Override public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
 
         movementDirection = new ScrollOptionBehaviour<>(WindmillBearingBlockEntity.RotationDirection.class,
@@ -31,9 +30,7 @@ public class PortableEngineBlockEntity extends AbstractEngineBlockEntity {
         movementDirection.withCallback($ -> updateGeneratedRotation());
         behaviours.add(movementDirection);
     }
-
-    @Override
-    public float getGeneratedSpeed() {
+    @Override public float getGeneratedSpeed() {
         if (!enabled())
             return 0;
 

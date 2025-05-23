@@ -33,36 +33,28 @@ public class PortableEngineBlockItem extends BlockItem implements CapacityEnchan
         return super.useOn(p_40581_);
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
+    @Override public boolean isEnchantable(ItemStack stack) {
         return true;
     }
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+    @Override public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         if(enchantment == AllEnchantments.CAPACITY.get()) return true;
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    @Override @OnlyIn(Dist.CLIENT) public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         tooltipMaker(tooltip, stack);
     }
-    @Override
-    public int getBarColor(ItemStack stack) {
+    @Override public int getBarColor(ItemStack stack) {
         return SyringeUtils.super.getBarColor(stack);
     }
-    @Override
-    public boolean isBarVisible(ItemStack stack) {
+    @Override public boolean isBarVisible(ItemStack stack) {
         return SyringeUtils.super.isBarVisible(stack);
     }
-    @Override
-    public int getBarWidth(ItemStack stack) {
+    @Override public int getBarWidth(ItemStack stack) {
         return SyringeUtils.super.getBarWidth(stack);
     }
 
-    @Override
-    public void writeFluid(ItemStack stack, FluidStack fluid) {
+    @Override public void writeFluid(ItemStack stack, FluidStack fluid) {
         ListTag list = new ListTag();
         CompoundTag tankContent = new CompoundTag();
         tankContent.put("TankContent", fluid.writeToNBT(new CompoundTag()));
@@ -71,13 +63,11 @@ public class PortableEngineBlockItem extends BlockItem implements CapacityEnchan
         tag.put("Tanks", list);
         stack.getOrCreateTag().put("BlockEntityTag", tag);
     }
-    @Override
-    public FluidStack readFluid(ItemStack stack) {
+    @Override public FluidStack readFluid(ItemStack stack) {
         return FluidStack.loadFluidStackFromNBT(stack.getOrCreateTag().getCompound("BlockEntityTag")
                 .getList("Tanks", Tag.TAG_COMPOUND).getCompound(0).getCompound("TankContent"));
     }
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+    @Override public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
         return getFluidHandler(stack);
     }
 }

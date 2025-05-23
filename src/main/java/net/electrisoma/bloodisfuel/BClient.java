@@ -1,6 +1,5 @@
 package net.electrisoma.bloodisfuel;
 
-import net.electrisoma.bloodisfuel.registry.BBlocks;
 import net.electrisoma.bloodisfuel.registry.BItems;
 import net.electrisoma.bloodisfuel.registry.BParticles;
 import net.electrisoma.bloodisfuel.registry.particles.*;
@@ -14,7 +13,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 
-@SuppressWarnings({"unused", "deprecation"})
+@SuppressWarnings({"unused", "deprecation", "RedundantSuppression"})
 public class BClient {
     public static final SyringeGunRenderHandler SYRINGE_GUN_RENDER_HANDLER = new SyringeGunRenderHandler();
 
@@ -22,7 +21,6 @@ public class BClient {
         modEventBus.addListener(BClient::clientInit);
         modEventBus.addListener(BClient::setupParticles);
         modEventBus.addListener(BClient::onRegisterItemColors);
-
         SYRINGE_GUN_RENDER_HANDLER.registerListeners(forgeEventBus);
     }
 
@@ -40,7 +38,7 @@ public class BClient {
         Minecraft.getInstance().getItemColors().register(
                 new SyringeItemColor(),
                 BItems.SYRINGE_BLADE.get(),
-                BItems.SYRINGE_GUN.get(),
-                BBlocks.PORTABLE_ENGINE.get());
+                BItems.SYRINGE_GUN.get()
+        );
     }
 }

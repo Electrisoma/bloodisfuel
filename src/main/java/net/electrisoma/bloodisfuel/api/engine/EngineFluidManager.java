@@ -15,14 +15,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 @SuppressWarnings("unused")
 public class EngineFluidManager {
     public static final EngineFluidType EMPTY = new EngineFluidType.Builder()
             .stats(0.0f, 0.0f, 0.0f)
             .build();
-
     private static final Map<ResourceLocation, EngineFluidType> CACHE = new ConcurrentHashMap<>();
-
     /**
      * Gets the EngineFluidType for a given FluidStack.
      */
@@ -47,35 +46,30 @@ public class EngineFluidManager {
         CACHE.put(key, EMPTY);
         return EMPTY;
     }
-
     /**
      * Gets speed modifier for fuel.
      */
     public static float getSpeed(FluidStack stack, RegistryAccess access) {
         return fromFluid(stack, access).speed();
     }
-
     /**
      * Gets strength modifier for fuel.
      */
     public static float getStrength(FluidStack stack, RegistryAccess access) {
         return fromFluid(stack, access).strength();
     }
-
     /**
      * Gets burn rate for fuel.
      */
     public static float getBurnRate(FluidStack stack, RegistryAccess access) {
         return fromFluid(stack, access).burnRate();
     }
-
     /**
      * Clears the internal cache, e.g., when datapacks reload.
      */
     public static void clearCache() {
         CACHE.clear();
     }
-
     /**
      * Retrieves a default fluid from an EngineFluidType.
      */
@@ -86,7 +80,6 @@ public class EngineFluidManager {
                 .findFirst()
                 .orElse(null);
     }
-
     /**
      * Returns all engine fluid types.
      */

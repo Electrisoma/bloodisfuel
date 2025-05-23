@@ -14,7 +14,6 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = BloodIsFuel.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class FluidEvents {
-
     private static final int BURN_VISCERA = 8000;
     private static final int BURN_BLOOD = Math.round(BURN_VISCERA * 1.5f);
     private static final int BURN_ENRICHED = BURN_VISCERA * 2;
@@ -33,22 +32,18 @@ public class FluidEvents {
     @SubscribeEvent
     public static void onFurnaceFuel(FurnaceFuelBurnTimeEvent event) {
         var item = event.getItemStack().getItem();
-
         if (item == BFluids.VISCERA.get().getBucket()) {
             event.setBurnTime(BURN_VISCERA);
             return;
         }
-
         if (item == BFluids.BLOOD.get().getBucket()) {
             event.setBurnTime(BURN_BLOOD);
             return;
         }
-
         if (matchesBucket(item, ENRICHED_TYPES)) {
             event.setBurnTime(BURN_ENRICHED);
             return;
         }
-
         if (matchesBucket(item, INFUSED_TYPES)) {
             event.setBurnTime(BURN_INFUSED);
         }

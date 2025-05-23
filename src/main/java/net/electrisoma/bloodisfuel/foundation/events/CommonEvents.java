@@ -32,21 +32,16 @@ public class CommonEvents {
                 .register(BBlockEntityTypes.PORTABLE_ENGINE.get(), new PortableEngineSpoutBehavior()));
     }
 
-    @SubscribeEvent
-    public static void onPlayerDeath(LivingDeathEvent event) {
+    @SubscribeEvent public static void onPlayerDeath(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
         if (event.getSource().is(BDamageTypes.BOILING)) BAdvancements.BOILED.awardTo(player);
     }
-
-    @SubscribeEvent
-    public static void onLivingEntityTick(LivingTickEvent event) {
+    @SubscribeEvent public static void onLivingEntityTick(LivingTickEvent event) {
         LivingEntity entity = event.getEntity();
         Level level = entity.level();
         applyFluidEffectsToEntity(level, entity);
     }
-
-    @SubscribeEvent
-    public static void onLevelTick(LevelTickEvent event) {
+    @SubscribeEvent public static void onLevelTick(LevelTickEvent event) {
         Level level = event.level;
         if (event.phase != LevelTickEvent.Phase.END || level.isClientSide()) return;
         AABB worldBox = new AABB(

@@ -13,7 +13,6 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 
 public class BEnchantments {
-
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
 
     public static void register() {

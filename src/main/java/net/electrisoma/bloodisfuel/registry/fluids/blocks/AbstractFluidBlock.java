@@ -19,9 +19,8 @@ import net.minecraftforge.fluids.FluidType;
 import java.util.function.Supplier;
 
 
-@SuppressWarnings({"unused", "deprecation"})
+@SuppressWarnings({"unused", "deprecation", "RedundantSuppression"})
 public abstract class AbstractFluidBlock extends LiquidBlock {
-
     private final Supplier<? extends FlowingFluid> fluid;
 
     public AbstractFluidBlock(Supplier<? extends FlowingFluid> fluid, Properties properties) {
@@ -29,8 +28,7 @@ public abstract class AbstractFluidBlock extends LiquidBlock {
         this.fluid = fluid;
     }
 
-    // -- entity calculations --
-
+    // entity logic
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         FluidState fluidState = level.getFluidState(pos);
@@ -41,67 +39,46 @@ public abstract class AbstractFluidBlock extends LiquidBlock {
             if (height > 0.1F) entityInsideProxy(level, pos, entity);
         }
     }
-
-    // -- Existing logic for entity interaction in the fluid --
-
     public void entityInsideProxy(Level level, BlockPos pos, Entity entity) {
         FluidState fluidState = level.getFluidState(pos);
         float fluidHeight = fluidState.getHeight(level, pos);
         double fluidSurfaceY = pos.getY() + fluidHeight;
 
-        // Use the entity's bounding box minY to determine if it is submerged
         double entityBottomY = entity.getBoundingBox().minY;
         double entityTopY = entity.getBoundingBox().maxY;
 
-        // Only apply if there's a real intersection
         if (entityBottomY < fluidSurfaceY && entityTopY > pos.getY()) {
 
-            // No fall damage
             entity.fallDistance = 0.0F;
-            if (entity.getDeltaMovement().y < -0.25D) {
+            if (entity.getDeltaMovement().y < -0.25D)
                 entity.setDeltaMovement(entity.getDeltaMovement().x, -0.25D, entity.getDeltaMovement().z);
-            }
 
-            // Viscosity
             double mult = thickness();
             entity.setDeltaMovement(entity.getDeltaMovement().multiply(mult, mult, mult));
 
-            // Extinguish fire
             if (shouldExtinguishFire() && entity.isOnFire()) {
                 entity.extinguishFire();
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
                         SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
 
-            // Sound
-            if (entity instanceof LivingEntity livingEntity && !level.isClientSide) {
-                playStepSound(level, livingEntity);
-            }
+            if (entity instanceof LivingEntity livingEntity && !level.isClientSide) playStepSound(level, livingEntity);
         }
     }
-
-    // -- Fall damage reduction --
-
-    @Override
-    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
-        entity.causeFallDamage(0.0F, 0.0F, level.damageSources().fall());
+    @Override public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
+        return true;
     }
 
-    @Override
-    public void updateEntityAfterFallOn(BlockGetter level, Entity entity) {
+    // fall damage logic
+    @Override public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
+        entity.causeFallDamage(0.0F, 0.0F, level.damageSources().fall());
+    }
+    @Override public void updateEntityAfterFallOn(BlockGetter level, Entity entity) {
         if (!entity.isSuppressingBounce())
             entity.setDeltaMovement(entity.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D));
     }
 
-    // -- Pathfinding --
-
-    @Override
-    public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
-        return true;
-    }
-
-    // -- Sound calculations --
-
+    // controllable variables
     protected void playStepSound(Level level, LivingEntity entity) {
         var data = entity.getPersistentData();
         double dx = Math.abs(entity.getX() - data.getDouble("last_x"));
@@ -117,34 +94,25 @@ public abstract class AbstractFluidBlock extends LiquidBlock {
         data.putDouble("last_x", entity.getX());
         data.putDouble("last_z", entity.getZ());
     }
-
-    // -- Controllable variables --
-
     protected SoundSource getSoundSource() {
         return SoundSource.BLOCKS;
     }
-
     protected SoundEvent getStepSound() {
         return SoundEvents.EMPTY;
     }
-
     protected float getStepSoundVolume() {
         return 1F;
     }
-
     protected float getStepSoundPitch(Level level) {
         return 1F;
     }
-
     protected int getStepSoundCooldown(LivingEntity entity) {
         return 20;
     }
-
-    protected boolean shouldExtinguishFire() {
-        return true;
-    }
-
     protected double thickness() {
         return 0.9;
+    }
+    protected boolean shouldExtinguishFire() {
+        return true;
     }
 }

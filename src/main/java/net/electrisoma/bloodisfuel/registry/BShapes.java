@@ -7,7 +7,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class BShapes extends AllShapes {
-
     public static final VoxelShaper
             ENGINE_HORIZONTAL = shape(2, 3, 0, 14, 13, 16)
             .add(0,0,0,16,3,16)

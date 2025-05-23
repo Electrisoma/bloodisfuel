@@ -1,14 +1,19 @@
 package net.electrisoma.bloodisfuel.api.engine.abstract_engine;
 
+import net.electrisoma.bloodisfuel.api.utils.EngineBlockEntityUtils;
+import net.electrisoma.bloodisfuel.api.utils.EngineBlockUtils;
+
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -28,8 +33,10 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 
 import java.util.Objects;
 
+
 @SuppressWarnings({"deprecation", "RedundantSuppression"})
-public abstract class AbstractEngineBlock<T extends BlockEntity> extends DirectionalKineticBlock implements IBE<T>, ProperWaterloggedBlock, BKinetics {
+public abstract class AbstractEngineBlock<T extends BlockEntity>
+        extends DirectionalKineticBlock implements IBE<T>, ProperWaterloggedBlock, EngineBlockUtils {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty ENCHANTED = BooleanProperty.create("enchanted");
 
@@ -113,6 +120,6 @@ public abstract class AbstractEngineBlock<T extends BlockEntity> extends Directi
     public interface EngineNBTHandler {
         void setCapacityEnchantLevel(int level);
         void setEnchantmentTag(ListTag tag);
-        void setCustomName(net.minecraft.network.chat.Component name);
+        void setCustomName(Component name);
     }
 }

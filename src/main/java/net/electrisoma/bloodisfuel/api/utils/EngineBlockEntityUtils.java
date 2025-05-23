@@ -1,9 +1,10 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
+import net.electrisoma.bloodisfuel.api.engine.EngineFluidManager;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
-import net.electrisoma.bloodisfuel.api.engine.EngineFluidManager;
+
 import net.minecraft.core.RegistryAccess;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -12,7 +13,7 @@ import java.util.Objects;
 
 
 @SuppressWarnings("unused")
-public interface EngineUtils extends TooltipUtils {
+public interface EngineBlockEntityUtils extends TooltipUtils {
     SmartFluidTankBehaviour getTank();
     int getTick();
     SmartBlockEntity self();
