@@ -1,6 +1,5 @@
 package net.electrisoma.bloodisfuel.api.engine.abstract_engine;
 
-import net.electrisoma.bloodisfuel.api.utils.EngineBlockEntityUtils;
 import net.electrisoma.bloodisfuel.api.utils.EngineBlockUtils;
 
 import com.simibubi.create.AllEnchantments;

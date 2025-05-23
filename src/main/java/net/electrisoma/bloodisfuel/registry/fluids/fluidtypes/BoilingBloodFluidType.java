@@ -16,6 +16,7 @@ import org.joml.Vector3f;
 import java.util.function.Supplier;
 
 
+@SuppressWarnings("unused")
 public class BoilingBloodFluidType extends AbstractFluidType {
     private Vector3f fogColor;
     private Supplier<Float> fogDistance;

@@ -8,7 +8,6 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 
-import net.electrisoma.bloodisfuel.api.utils.EngineBlockUtils;
 import net.minecraft.util.Mth;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,8 +38,7 @@ public abstract class AbstractEngineBlockEntity extends GeneratingKineticBlockEn
         super(type, pos, state);
     }
 
-    @Override
-    public void tick() {
+    @Override public void tick() {
         super.tick();
         fuelTick++;
         assert level != null;
@@ -49,15 +47,17 @@ public abstract class AbstractEngineBlockEntity extends GeneratingKineticBlockEn
             updateGeneratedRotation();
         }
     }
-
-    @Override
-    public float calculateAddedStressCapacity() {
+    @Override public float calculateAddedStressCapacity() {
         if (!enabled() || getGeneratedSpeed() == 0)
             return 0;
 
         float stress = getFuelStress();
         lastCapacityProvided = stress;
         return stress;
+    }
+    @Override public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        tank = CapacityEnchantedFluidTankBehaviour.single(this, 1000, 1000);
+        behaviours.add(tank);
     }
 
     @Override
@@ -67,12 +67,6 @@ public abstract class AbstractEngineBlockEntity extends GeneratingKineticBlockEn
         if (Mth.equal(stressBase, 0))
             return added;
         return containedFluidTooltip(tooltip, isPlayerSneaking, tank.getCapability().cast());
-    }
-
-    @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        tank = CapacityEnchantedFluidTankBehaviour.single(this, 1000, 1000);
-        behaviours.add(tank);
     }
 
     @Override public <T> LazyOptional<T> getCapability(Capability<T> cap) {
