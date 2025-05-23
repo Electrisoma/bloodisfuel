@@ -25,6 +25,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import java.util.List;
 
 
+@SuppressWarnings("unused")
 public abstract class AbstractEngineBlockEntity extends GeneratingKineticBlockEntity implements EngineUtils {
     protected CapacityEnchantedFluidTankBehaviour tank;
     protected Component customName;
