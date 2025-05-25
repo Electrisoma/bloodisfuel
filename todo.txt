@@ -1,3 +1,6 @@
+-fix multiloader so that i don't need to be constrained to forge
+-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 -machines (blood extractor, blood drain, blood processor)
 -lore
 -vampire bats
@@ -5,7 +8,6 @@
 -vampiric engine
 -vampiric weapons
 -blood loss debuff
--fluid physics on syringe blade vial
 
 -loot tables for when mobs die to create machines
 
@@ -14,16 +16,10 @@
 -meat dimensions
 
 -new recipe type for centrifuge
--iron nugget (40% chance of dropping)
--gold nugget (1% chance of dropping)
+iron nugget (40% chance of dropping)
+gold nugget (1% chance of dropping)
 
 -uber fluid (blood + healing stuff + lightning):
 grants incredibly strength and durability
-
--improved rendering of syringe:
-add arms and swaying, add better animations, add color changing vial
-
--crusader's crossbow:
-stores fluid, converts arrows into any fluid in realtime
 
 -Pehkui support for syringes

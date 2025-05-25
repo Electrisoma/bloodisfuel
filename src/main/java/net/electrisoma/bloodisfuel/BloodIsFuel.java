@@ -53,6 +53,7 @@ public class BloodIsFuel {
     }
 
     public static void onCtor() {
+        LOGGER.info("{} {} initializing! Commit hash: {}", NAME, BloodIsFuelBuildInfo.VERSION, BloodIsFuelBuildInfo.GIT_COMMIT);
 
         ModLoadingContext modLoadingContext = ModLoadingContext.get();
 

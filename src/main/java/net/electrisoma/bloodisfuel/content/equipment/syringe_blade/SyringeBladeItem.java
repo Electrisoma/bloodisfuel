@@ -127,9 +127,6 @@ public class SyringeBladeItem extends SwordItem
 
         return super.hurtEnemy(stack, target, attacker);
     }
-    @Override public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return getFluidHandler(stack);
-    }
 
     @Override public int getBarColor(ItemStack stack) {
         return SyringeUtils.super.getBarColor(stack);
@@ -146,6 +143,9 @@ public class SyringeBladeItem extends SwordItem
     }
     @Override @OnlyIn(Dist.CLIENT) public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(SimpleCustomRenderer.create(this, new SyringeBladeItemRenderer()));
+    }
+    @Override public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+        return getFluidHandler(stack);
     }
 
     @Override public boolean isEnchantable(ItemStack stack) {

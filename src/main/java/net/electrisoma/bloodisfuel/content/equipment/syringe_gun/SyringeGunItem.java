@@ -84,15 +84,11 @@ public class SyringeGunItem extends ProjectileWeaponItem
     @Override public boolean canAttackBlock(BlockState state, Level world, BlockPos pos, Player player) {
         return false;
     }
-
     @Override public Predicate<ItemStack> getAllSupportedProjectiles() {
         return ARROW_ONLY;
     }
     @Override public int getDefaultProjectileRange() {
         return 15;
-    }
-    @Override public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return getFluidHandler(stack);
     }
 
     @Override public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
@@ -137,5 +133,8 @@ public class SyringeGunItem extends ProjectileWeaponItem
     }
     @Override @OnlyIn(Dist.CLIENT) public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(SimpleCustomRenderer.create(this, new SyringeGunItemRenderer()));
+    }
+    @Override public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+        return getFluidHandler(stack);
     }
 }

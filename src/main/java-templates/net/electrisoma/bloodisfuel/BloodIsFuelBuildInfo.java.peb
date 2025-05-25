@@ -1,0 +1,7 @@
+package net.electrisoma.bloodisfuel;
+
+
+public class BloodIsFuelBuildInfo {
+    public static String VERSION = "{{ version }}";
+    public static String GIT_COMMIT = "{{ gitCommit }}";
+}

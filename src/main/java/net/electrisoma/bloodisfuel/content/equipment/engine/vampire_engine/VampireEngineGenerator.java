@@ -1,4 +1,4 @@
-package net.electrisoma.bloodisfuel.content.equipment.engine.portable_engine;
+package net.electrisoma.bloodisfuel.content.equipment.engine.vampire_engine;
 
 import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.SpecialBlockStateGen;
@@ -10,19 +10,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.generators.ModelFile;
 
 
-public class PortableEngineGenerator extends SpecialBlockStateGen {
+public class VampireEngineGenerator extends SpecialBlockStateGen {
     @Override protected int getXRotation(BlockState state) {
-        return state.getValue(PortableEngineBlock.FACING) == Direction.DOWN ? 180 : 0;
+        return state.getValue(VampireEngineBlock.FACING) == Direction.DOWN ? 180 : 0;
     }
     @Override protected int getYRotation(BlockState state) {
-        return state.getValue(PortableEngineBlock.FACING)
+        return state.getValue(VampireEngineBlock.FACING)
                 .getAxis()
-                .isVertical() ? 0 : horizontalAngle(state.getValue(PortableEngineBlock.FACING));
+                .isVertical() ? 0 : horizontalAngle(state.getValue(VampireEngineBlock.FACING));
     }
     @Override public <T extends Block> ModelFile getModel(DataGenContext<Block, T> ctx,
                                                 RegistrateBlockstateProvider prov,
                                                 BlockState state) {
-        return state.getValue(PortableEngineBlock.FACING)
+        return state.getValue(VampireEngineBlock.FACING)
                 .getAxis()
                 .isVertical() ? AssetLookup.partialBaseModel(ctx, prov, "vertical")
                 : AssetLookup.partialBaseModel(ctx, prov);

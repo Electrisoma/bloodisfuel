@@ -7,9 +7,8 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 
-import net.electrisoma.bloodisfuel.content.equipment.engine.portable_engine.PortableEngineBlock;
-import net.electrisoma.bloodisfuel.content.equipment.engine.portable_engine.PortableEngineBlockItem;
-import net.electrisoma.bloodisfuel.content.equipment.engine.portable_engine.PortableEngineGenerator;
+import net.electrisoma.bloodisfuel.content.equipment.engine.portable_engine.*;
+import net.electrisoma.bloodisfuel.content.equipment.engine.vampire_engine.*;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -54,6 +53,18 @@ public class BBlocks {
                                 ).apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY)))));
             })
             .item(PortableEngineBlockItem::new)
+            .transform(customItemModel())
+            .register();
+    public static final BlockEntry<VampireEngineBlock> VAMPIRE_ENGINE =
+            REGISTRATE.block("vampire_engine", VampireEngineBlock::new)
+            .properties(p -> p
+                    .mapColor(MapColor.METAL)
+                    .sound(SoundType.NETHERITE_BLOCK)
+                    .noOcclusion()
+                    .strength(3f))
+            .tag(AllTags.AllBlockTags.SAFE_NBT.tag)
+            .blockstate(new VampireEngineGenerator()::generate)
+            .item()
             .transform(customItemModel())
             .register();
 }

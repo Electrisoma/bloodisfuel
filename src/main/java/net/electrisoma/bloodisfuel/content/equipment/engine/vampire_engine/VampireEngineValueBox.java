@@ -1,0 +1,31 @@
+package net.electrisoma.bloodisfuel.content.equipment.engine.vampire_engine;
+
+import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
+import net.createmod.catnip.math.VecHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+
+
+public class VampireEngineValueBox extends ValueBoxTransform.Sided {
+    @Override protected boolean isSideActive(BlockState state, Direction side) {
+        if(state.getValue(DirectionalKineticBlock.FACING) == Direction.UP)
+            return side == Direction.WEST;
+        if(state.getValue(DirectionalKineticBlock.FACING) == Direction.DOWN)
+            return side == Direction.NORTH;
+        return side == Direction.UP;
+    }
+    @Override public Vec3 getLocalOffset(LevelAccessor level, BlockPos pos, BlockState state) {
+        if(state.getValue(DirectionalKineticBlock.FACING) == Direction.UP)
+            return VecHelper.voxelSpace(3, 8, 8);
+        if(state.getValue(DirectionalKineticBlock.FACING) == Direction.DOWN)
+            return VecHelper.voxelSpace(8, 8, 3);
+        return  VecHelper.voxelSpace(8, 13, 8);
+    }
+    @Override protected Vec3 getSouthLocation() {
+        return Vec3.ZERO;
+    }
+}
