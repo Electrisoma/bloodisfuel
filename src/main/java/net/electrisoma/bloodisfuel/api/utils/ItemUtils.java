@@ -7,7 +7,7 @@ import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidTypeManager
 import net.electrisoma.bloodisfuel.registry.BEnchantments;
 import net.electrisoma.bloodisfuel.api.data.BurningData;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
-import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
+import net.electrisoma.bloodisfuel.foundation.data.entries.BSyringeFluidTypes;
 
 import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.utility.CreateLang;

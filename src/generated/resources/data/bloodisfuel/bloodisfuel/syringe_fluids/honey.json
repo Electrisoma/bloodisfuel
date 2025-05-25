@@ -3,6 +3,10 @@
   "fluids": [
     "create:honey"
   ],
+  "food": {
+    "nutrition": 4,
+    "saturation": 2.0
+  },
   "mobs": "minecraft:bee",
   "opaque": true
 }

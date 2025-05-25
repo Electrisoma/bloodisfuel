@@ -2,7 +2,7 @@ package net.electrisoma.bloodisfuel.api.equipment.syringe;
 
 import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
-import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
+import net.electrisoma.bloodisfuel.foundation.data.entries.BSyringeFluidTypes;
 
 import com.simibubi.create.Create;
 
@@ -138,6 +138,7 @@ public class SyringeFluidTypeManager {
      * Gets the burning properties.
      */
     @SuppressWarnings("DataFlowIssue")
+    // broken as fuck
     public static void applyBurning(SyringeFluidType type, LivingEntity target) {
         type.burning().ifPresent(burning -> {
             target.setSecondsOnFire(burning.durationSeconds());

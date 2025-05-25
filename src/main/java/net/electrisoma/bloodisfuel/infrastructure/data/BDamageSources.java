@@ -1,6 +1,6 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
-import net.electrisoma.bloodisfuel.infrastructure.data.entries.BDamageTypes;
+import net.electrisoma.bloodisfuel.foundation.data.entries.BDamageTypes;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;

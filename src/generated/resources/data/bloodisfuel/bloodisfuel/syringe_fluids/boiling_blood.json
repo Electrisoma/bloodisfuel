@@ -1,5 +1,8 @@
 {
   "attack_speed": -2.5,
+  "burning": {
+    "damage_per_second": 4.0
+  },
   "color": 14750483,
   "damage": 6.0,
   "fluids": [

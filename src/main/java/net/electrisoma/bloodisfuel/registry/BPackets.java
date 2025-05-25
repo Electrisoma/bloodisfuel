@@ -1,7 +1,7 @@
 package net.electrisoma.bloodisfuel.registry;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeGunPacket;
+import net.electrisoma.bloodisfuel.content.equipment.syringe_gun.SyringeGunPacket;
 
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 
@@ -31,7 +31,6 @@ public enum BPackets {
     public static final int NETWORK_VERSION = 3;
     public static final String NETWORK_VERSION_STR = String.valueOf(NETWORK_VERSION);
     private static SimpleChannel channel;
-
     private final PacketType<?> packetType;
 
     <T extends SimplePacketBase> BPackets(Class<T> type, Function<FriendlyByteBuf, T> factory,

@@ -1,8 +1,8 @@
 package net.electrisoma.bloodisfuel.registry;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeGunItem;
-import net.electrisoma.bloodisfuel.registry.items.syringe_blade.SyringeBladeItem;
+import net.electrisoma.bloodisfuel.content.equipment.syringe_gun.SyringeGunItem;
+import net.electrisoma.bloodisfuel.content.equipment.syringe_blade.SyringeBladeItem;
 
 import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.CreateRegistrate;

@@ -2,11 +2,14 @@ package net.electrisoma.bloodisfuel.infrastructure.data;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
-import net.electrisoma.bloodisfuel.infrastructure.data.entries.*;
+import net.electrisoma.bloodisfuel.foundation.data.entries.BDamageTypes;
+import net.electrisoma.bloodisfuel.foundation.data.entries.BEngineFluidTypes;
+import net.electrisoma.bloodisfuel.foundation.data.entries.BPotatoCannonProjectiles;
+import net.electrisoma.bloodisfuel.foundation.data.entries.BSyringeFluidTypes;
 
 import com.simibubi.create.api.registry.CreateRegistries;
-import net.minecraft.core.HolderLookup;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;

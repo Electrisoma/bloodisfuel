@@ -1,11 +1,11 @@
 package net.electrisoma.bloodisfuel.foundation.events;
 
 import com.simibubi.create.api.behaviour.spouting.BlockSpoutingBehaviour;
-import net.electrisoma.bloodisfuel.infrastructure.data.entries.BDamageTypes;
+import net.electrisoma.bloodisfuel.foundation.data.entries.BDamageTypes;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
 import net.electrisoma.bloodisfuel.registry.BBlockEntityTypes;
-import net.electrisoma.bloodisfuel.registry.blocks.engine.portable_engine.PortableEngineSpoutBehavior;
-import net.electrisoma.bloodisfuel.registry.fluids.blocks.AbstractFluidBlock;
+import net.electrisoma.bloodisfuel.content.equipment.engine.portable_engine.PortableEngineSpoutBehavior;
+import net.electrisoma.bloodisfuel.api.fluids.blocks.AbstractFluidBlock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;

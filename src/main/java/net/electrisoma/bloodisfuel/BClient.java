@@ -3,7 +3,7 @@ package net.electrisoma.bloodisfuel;
 import net.electrisoma.bloodisfuel.registry.BItems;
 import net.electrisoma.bloodisfuel.registry.BParticles;
 import net.electrisoma.bloodisfuel.registry.particles.*;
-import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeGunRenderHandler;
+import net.electrisoma.bloodisfuel.content.equipment.syringe_gun.SyringeGunRenderHandler;
 import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeItemColor;
 
 import net.minecraft.client.Minecraft;

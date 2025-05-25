@@ -1,0 +1,8 @@
+{
+  "burnRate": 10.0,
+  "fluids": [
+    "bloodisfuel:enriched_blood"
+  ],
+  "speed": 96.0,
+  "strength": 3072.0
+}

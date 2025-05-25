@@ -1,8 +1,8 @@
 package net.electrisoma.bloodisfuel.registry;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeProjectileEntity;
-import net.electrisoma.bloodisfuel.registry.items.syringe_gun.SyringeProjectileRenderer;
+import net.electrisoma.bloodisfuel.content.equipment.syringe_gun.SyringeProjectileEntity;
+import net.electrisoma.bloodisfuel.content.equipment.syringe_gun.SyringeProjectileRenderer;
 
 import com.simibubi.create.foundation.data.CreateEntityBuilder;
 
@@ -21,6 +21,10 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 
 public class BEntityTypes {
+    public static void register() {
+        BloodIsFuel.LOGGER.info("Registering entity types for " + BloodIsFuel.NAME);
+    }
+
     public static final EntityEntry<SyringeProjectileEntity> SYRINGE_PROJECTILE =
             register("syringe_projectile", SyringeProjectileEntity::new, () -> SyringeProjectileRenderer::new,
                     MobCategory.MISC, 4, 20, true, false, SyringeProjectileEntity::build).register();
@@ -40,10 +44,5 @@ public class BEntityTypes {
                     if (immuneToFire)
                         b.fireImmune();
                 }).renderer(renderer);
-    }
-
-
-    public static void register() {
-        BloodIsFuel.LOGGER.info("Registering entity types for " + BloodIsFuel.NAME);
     }
 }

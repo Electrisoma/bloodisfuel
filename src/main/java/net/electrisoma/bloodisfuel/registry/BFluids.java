@@ -2,9 +2,12 @@ package net.electrisoma.bloodisfuel.registry;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.config.BConfigs;
-import net.electrisoma.bloodisfuel.registry.fluids.blocks.*;
-import net.electrisoma.bloodisfuel.registry.fluids.fluids.*;
-import net.electrisoma.bloodisfuel.registry.fluids.fluidtypes.*;
+import net.electrisoma.bloodisfuel.content.fluids.blocks.BlazingBloodBlock;
+import net.electrisoma.bloodisfuel.content.fluids.blocks.BloodBlock;
+import net.electrisoma.bloodisfuel.content.fluids.blocks.BoilingBloodBlock;
+import net.electrisoma.bloodisfuel.content.fluids.blocks.VisceraBlock;
+import net.electrisoma.bloodisfuel.content.fluids.fluids.BloodFluid;
+import net.electrisoma.bloodisfuel.content.fluids.fluidtypes.BloodFluidType;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
 
@@ -202,28 +205,4 @@ public class BFluids {
                         .bucket().tag(BTags.forgeItemTag("buckets/blazing_blood"))
                         .build()
                     .register();
-
-    // for later
-    public enum FluidProperties {
-
-        VISCERA(15,16,5),
-        BLOOD(7,2,5),
-        ENRICHED_BLOOD(10,1.3f,5),
-
-        OIL_ENRICHED_BLOOD(20,0.8f,5),
-        DIESEL_INFUSED_BLOOD(35,0.6f,5),
-        GASOLINE_INFUSED_BLOOD(20,1.8f,5),
-
-        ;
-
-        public final float strength;
-        public final float speed;
-        public final int burn_rate;
-
-        FluidProperties(float strength, float speed, int burn_rate){
-            this.strength = strength;
-            this.speed = speed;
-            this.burn_rate = burn_rate;
-        }
-    }
 }

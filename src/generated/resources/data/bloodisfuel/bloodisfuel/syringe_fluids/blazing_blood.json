@@ -1,0 +1,14 @@
+{
+  "attack_speed": -2.5,
+  "burning": {
+    "damage_per_second": 4.0
+  },
+  "color": 16756290,
+  "damage": 6.0,
+  "fluids": [
+    "#forge:blazing_blood"
+  ],
+  "glowing": true,
+  "mobs": "minecraft:blaze",
+  "opaque": true
+}

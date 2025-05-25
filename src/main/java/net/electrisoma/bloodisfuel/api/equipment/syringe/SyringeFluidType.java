@@ -214,7 +214,7 @@ public record SyringeFluidType(
          * Defines the food properties applied when the fluid type hits an entity.
          */
         public Builder food(int nutrition, float saturationMod) {
-            new FoodProperties.Builder().nutrition(nutrition).saturationMod(saturationMod).build();
+            this.food = Optional.of(new FoodProperties.Builder().nutrition(nutrition).saturationMod(saturationMod).build());
             return this;
         }
         public Builder food(FoodProperties foodProperties) {
@@ -255,7 +255,7 @@ public record SyringeFluidType(
          * Adds status effects to the fluid type.
          */
         public Builder burning(int durationSeconds, float damagePerSecond) {
-            new BurningData(durationSeconds, damagePerSecond);
+            this.burning = Optional.of(new BurningData(durationSeconds, damagePerSecond));
             return this;
         }
         public Builder burning(BurningData burningData) {
@@ -264,7 +264,7 @@ public record SyringeFluidType(
         }
 
         public Builder extinguishing(int durationSeconds, float healthPerSecond) {
-            new ExtinguishingData(durationSeconds, healthPerSecond);
+            this.extinguishing = Optional.of(new ExtinguishingData(durationSeconds, healthPerSecond));
             return this;
         }
         public Builder extinguishing(ExtinguishingData extinguishingData) {
@@ -273,7 +273,7 @@ public record SyringeFluidType(
         }
 
         public Builder drowning(int durationSeconds, float damagePerSecond) {
-            new DrowningData(durationSeconds, damagePerSecond);
+            this.drowning = Optional.of(new DrowningData(durationSeconds, damagePerSecond));
             return this;
         }
         public Builder drowning(DrowningData drowningData) {
@@ -282,7 +282,7 @@ public record SyringeFluidType(
         }
 
         public Builder freezing(int durationSeconds, float damagePerSecond, float slowAmount) {
-            new FreezingData(durationSeconds, damagePerSecond, slowAmount);
+            this.freezing = Optional.of(new FreezingData(durationSeconds, damagePerSecond, slowAmount));
             return this;
         }
         public Builder freezing(FreezingData freezingData) {

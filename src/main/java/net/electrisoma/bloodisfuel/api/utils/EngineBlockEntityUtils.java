@@ -1,6 +1,6 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
-import net.electrisoma.bloodisfuel.api.engine.EngineFluidManager;
+import net.electrisoma.bloodisfuel.api.equipment.engine.EngineFluidManager;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;

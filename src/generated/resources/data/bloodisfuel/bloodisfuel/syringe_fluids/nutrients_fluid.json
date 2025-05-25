@@ -3,5 +3,9 @@
   "fluids": [
     "#biofactory:nutrients_fluid"
   ],
+  "food": {
+    "nutrition": 9,
+    "saturation": 1.2
+  },
   "opaque": true
 }

@@ -7,9 +7,9 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 
-import net.electrisoma.bloodisfuel.registry.blocks.engine.portable_engine.PortableEngineBlock;
-import net.electrisoma.bloodisfuel.registry.blocks.engine.portable_engine.PortableEngineBlockItem;
-import net.electrisoma.bloodisfuel.registry.blocks.engine.portable_engine.PortableEngineGenerator;
+import net.electrisoma.bloodisfuel.content.equipment.engine.portable_engine.PortableEngineBlock;
+import net.electrisoma.bloodisfuel.content.equipment.engine.portable_engine.PortableEngineBlockItem;
+import net.electrisoma.bloodisfuel.content.equipment.engine.portable_engine.PortableEngineGenerator;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootPool;

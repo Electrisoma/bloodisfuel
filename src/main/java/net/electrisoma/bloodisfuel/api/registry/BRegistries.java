@@ -1,7 +1,7 @@
 package net.electrisoma.bloodisfuel.api.registry;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.api.engine.EngineFluidType;
+import net.electrisoma.bloodisfuel.api.equipment.engine.EngineFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
 
 import net.minecraft.core.Registry;

@@ -4,7 +4,7 @@ import net.electrisoma.bloodisfuel.api.data.*;
 import net.electrisoma.bloodisfuel.api.equipment.syringe.*;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
-import net.electrisoma.bloodisfuel.infrastructure.data.entries.BSyringeFluidTypes;
+import net.electrisoma.bloodisfuel.foundation.data.entries.BSyringeFluidTypes;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -95,7 +95,9 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
             player.hurt(player.damageSources().generic(), 2.0F);
             playSound(level, player, SoundEvents.PLAYER_ATTACK_CRIT);
 
-            advancementLogic(player, player, ctx);
+            boolean isDirect = player.getUUID().equals(player.getUUID());
+
+            advancementLogic(player, player, ctx, isDirect);
         }
     }
     default boolean extractFromTarget(ItemStack stack, LivingEntity target, Player player, RegistryAccess access) {
@@ -128,16 +130,18 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
             float damage = ctx.type() != null ? ctx.type().damage().orElse(2.0F) : 2.0F;
             target.hurt(player.damageSources().playerAttack(player), damage);
 
-            advancementLogic(player, target, ctx);
+            boolean isDirect = !target.getUUID().equals(player.getUUID());
+
+            advancementLogic(player, target, ctx, isDirect);
         }
         return true;
     }
 
-    default void advancementLogic(Player source, LivingEntity target, CombatContext ctx) {
+    default void advancementLogic(Player source, LivingEntity target, CombatContext ctx, boolean isDirect) {
         if (!(source instanceof ServerPlayer player)) return;
         if (ctx == null || ctx.type() == null) return;
 
-        boolean isSelf = source == target;
+        boolean isSelf = source.getUUID().equals(target.getUUID());
         boolean isMilk = SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), source.level().registryAccess());
         boolean hasBurning = ctx.type().hasBurning();
         boolean isHelpful = SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid()).stream()
@@ -159,18 +163,25 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
     default void applySyringeEffects(LivingEntity entity, CombatContext ctx) {
         if (ctx.fluid().isEmpty()) return;
 
+        if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), entity.level().registryAccess())) {
+            entity.removeAllEffects();
+            return;
+        }
+
         SyringeFluidTypeManager.getEffects(ctx.type(), ctx.fluid())
                 .forEach(effect -> entity.addEffect(new MobEffectInstance(effect)));
 
+        if (ctx.type().hasFood()) applyFoodEffect(entity, ctx.type());
         if (ctx.type().hasBurning()) applyBurningEffect(entity, ctx.type().burning().get());
+        if (ctx.type().hasExtinguishing()) applyExtinguishingEffect(entity, ctx.type());
         if (ctx.type().hasDrowning()) applyDrowningEffect(entity, ctx.type().drowning().get());
         if (ctx.type().hasFreezing()) applyFreezingEffect(entity, ctx.type().freezing().get());
-        if (ctx.type().hasFood()) applyFoodEffect(entity, ctx.type());
-        if (ctx.type().hasExtinguishing()) applyExtinguishingEffect(entity, ctx.type());
-
-        if (SyringeFluidTypeManager.isMilk(ctx.fluid().getFluid(), entity.level().registryAccess())) {
-            entity.removeAllEffects();
-        }
+    }
+    default void applyFoodEffect(LivingEntity entity, SyringeFluidType type) {
+        if (!(entity instanceof Player player) || type.food().isEmpty() || !player.getFoodData().needsFood()) return;
+        FoodProperties food = type.food().get();
+        player.getFoodData().eat(food.getNutrition(), food.getSaturationModifier());
+        playSound(player.level(), player, SoundEvents.GENERIC_EAT);
     }
     default void applyBurningEffect(LivingEntity entity, BurningData data) {
         if (entity == null || entity.level().isClientSide || data == null) return;
@@ -183,12 +194,6 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
         if (entity.level().isClientSide || type == null || !entity.isOnFire()) return;
         SyringeFluidTypeManager.applyExtinguishing(type, entity);
         playSound(entity.level(), entity, SoundEvents.FIRE_EXTINGUISH);
-    }
-    default void applyFoodEffect(LivingEntity entity, SyringeFluidType type) {
-        if (!(entity instanceof Player player) || type.food().isEmpty() || !player.getFoodData().needsFood()) return;
-        FoodProperties food = type.food().get();
-        player.getFoodData().eat(food.getNutrition(), food.getSaturationModifier());
-        playSound(player.level(), player, SoundEvents.GENERIC_EAT);
     }
     default void applyDrowningEffect(LivingEntity entity, DrowningData data) {
         if (entity.level().isClientSide || data == null) return;

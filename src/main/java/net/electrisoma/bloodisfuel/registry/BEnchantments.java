@@ -25,6 +25,5 @@ public class BEnchantments {
                     .addSlots(EquipmentSlot.MAINHAND)
                     .lang("Extra Vials")
                     .rarity(Enchantment.Rarity.UNCOMMON)
-                    .register()
-            ;
+                    .register();
 }

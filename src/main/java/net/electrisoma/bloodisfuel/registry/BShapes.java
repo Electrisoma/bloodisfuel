@@ -1,10 +1,13 @@
 package net.electrisoma.bloodisfuel.registry;
 
 import com.simibubi.create.AllShapes;
+
 import net.createmod.catnip.math.VoxelShaper;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
 
 public class BShapes extends AllShapes {
     public static final VoxelShaper

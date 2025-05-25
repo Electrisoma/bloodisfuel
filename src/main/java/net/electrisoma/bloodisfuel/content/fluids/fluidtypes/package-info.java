@@ -1,0 +1,7 @@
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
+
+package net.electrisoma.bloodisfuel.content.fluids.fluidtypes;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -1,5 +1,9 @@
 {
   "color": 792525,
+  "extinguishing": {
+    "duration_seconds": 1,
+    "heal_per_second": 4.0
+  },
   "fluids": [
     "minecraft:water"
   ]

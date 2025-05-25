@@ -59,8 +59,8 @@ public class BModTabs {
                     .build()
     );
 
-    private record RegistrateDisplayItemsGenerator(boolean addItems,
-                                                   RegistryObject<CreativeModeTab> tabFilter) implements DisplayItemsGenerator {
+    // logic
+    private record RegistrateDisplayItemsGenerator(boolean addItems, RegistryObject<CreativeModeTab> tabFilter) implements DisplayItemsGenerator {
         private static final Predicate<Item> IS_ITEM_3D_PREDICATE;
 
         static {
@@ -84,7 +84,6 @@ public class BModTabs {
                 return model.isGui3d();
             };
         }
-
         private static Predicate<Item> makeExclusionPredicate() {
             Set<Item> exclusions = new ReferenceOpenHashSet<>();
 
@@ -96,10 +95,6 @@ public class BModTabs {
             for (ItemProviderEntry<?> entry : simpleExclusions) exclusions.add(entry.asItem());
 
             return exclusions::contains;
-        }
-
-        private static List<ItemOrdering> makeOrderings() {
-            return new ReferenceArrayList<>();
         }
 
         private static Function<Item, ItemStack> makeStackFunc() {
@@ -119,7 +114,6 @@ public class BModTabs {
                 return new ItemStack(item);
             };
         }
-
         private static Function<Item, TabVisibility> makeVisibilityFunc() {
             Map<Item, TabVisibility> visibilities = new Reference2ObjectOpenHashMap<>();
 
@@ -140,7 +134,6 @@ public class BModTabs {
             items = new ReferenceArrayList<>(new ReferenceLinkedOpenHashSet<>(items));
             return items;
         }
-
         private List<Item> collectItems(Predicate<Item> exclusionPredicate) {
             List<Item> items = new ReferenceArrayList<>();
             for (RegistryEntry<Item> entry : BloodIsFuel.registrate().getAll(Registries.ITEM)) {
@@ -150,23 +143,6 @@ public class BModTabs {
                 if (!exclusionPredicate.test(item)) items.add(item);
             }
             return items;
-        }
-
-        private static void applyOrderings(List<Item> items, List<ItemOrdering> orderings) {
-            for (ItemOrdering ordering : orderings) {
-                int anchorIndex = items.indexOf(ordering.anchor());
-                if (anchorIndex != -1) {
-                    Item item = ordering.item();
-                    int itemIndex = items.indexOf(item);
-                    if (itemIndex != -1) {
-                        items.remove(itemIndex);
-                        if (itemIndex < anchorIndex) anchorIndex--;
-                    }
-                    if (ordering.type() == ItemOrdering.Type.AFTER)
-                        items.add(anchorIndex + 1, item);
-                    else items.add(anchorIndex, item);
-                }
-            }
         }
 
         @Override
@@ -185,20 +161,35 @@ public class BModTabs {
             applyOrderings(items, orderings);
             outputAll(output, items, stackFunc, visibilityFunc);
         }
-
         private static void outputAll(Output output, List<Item> items, Function<Item, ItemStack> stackFunc, Function<Item, TabVisibility> visibilityFunc) {
             for (Item item : items) output.accept(stackFunc.apply(item), visibilityFunc.apply(item));
         }
-
+        private static List<ItemOrdering> makeOrderings() {
+            return new ReferenceArrayList<>();
+        }
+        private static void applyOrderings(List<Item> items, List<ItemOrdering> orderings) {
+            for (ItemOrdering ordering : orderings) {
+                int anchorIndex = items.indexOf(ordering.anchor());
+                if (anchorIndex != -1) {
+                    Item item = ordering.item();
+                    int itemIndex = items.indexOf(item);
+                    if (itemIndex != -1) {
+                        items.remove(itemIndex);
+                        if (itemIndex < anchorIndex) anchorIndex--;
+                    }
+                    if (ordering.type() == ItemOrdering.Type.AFTER)
+                        items.add(anchorIndex + 1, item);
+                    else items.add(anchorIndex, item);
+                }
+            }
+        }
         private record ItemOrdering(Item item, Item anchor, Type type) {
             public static ItemOrdering before(Item item, Item anchor) {
                 return new ItemOrdering(item, anchor, Type.BEFORE);
             }
-
             public static ItemOrdering after(Item item, Item anchor) {
                 return new ItemOrdering(item, anchor, Type.AFTER);
             }
-
             public enum Type {
                 BEFORE,
                 AFTER

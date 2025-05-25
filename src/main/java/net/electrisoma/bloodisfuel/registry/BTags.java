@@ -42,7 +42,6 @@ public class BTags {
     }
 
     public enum NameSpace {
-
         MOD(BloodIsFuel.MOD_ID, false, true),
 
         FORGE("forge"),
@@ -62,7 +61,6 @@ public class BTags {
         NameSpace(String id) {
             this(id, true, false);
         }
-
         NameSpace(String id, boolean optionalDefault, boolean alwaysDatagenDefault) {
             this.id = id;
             this.optionalDefault = optionalDefault;
@@ -70,7 +68,6 @@ public class BTags {
         }
     }
     public enum BBlockTags {
-
         CARBOHYDRATES,
 
         MEATS,
@@ -83,19 +80,15 @@ public class BTags {
         BBlockTags() {
             this(NameSpace.MOD);
         }
-
         BBlockTags(NameSpace namespace) {
             this(namespace, namespace.optionalDefault, namespace.alwaysDatagenDefault);
         }
-
         BBlockTags(NameSpace namespace, String path) {
             this(namespace, path, namespace.optionalDefault, namespace.alwaysDatagenDefault);
         }
-
         BBlockTags(NameSpace namespace, boolean optional, boolean alwaysDatagen) {
             this(namespace, null, optional, alwaysDatagen);
         }
-
         BBlockTags(NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
             ResourceLocation id = new ResourceLocation(namespace.id, path == null ? Lang.asId(name()) : path);
             if (optional) {
@@ -111,11 +104,9 @@ public class BTags {
             return block.builtInRegistryHolder()
                     .is(tag);
         }
-
         public boolean matches(ItemStack stack) {
             return stack.getItem() instanceof BlockItem blockItem && matches(blockItem.getBlock());
         }
-
         public boolean matches(BlockState state) {
             return state.is(tag);
         }
@@ -123,7 +114,6 @@ public class BTags {
         private static void register() {}
     }
     public enum BItemTags {
-
         SYRINGE_BLADE,
         SYRINGE_GUN,
 
@@ -145,19 +135,15 @@ public class BTags {
         BItemTags() {
             this(NameSpace.MOD);
         }
-
         BItemTags(NameSpace namespace) {
             this(namespace, namespace.optionalDefault, namespace.alwaysDatagenDefault);
         }
-
         BItemTags(NameSpace namespace, String path) {
             this(namespace, path, namespace.optionalDefault, namespace.alwaysDatagenDefault);
         }
-
         BItemTags(NameSpace namespace, boolean optional, boolean alwaysDatagen) {
             this(namespace, null, optional, alwaysDatagen);
         }
-
         BItemTags(NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
             ResourceLocation id = new ResourceLocation(namespace.id, path == null ? Lang.asId(name()) : path);
             if (optional) {
@@ -173,7 +159,6 @@ public class BTags {
             return item.builtInRegistryHolder()
                     .is(tag);
         }
-
         public boolean matches(ItemStack stack) {
             return stack.is(tag);
         }
@@ -181,7 +166,6 @@ public class BTags {
         private static void register() {}
     }
     public enum BFluidTags {
-
         VISCERA,
         BLOOD,
         ENRICHED_BLOOD,
@@ -189,10 +173,10 @@ public class BTags {
         DIESEL_INFUSED_BLOOD,
         GASOLINE_INFUSED_BLOOD,
         BOILING_BLOOD,
-        BLAZING_BLOOD,
+        BLAZING_BLOOD(FORGE),
         UBER_FLUID,
 
-        DIVING_FLUID,
+        DIVING_FLUID, // obsolete in the next update
 
         LIQUID_CARBOHYDRATES,
 
@@ -208,19 +192,15 @@ public class BTags {
         BFluidTags() {
             this(NameSpace.MOD);
         }
-
         BFluidTags(NameSpace namespace) {
             this(namespace, namespace.optionalDefault, namespace.alwaysDatagenDefault);
         }
-
         BFluidTags(NameSpace namespace, String path) {
             this(namespace, path, namespace.optionalDefault, namespace.alwaysDatagenDefault);
         }
-
         BFluidTags(NameSpace namespace, boolean optional, boolean alwaysDatagen) {
             this(namespace, null, optional, alwaysDatagen);
         }
-
         BFluidTags(NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
             ResourceLocation id = new ResourceLocation(namespace.id, path == null ? Lang.asId(name()) : path);
             if (optional) {
@@ -235,7 +215,6 @@ public class BTags {
         public boolean matches(Fluid fluid) {
             return fluid.is(tag);
         }
-
         public boolean matches(FluidState state) {
             return state.is(tag);
         }
@@ -252,19 +231,15 @@ public class BTags {
         BEntityTags() {
             this(NameSpace.MOD);
         }
-
         BEntityTags(NameSpace namespace) {
             this(namespace, namespace.optionalDefault, namespace.alwaysDatagenDefault);
         }
-
         BEntityTags(NameSpace namespace, String path) {
             this(namespace, path, namespace.optionalDefault, namespace.alwaysDatagenDefault);
         }
-
         BEntityTags(NameSpace namespace, boolean optional, boolean alwaysDatagen) {
             this(namespace, null, optional, alwaysDatagen);
         }
-
         BEntityTags(NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
             ResourceLocation id = new ResourceLocation(namespace.id, path == null ? Lang.asId(name()) : path);
             if (optional) {
@@ -278,7 +253,6 @@ public class BTags {
         public boolean matches(EntityType<?> type) {
             return type.is(tag);
         }
-
         public boolean matches(Entity entity) {
             return matches(entity.getType());
         }
@@ -295,19 +269,15 @@ public class BTags {
         BRecipeSerializerTags() {
             this(NameSpace.MOD);
         }
-
         BRecipeSerializerTags(NameSpace namespace) {
             this(namespace, namespace.optionalDefault, namespace.alwaysDatagenDefault);
         }
-
         BRecipeSerializerTags(NameSpace namespace, String path) {
             this(namespace, path, namespace.optionalDefault, namespace.alwaysDatagenDefault);
         }
-
         BRecipeSerializerTags(NameSpace namespace, boolean optional, boolean alwaysDatagen) {
             this(namespace, null, optional, alwaysDatagen);
         }
-
         BRecipeSerializerTags(NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
             ResourceLocation id = new ResourceLocation(namespace.id, path == null ? Lang.asId(name()) : path);
             if (optional) {
