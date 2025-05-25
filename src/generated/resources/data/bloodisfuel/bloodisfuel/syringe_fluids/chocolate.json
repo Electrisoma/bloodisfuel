@@ -1,7 +1,7 @@
 {
   "color": 8999209,
   "fluids": [
-    "create:chocolate"
+    "#forge:chocolate"
   ],
   "food": {
     "nutrition": 4,

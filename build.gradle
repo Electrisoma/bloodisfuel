@@ -15,7 +15,7 @@ plugins {
 apply from: "./gradle/java.gradle"
 apply from: "gradle/property_loader.gradle"
 
-boolean dev=System.getenv('RELEASE') == null || System.getenv('RELEASE').equals('false')
+boolean dev=System.getenv('RELEASE') == null || System.getenv('RELEASE') == 'false'
 ext.buildNumber=System.getenv('BUILD_NUMBER')
 String gitHash="${calculateGitHash() + (hasUnstaged() ? "-modified" : "")}"
 
@@ -57,7 +57,7 @@ legacyForge {
     }
 
     mods {
-        bloodisfuel {
+        "${mod_id}" {
             sourceSet sourceSets.main
         }
     }
@@ -158,8 +158,8 @@ dependencies {
     modRuntimeOnly("maven.modrinth:citadel:2.6.0")
 
     // TConstruct, Mantle
-    //implementation fg.deobf("curse.maven:mantle-74924:6041712")
-    //implementation fg.deobf("curse.maven:tinkers-construct-74072:6041763")
+    modImplementation("curse.maven:tinkers-construct-74072:6266282")
+    modImplementation("curse.maven:mantle-74924:6258424")
 
     modRuntimeOnly("curse.maven:embeddium-908741:5681725")
 //    modRuntimeOnly("curse.maven:oculus-581495:6020952")

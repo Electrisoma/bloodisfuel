@@ -1,0 +1,11 @@
+{
+  "color": 8393996,
+  "fluids": [
+    "#forge:beetroot_soup"
+  ],
+  "food": {
+    "nutrition": 6,
+    "saturation": 7.2
+  },
+  "opaque": true
+}

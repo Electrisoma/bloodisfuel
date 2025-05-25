@@ -1,0 +1,11 @@
+{
+  "color": 11064437,
+  "fluids": [
+    "#forge:suspicious_stew"
+  ],
+  "food": {
+    "nutrition": 6,
+    "saturation": 7.2
+  },
+  "opaque": true
+}

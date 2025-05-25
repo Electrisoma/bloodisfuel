@@ -8,9 +8,11 @@ import com.simibubi.create.Create;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.alchemy.PotionUtils;
@@ -70,15 +72,25 @@ public class SyringeFluidTypeManager {
         Fluid fluid = stack.getFluid();
         ResourceLocation fluidKey = ForgeRegistries.FLUIDS.getKey(fluid);
         if (fluidKey == null) return EMPTY;
-        //noinspection deprecation
-        Holder<Fluid> holder = fluid.builtInRegistryHolder();
-        Registry<SyringeFluidType> registry = access.registryOrThrow(BRegistries.SYRINGE_FLUIDS);
-        Optional<SyringeFluidType> dynamicMatch = registry.stream()
-                .filter(type -> type.fluids().stream().anyMatch(holderSet -> holderSet.contains(holder)))
+
+        Registry<SyringeFluidType> syringeRegistry = access.registryOrThrow(BRegistries.SYRINGE_FLUIDS);
+        Registry<Fluid> fluidRegistry = access.registryOrThrow(BuiltInRegistries.FLUID.key());
+
+        ResourceKey<Fluid> fluidResourceKey = ResourceKey.create(BuiltInRegistries.FLUID.key(), fluidKey);
+        Optional<Holder.Reference<Fluid>> fluidHolderOpt = fluidRegistry.getHolder(fluidResourceKey);
+
+        if (fluidHolderOpt.isEmpty()) return EMPTY;
+        Holder<Fluid> fluidHolder = fluidHolderOpt.get();
+
+        Optional<SyringeFluidType> foundType = syringeRegistry.stream()
+                .filter(type -> type.fluids().stream()
+                        .anyMatch(holderSet -> holderSet.contains(fluidHolder)))
                 .findFirst();
-        if (dynamicMatch.isPresent()) return dynamicMatch.get();
-        if (registry.containsKey(BSyringeFluidTypes.POTION)) return registry.get(BSyringeFluidTypes.POTION);
-        if (registry.containsKey(BSyringeFluidTypes.FALLBACK)) return registry.get(BSyringeFluidTypes.FALLBACK);
+
+        if (foundType.isPresent()) return foundType.get();
+
+        if (syringeRegistry.containsKey(BSyringeFluidTypes.POTION)) return syringeRegistry.get(BSyringeFluidTypes.POTION);
+        if (syringeRegistry.containsKey(BSyringeFluidTypes.FALLBACK)) return syringeRegistry.get(BSyringeFluidTypes.FALLBACK);
         return EMPTY;
     }
     /**

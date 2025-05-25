@@ -20,8 +20,7 @@ public class BPotatoCannonProjectiles {
                 .renderTumbling()
                 .onEntityHit(new PotionEffect(MobEffects.POISON, 1, 160, true))
                 .addItems(BItems.DRAINED_MEAT)
-                .build()
-        );
+                .build());
     }
 
     private static void register(BootstapContext<PotatoCannonProjectileType> ctx, String name, PotatoCannonProjectileType type) {

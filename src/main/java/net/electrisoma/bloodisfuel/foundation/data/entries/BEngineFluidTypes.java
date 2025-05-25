@@ -23,49 +23,39 @@ public class BEngineFluidTypes {
         register(ctx, "fallback", new EngineFluidType.Builder()
                 .fluidTag("forge", "diesel", fluidLookup)
                 .stats(96.0F, 2048F, 1F)
-                .build()
-        );
+                .build());
         register(ctx, "diesel", new EngineFluidType.Builder()
                 .fluidTag("forge", "diesel", fluidLookup)
                 .stats(96.0F, 2048F, 1F)
-                .build()
-        );
+                .build());
         register(ctx, "gasoline", new EngineFluidType.Builder()
                 .fluidTag("forge", "gasoline", fluidLookup)
                 .stats(96.0F, 2048F, 1F)
-                .build()
-        );
-
+                .build());
         register(ctx, "viscera", new EngineFluidType.Builder()
                 .fluids(BFluids.VISCERA.getSource())
                 .stats(96.0F, 1024F, 10F)
-                .build()
-        );
+                .build());
         register(ctx, "blood", new EngineFluidType.Builder()
                 .fluids(BFluids.BLOOD.getSource())
                 .stats(96.0F, 2048F, 10F)
-                .build()
-        );
+                .build());
         register(ctx, "enriched_blood", new EngineFluidType.Builder()
                 .fluids(BFluids.ENRICHED_BLOOD.getSource())
                 .stats(96.0F, 3072F, 10F)
-                .build()
-        );
+                .build());
         register(ctx, "oil_enriched_blood", new EngineFluidType.Builder()
                 .fluids(BFluids.OIL_ENRICHED_BLOOD.getSource())
                 .stats(96.0F, 4096F, 10F)
-                .build()
-        );
+                .build());
         register(ctx, "diesel_infused_blood", new EngineFluidType.Builder()
                 .fluids(BFluids.DIESEL_INFUSED_BLOOD.getSource())
                 .stats(96.0F, 4096F, 10F)
-                .build()
-        );
+                .build());
         register(ctx, "gasoline_infused_blood", new EngineFluidType.Builder()
                 .fluids(BFluids.GASOLINE_INFUSED_BLOOD.getSource())
                 .stats(96.0F, 4096F, 10F)
-                .build()
-        );
+                .build());
     }
 
     private static void register(BootstapContext<EngineFluidType> ctx, String name, EngineFluidType type) {

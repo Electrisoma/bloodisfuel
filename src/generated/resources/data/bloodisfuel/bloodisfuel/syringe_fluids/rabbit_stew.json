@@ -1,0 +1,11 @@
+{
+  "color": 12945510,
+  "fluids": [
+    "#forge:rabbit_stew"
+  ],
+  "food": {
+    "nutrition": 10,
+    "saturation": 12.0
+  },
+  "opaque": true
+}
