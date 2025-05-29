@@ -25,6 +25,7 @@ public class BEntityTypes {
         BloodIsFuel.LOGGER.info("Registering entity types for " + BloodIsFuel.NAME);
     }
 
+    // TODO: add mobs and possibly add extra rendering to the syringe projectile
     public static final EntityEntry<SyringeProjectileEntity> SYRINGE_PROJECTILE =
             register("syringe_projectile", SyringeProjectileEntity::new, () -> SyringeProjectileRenderer::new,
                     MobCategory.MISC, 4, 20, true, false, SyringeProjectileEntity::build).register();

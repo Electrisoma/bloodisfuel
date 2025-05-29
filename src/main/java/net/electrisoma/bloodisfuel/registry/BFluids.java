@@ -27,6 +27,7 @@ public class BFluids {
         BloodIsFuel.LOGGER.info("Registering fluids for " + BloodIsFuel.NAME);
     }
 
+    // TODO: finish the fluids and textures
     public static final FluidEntry<ForgeFlowingFluid.Flowing> VISCERA =
             REGISTRATE.standardFluid("viscera",
                             BloodFluidType.create(0x650B0F,
@@ -95,11 +96,11 @@ public class BFluids {
                     .register();
     public static final FluidEntry<ForgeFlowingFluid.Flowing> OIL_ENRICHED_BLOOD =
             REGISTRATE.standardFluid("oil_enriched_blood",
-                            BloodFluidType.create(0x640000,
-                                    () -> 1f / 16f * BConfigs.client().fluidTransparencyMultiplier.getF(),"blood")
+                            BloodFluidType.create(0x570000,
+                                    () -> 1f / 16f * BConfigs.client().fluidTransparencyMultiplier.getF(), "blood")
                     ).lang("Oil Enriched Blood")
                     .properties(b -> b
-                            .viscosity(1250)
+                            .viscosity(1000)
                             .density(500))
                     .fluidProperties(p -> p
                             .levelDecreasePerBlock(2)
@@ -108,12 +109,12 @@ public class BFluids {
                             .explosionResistance(100f))
                     .tag(FluidTags.WATER)
                     .tag(BTags.BFluidTags.DIVING_FLUID.tag)
-                    .tag(BTags.BFluidTags.OIL_ENRICHED_BLOOD.tag)
-                            .source(BloodFluid.Source::new)
-                            .block(BloodBlock::new).build()
-                            .bucket()
-                            .tag(BTags.forgeItemTag("buckets/oil_enriched_blood"))
-                            .build()
+                    .tag(BTags.BFluidTags.BLOOD.tag)
+                        .source(BloodFluid.Source::new)
+                        .block(BloodBlock::new).build()
+                        .bucket()
+                        .tag(BTags.forgeItemTag("buckets/oil_enriched_blood"))
+                        .build()
                     .register();
     public static final FluidEntry<ForgeFlowingFluid.Flowing> DIESEL_INFUSED_BLOOD =
             REGISTRATE.standardFluid("diesel_infused_blood",

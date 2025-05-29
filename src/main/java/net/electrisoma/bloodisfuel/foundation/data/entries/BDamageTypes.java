@@ -4,9 +4,9 @@ import net.electrisoma.bloodisfuel.BloodIsFuel;
 
 import com.simibubi.create.foundation.damageTypes.DamageTypeBuilder;
 
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageEffects;
 

@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.registry;
 
+import com.simibubi.create.AllTags;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.content.equipment.syringe_gun.SyringeGunItem;
 import net.electrisoma.bloodisfuel.content.equipment.syringe_blade.SyringeBladeItem;
@@ -37,17 +38,24 @@ public class BItems {
                                     .effect(new MobEffectInstance(MobEffects.POISON, 300, 2),0.8f)
                                     .build()))
                     .register();
+    public static final ItemEntry<BottleItem> BLOOD_BOTTLE =
+            REGISTRATE.item("blood_bottle", BottleItem::new)
+                    .tag(AllTags.AllItemTags.UPRIGHT_ON_BELT.tag)
+                    .register();
+
     public static final ItemEntry<SyringeBladeItem> SYRINGE_BLADE =
             REGISTRATE.item("syringe_blade", p ->
                             new SyringeBladeItem(Tiers.IRON,3,-2.4f,p))
                     .model(AssetLookup.itemModelWithPartials())
                     .tag(BTags.BItemTags.SYRINGE_BLADE.tag)
+                    .tag(BTags.BItemTags.SYRINGES.tag)
                     .register();
     public static final ItemEntry<SyringeGunItem> SYRINGE_GUN =
             REGISTRATE.item("syringe_gun", SyringeGunItem::new)
                     .model(AssetLookup.itemModelWithPartials())
                     .properties(p -> p.stacksTo(1))
                     .tag(BTags.BItemTags.SYRINGE_GUN.tag)
+                    .tag(BTags.BItemTags.SYRINGES.tag)
                     .register();
     public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_BLADE =
             REGISTRATE.item("incomplete_syringe_blade", SequencedAssemblyItem::new)

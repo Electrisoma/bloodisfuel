@@ -1,0 +1,16 @@
+{
+  "attack_speed": -2.5,
+  "burning": {
+    "damage_per_second": 7.0,
+    "duration_seconds": 2
+  },
+  "color": 16756290,
+  "damage": 6.0,
+  "fluids": [
+    "#tconstruct:blazing_blood"
+  ],
+  "glowing": true,
+  "mobPriority": 1,
+  "mobs": "minecraft:blaze",
+  "opaque": true
+}

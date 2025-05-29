@@ -7,14 +7,9 @@ import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
 
 import com.simibubi.create.AllFluids;
 
-import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
-import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
-import com.github.alexmodguy.alexscaves.server.block.fluid.ACFluidRegistry;
-
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -25,30 +20,28 @@ import net.minecraftforge.common.Tags;
 
 
 public class BSyringeFluidTypes {
-    public static final ResourceKey<SyringeFluidType> POTION =
-            ResourceKey.create(BRegistries.SYRINGE_FLUIDS, BloodIsFuel.asResource("potion"));
     public static final ResourceKey<SyringeFluidType> FALLBACK =
             ResourceKey.create(BRegistries.SYRINGE_FLUIDS, BloodIsFuel.asResource("fallback"));
+    public static final ResourceKey<SyringeFluidType> POTION =
+            ResourceKey.create(BRegistries.SYRINGE_FLUIDS, BloodIsFuel.asResource("potion"));
 
     public static void bootstrap(BootstapContext<SyringeFluidType> ctx) {
         var fluidLookup = (HolderLookup.RegistryLookup<Fluid>) ctx.lookup(Registries.FLUID);
 
-        register(ctx, "potion", new SyringeFluidType.Builder()
-                .fluids(AllFluids.POTION.getSource()) // potion support, the color is overridden later
-                .appearance(0xFFFFFF, false, true)
-                .build());
+        // always
         register(ctx, "fallback", new SyringeFluidType.Builder()
                 .fluids(BFluids.BLOOD.getSource()) // default = blood
                 .appearance(0xF10B0B, true, false)
                 .stats(6, -2.5F)
-                .effect(MobEffects.WEAKNESS, 500, 1)
+                .addEffect(MobEffects.WEAKNESS, 500, 1)
                 .build());
-        register(ctx, "milk", new SyringeFluidType.Builder()
-                .fluidTag(Tags.Fluids.MILK.location(), fluidLookup)
-                .appearance(0xFFFFFF, true)
-                .effect(MobEffects.DAMAGE_BOOST, 100)
-                .mobs(EntityType.COW)
+        register(ctx, "potion", new SyringeFluidType.Builder()
+                .fluids(AllFluids.POTION.getSource()) // potion support, the color is overridden later
+                .fluidTag("forge", "potion", fluidLookup)
+                .appearance(0xFFFFFF, false, true)
                 .build());
+
+        // vanilla and forge
         register(ctx, "water", new SyringeFluidType.Builder()
                 .fluids(Fluids.WATER.getSource())
                 .color(0x0C17CD)
@@ -59,11 +52,17 @@ public class BSyringeFluidTypes {
                 .appearance(0xFF6A00, true, true)
                 .burning(15, 4F)
                 .build());
+        register(ctx, "milk", new SyringeFluidType.Builder()
+                .fluidTag(Tags.Fluids.MILK.location(), fluidLookup)
+                .appearance(0xFFFFFF, true)
+                .addEffect(MobEffects.DAMAGE_BOOST, 100)
+                .addMob(EntityType.COW)
+                .build());
         register(ctx, "honey", new SyringeFluidType.Builder()
                 .fluidTag("forge", "honey", fluidLookup)
                 .appearance(0xFFBF00, true)
                 .food(4, 2)
-                .mobs(EntityType.BEE)
+                .addMob(EntityType.BEE)
                 .build());
         register(ctx, "chocolate", new SyringeFluidType.Builder()
                 .fluidTag("forge", "chocolate", fluidLookup)
@@ -85,32 +84,47 @@ public class BSyringeFluidTypes {
                 .appearance(0xA8D475, true)
                 .food(6, 7.2F)
                 .build());
-        register(ctx, "acid", new SyringeFluidType.Builder()
-                .fluidTag("forge", "acid", fluidLookup)
-                .appearance(0x61DE2A, true, true)
-                .effect(MobEffects.WITHER, 300, 1)
-                .build());
         register(ctx, "experience", new SyringeFluidType.Builder()
                 .fluidTag("forge", "experience", fluidLookup)
                 .appearance(0x44EC16, true, true)
                 .build());
+        register(ctx, "acid", new SyringeFluidType.Builder()
+                .fluidTag("forge", "acid", fluidLookup)
+                .appearance(0x61DE2A, true, true)
+                .addEffect(MobEffects.WITHER, 300, 1)
+                .build());
+        register(ctx, "blazing_blood", new SyringeFluidType.Builder()
+                .fluidTag("forge", "blazing_blood", fluidLookup)
+                .appearance(0xFFAE42, true, true)
+                .stats(6, -2.5F)
+                .burning(4, 4F)
+                .addMob(EntityType.BLAZE)
+                .build());
+
+        // blood is fuel
+        register(ctx, "molten", new SyringeFluidType.Builder()
+                .fluidTag(BloodIsFuel.MOD_ID, "molten", fluidLookup)
+                .appearance(0xFF4500, true, true)
+                .burning(15, 4F)
+                .build());
         register(ctx, "viscera", new SyringeFluidType.Builder()
                 .fluids(BFluids.VISCERA.getSource())
                 .appearance(0xDF4416, true)
-                .effect(MobEffects.POISON, 500, 1)
+                .addEffect(MobEffects.POISON, 500, 1)
                 .stats(6, -2.5F)
-                .mobs(EntityType.ZOMBIE)
+                .addMob(EntityType.ZOMBIE)
                 .build());
         register(ctx, "blood", new SyringeFluidType.Builder()
                 .fluids(BFluids.BLOOD.getSource())
                 .appearance(0x880000, true)
-                .effect(MobEffects.WEAKNESS, 500, 1)
+                .addEffect(MobEffects.WEAKNESS, 500, 1)
+                .addEffect(MobEffects.MOVEMENT_SLOWDOWN, 500, 1, false, true, false)
                 .stats(6, -2.5F)
                 .build());
         register(ctx, "enriched_blood", new SyringeFluidType.Builder()
                 .fluids(BFluids.ENRICHED_BLOOD.getSource())
                 .appearance(0xE11313, true)
-                .effect(MobEffects.WEAKNESS, 500, 1)
+                .addEffect(MobEffects.WEAKNESS, 500, 1)
                 .stats(6, -2.5F)
                 .build());
         register(ctx, "boiling_blood", new SyringeFluidType.Builder()
@@ -119,19 +133,21 @@ public class BSyringeFluidTypes {
                 .stats(6, -2.5F)
                 .burning(4, 4F)
                 .build());
-        register(ctx, "blazing_blood", new SyringeFluidType.Builder()
-                .fluidTag("forge", "blazing_blood", fluidLookup)
+
+        // mod compat
+        register(ctx, "purple_soda_from_fishes", new SyringeFluidType.Builder()
+                .fluids("alexscaves:purple_soda")
+                .color(0x7F00FF)
+                .addMob("alexscaves:sweetish_fish")
+                .addEffect("alexscaves:sugar_rush", 500, 1)
+                .food(4, 0.4F)
+                .build());
+        register(ctx, "tc_blazing_blood", new SyringeFluidType.Builder()
+                .fluidTag("tconstruct", "blazing_blood", fluidLookup)
                 .appearance(0xFFAE42, true, true)
                 .stats(6, -2.5F)
-                .burning(4, 4F)
-                .mobs(EntityType.BLAZE)
-                .build());
-        register(ctx, "purple_soda_from_fishes", new SyringeFluidType.Builder()
-                .fluids(ACFluidRegistry.PURPLE_SODA_FLUID_SOURCE.get())
-                .color(0x7F00FF)
-                .mobs(ACEntityRegistry.SWEETISH_FISH.get())
-                .effect(ACEffectRegistry.SUGAR_RUSH.get(), 500, 1)
-                .food(4, 0.4F)
+                .burning(2, 7F)
+                .addMob(1, EntityType.BLAZE)
                 .build());
         register(ctx, "nutrients_fluid", new SyringeFluidType.Builder()
                 .fluidTag("biofactory", "nutrients_fluid", fluidLookup)

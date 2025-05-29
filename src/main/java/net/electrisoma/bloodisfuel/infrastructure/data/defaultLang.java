@@ -9,12 +9,10 @@ import java.util.function.BiConsumer;
 
 
 public class defaultLang {
-
     static String tab = "itemGroup";
     static String dm = "death.attack";
 
     public static void provideLang(BiConsumer<String, String> consumer) {
-
         var gun = BItems.SYRINGE_GUN;
         var blade = BItems.SYRINGE_BLADE;
         var meat = BItems.DRAINED_MEAT;
@@ -28,6 +26,8 @@ public class defaultLang {
 
         consume(consumer, dm, "syringe_gun", "%1$s was shot by %2$s's Syringe Gun");
         consume(consumer, dm, "syringe_gun.item", "%1$s was shot by %2$s using %3$s");
+
+        jei(consumer, "syringe_fill", "Syringe Filling");
 
         // tooltips
         tooltipSummary(consumer, blade, "Extract and inject the _fluid_ of your _friends_ or _enemies_!");
@@ -82,5 +82,9 @@ public class defaultLang {
     }
     private static void tooltipMisc(BiConsumer<String, String> consumer, String key, String desc) {
         consume(consumer, BloodIsFuel.MOD_ID + ".tooltip." + key, desc);
+    }
+
+    private static void jei(BiConsumer<String, String> consumer, String key, String desc) {
+        consume(consumer, BloodIsFuel.MOD_ID + ".jei." + key, desc);
     }
 }

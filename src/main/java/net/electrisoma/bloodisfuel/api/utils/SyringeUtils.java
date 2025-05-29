@@ -41,8 +41,8 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
         return SyringeFluidTypeManager.getAll(access).stream()
                 .filter(type -> ForgeRegistries.ENTITY_TYPES.getHolder(target.getType())
                         .map(holder -> type.mobs().map(set -> set.contains(holder)).orElse(false))
-                        .orElse(false))
-                .findFirst().orElse(null);
+                        .orElse(false)).min((a, b) -> Integer.compare(b.mobPriority(), a.mobPriority()))
+                .orElse(null);
     }
     default SyringeFluidType getFallback(RegistryAccess access) {
         return access.registryOrThrow(BRegistries.SYRINGE_FLUIDS)

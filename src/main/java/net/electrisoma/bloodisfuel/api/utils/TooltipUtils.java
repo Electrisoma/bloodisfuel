@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
+import net.electrisoma.bloodisfuel.api.data.EffectsData;
 import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidTypeManager;
 
@@ -10,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -27,9 +29,7 @@ import javax.annotation.Nullable;
 public interface TooltipUtils extends CombatContextUtils, FluidUtils {
     default String formatDuration(int ticks) {
         int seconds = ticks / 20;
-        int minutes = seconds / 60;
-        seconds %= 60;
-        return String.format("%d:%02d", minutes, seconds);
+        return String.format("%d:%02d", seconds / 60, seconds % 60);
     }
     static String toRoman(int number) {
         if (number < 1 || number > 10) return String.valueOf(number);
@@ -43,23 +43,24 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
         return Math.round(13 * (getCurrentFillLevel(stack) / (float) getCapacity(stack)));
     }
     default int getBarColor(ItemStack stack) {
-        Level level = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null;
+        Level level = Minecraft.getInstance().player != null
+                ? Minecraft.getInstance().player.level()
+                : null;
         RegistryAccess access = level != null ? level.registryAccess() : null;
 
-        FluidStack fluidStack = readFluid(stack);
-        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
-
-        return SyringeFluidTypeManager.getColor(type, fluidStack);
+        FluidStack fluid = readFluid(stack);
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluid, access);
+        return SyringeFluidTypeManager.getColor(type, fluid);
     }
 
-    default void tooltipMaker(java.util.List<Component> tooltip, ItemStack stack) {
+    default void tooltipMaker(List<Component> tooltip, ItemStack stack) {
         FluidStack fluid = readFluid(stack);
-        // empty
+
         if (stack.getTag() == null || fluid.isEmpty()) {
             tooltip.add(Component.translatable("bloodisfuel.tooltip.empty").withStyle(ChatFormatting.GRAY));
             return;
         }
-        // fluid
+
         tooltip.add(CreateLang.fluidName(fluid).component()
                 .withStyle(ChatFormatting.GRAY)
                 .append(" ")
@@ -72,43 +73,49 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
     default void itemToolTipMaker(List<Component> tooltip, ItemStack stack, @Nullable RegistryAccess registryAccess) {
         FluidStack fluid = readFluid(stack);
         SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluid, registryAccess);
-        java.util.List<MobEffectInstance> effects = SyringeFluidTypeManager.getEffects(type, fluid);
 
-        // mob effect
+        List<MobEffectInstance> effects = type.isPotionType() && fluid.hasTag()
+                ? PotionUtils.getAllEffects(fluid.getTag())
+                : type.effects()
+                .map(list -> list.stream()
+                        .filter(EffectsData::visibleInTooltips)
+                        .map(EffectsData::effect)
+                        .toList())
+                .orElse(List.of());
+
         for (MobEffectInstance effect : effects) {
-            Component effectName = Component.translatable(effect.getDescriptionId())
+            Component name = Component.translatable(effect.getDescriptionId())
                     .withStyle(effect.getEffect().isBeneficial() ? ChatFormatting.GREEN : ChatFormatting.RED);
             Component level = Component.literal(" " + toRoman(effect.getAmplifier() + 1))
                     .withStyle(ChatFormatting.GOLD);
-            Component duration = Component.empty();
-            if (effect.getDuration() > 1) {
-                duration = Component.literal(" (" + formatDuration(effect.getDuration()) + ")")
-                        .withStyle(ChatFormatting.GRAY);
-            }
+            Component duration = effect.getDuration() > 1
+                    ? Component.literal(" (" + formatDuration(effect.getDuration()) + ")")
+                    .withStyle(ChatFormatting.GRAY)
+                    : Component.empty();
+
             tooltip.add(Component.literal("• ").withStyle(ChatFormatting.GRAY)
                     .append(Component.translatable("bloodisfuel.tooltip.effect").withStyle(ChatFormatting.GRAY))
-                    .append(": ")
-                    .append(effectName)
-                    .append(level)
-                    .append(duration));
+                    .append(": ").append(name).append(level).append(duration));
         }
-        // burning
-        if (type != null && type.hasBurning()) {
+
+        if (type.hasBurning()) {
             type.burning().ifPresent(burning -> {
                 int duration = burning.durationSeconds();
-                float damage = burning.damagePerSecond();
+                float dps = burning.damagePerSecond();
 
-                MutableComponent line = Component.literal("• ").withStyle(ChatFormatting.GRAY)
+                MutableComponent line = Component.literal("• ")
+                        .withStyle(ChatFormatting.GRAY)
                         .append(Component.translatable("bloodisfuel.tooltip.burning").withStyle(ChatFormatting.RED))
                         .append(": ");
 
-                if (duration > 0)
+                if (duration > 0) {
                     line.append(Component.literal(String.valueOf(duration)).withStyle(ChatFormatting.GOLD))
                             .append(Component.translatable("bloodisfuel.tooltip.seconds").withStyle(ChatFormatting.GOLD));
+                }
 
-                if (damage > 0) {
+                if (dps > 0) {
                     if (duration > 0) line.append(" ");
-                    line.append(Component.literal("(" + damage + " ").withStyle(ChatFormatting.RED))
+                    line.append(Component.literal("(" + dps + " ").withStyle(ChatFormatting.RED))
                             .append(Component.translatable("bloodisfuel.tooltip.damage"))
                             .append(Component.literal("/"))
                             .append(Component.translatable("bloodisfuel.tooltip.seconds"))
@@ -118,19 +125,21 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
                 tooltip.add(line);
             });
         }
-        // extinguishing
-        if (type != null && type.hasExtinguishing()) {
-            type.extinguishing().ifPresent(extinguishing -> {
-                int duration = extinguishing.durationSeconds();
-                float heal = extinguishing.healPerSecond();
 
-                MutableComponent line = Component.literal("• ").withStyle(ChatFormatting.GRAY)
+        if (type.hasExtinguishing()) {
+            type.extinguishing().ifPresent(ext -> {
+                int duration = ext.durationSeconds();
+                float heal = ext.healPerSecond();
+
+                MutableComponent line = Component.literal("• ")
+                        .withStyle(ChatFormatting.GRAY)
                         .append(Component.translatable("bloodisfuel.tooltip.extinguishing").withStyle(ChatFormatting.AQUA))
                         .append(": ");
 
-                if (duration > 0)
+                if (duration > 0) {
                     line.append(Component.literal(String.valueOf(duration)).withStyle(ChatFormatting.GOLD))
                             .append(Component.translatable("bloodisfuel.tooltip.seconds").withStyle(ChatFormatting.GOLD));
+                }
 
                 if (heal > 0) {
                     if (duration > 0) line.append(" ");
@@ -147,25 +156,24 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
     }
     default void projectileTooltipMaker(List<Component> tooltip, ItemStack stack, @Nullable RegistryAccess registryAccess) {
         CombatContext ctx = getCombatContext(stack, registryAccess);
-        if (ctx.canAttack()) {
-            Optional<Float> optDamage = ctx.type() != null ? ctx.type().damage() : Optional.empty();
-            if (optDamage.isPresent()) {
-                float damage = optDamage.get();
-                if (Minecraft.getInstance().player != null) {
-                    float playerAttackDamage = (float) Minecraft.getInstance().player.getAttributeValue(Attributes.ATTACK_DAMAGE);
-                    damage += playerAttackDamage;
-                }
-                tooltip.add(Component.empty());
-                tooltip.add(Component.translatable("item.modifiers.mainhand").withStyle(ChatFormatting.GRAY));
-                String damageText = (damage % 1.0f == 0.0f)
-                        ? String.valueOf((int) damage)
-                        : String.format("%.2f", damage);
-                tooltip.add(Component.literal(" ")
-                        .append(Component.literal(damageText))
-                        .append(" ")
-                        .append(Component.translatable("bloodisfuel.tooltip.syringe_gun.damage"))
-                        .withStyle(ChatFormatting.DARK_GREEN));
-            }
-        }
+
+        if (!ctx.canAttack()) return;
+
+        Optional<Float> optDamage = ctx.type() != null ? ctx.type().damage() : Optional.empty();
+        if (optDamage.isEmpty()) return;
+
+        float damage = optDamage.get();
+        var player = Minecraft.getInstance().player;
+        if (player != null) damage += (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE);
+
+        tooltip.add(Component.empty());
+        tooltip.add(Component.translatable("item.modifiers.mainhand").withStyle(ChatFormatting.GRAY));
+
+        String dmgText = damage % 1.0f == 0 ? String.valueOf((int) damage) : String.format("%.2f", damage);
+        tooltip.add(Component.literal(" ")
+                .append(Component.literal(dmgText))
+                .append(" ")
+                .append(Component.translatable("bloodisfuel.tooltip.syringe_gun.damage"))
+                .withStyle(ChatFormatting.DARK_GREEN));
     }
 }

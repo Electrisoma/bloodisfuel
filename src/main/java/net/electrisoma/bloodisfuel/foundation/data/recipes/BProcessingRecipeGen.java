@@ -31,6 +31,7 @@ public abstract class BProcessingRecipeGen extends BRecipeProvider {
     public static void registerAll(DataGenerator gen, PackOutput output) {
 
         GENERATORS.add(new MixingRecipeGen(output));
+        GENERATORS.add(new FillingRecipeGen(output));
         GENERATORS.add(new EmptyingRecipeGen(output));
         GENERATORS.add(new CompactingRecipeGen(output));
 

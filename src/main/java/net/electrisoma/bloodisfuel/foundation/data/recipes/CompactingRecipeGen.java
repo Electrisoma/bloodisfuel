@@ -26,5 +26,7 @@ public class CompactingRecipeGen extends BProcessingRecipeGen {
     }
 
     @Override
-    protected AllRecipeTypes getRecipeType() {return AllRecipeTypes.COMPACTING;}
+    protected AllRecipeTypes getRecipeType() {
+        return AllRecipeTypes.COMPACTING;
+    }
 }

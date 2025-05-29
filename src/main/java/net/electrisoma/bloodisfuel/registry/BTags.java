@@ -116,6 +116,7 @@ public class BTags {
     public enum BItemTags {
         SYRINGE_BLADE,
         SYRINGE_GUN,
+        SYRINGES,
 
         CARBOHYDRATES,
 
@@ -182,6 +183,9 @@ public class BTags {
 
         CRUDE_OIL(FORGE),
         FUEL(FORGE),
+        ACID(FORGE),
+        MOLTEN,
+
         NUTRIENTS_FLUID(BF),
 
         ;

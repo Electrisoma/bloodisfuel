@@ -1,17 +1,16 @@
 package net.electrisoma.bloodisfuel.api.equipment.syringe;
 
+import net.electrisoma.bloodisfuel.api.data.EffectsData;
 import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.foundation.data.entries.BSyringeFluidTypes;
 
-import com.simibubi.create.Create;
-
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
@@ -67,6 +66,7 @@ public class SyringeFluidTypeManager {
     /**
      * Gets the SyringeFluidType for a given FluidStack.
      */
+    @SuppressWarnings("deprecation")
     public static SyringeFluidType fromFluid(FluidStack stack, RegistryAccess access) {
         if (stack.isEmpty()) return EMPTY;
         Fluid fluid = stack.getFluid();
@@ -107,13 +107,15 @@ public class SyringeFluidTypeManager {
      * Returns the list of effects this fluid should apply on hit.
      */
     public static List<MobEffectInstance> getEffects(SyringeFluidType type, FluidStack stack) {
-        if (isMilk(stack.getFluid(), null)) return type.effect()
-                .map(effect -> List.of(new MobEffectInstance(effect)))
-                .orElse(List.of());
-        if (type.isPotionType() && stack.hasTag()) return PotionUtils.getAllEffects(stack.getTag());
-        return type.effect()
-                .map(effect -> List.of(new MobEffectInstance(effect)))
-                .orElse(List.of());
+        if (isMilk(stack.getFluid(), null))
+            return type.effects().map(list -> list.stream().map(EffectsData::effect).toList()).orElse(List.of());
+
+        if (type.isPotionType() && stack.hasTag())
+            return PotionUtils.getAllEffects(stack.getTag());
+
+        return type.effects().map(list -> list.stream()
+                .map(EffectsData::effect)
+                .toList()).orElse(List.of());
     }
     /**
      * Returns all dynamically registered fluid types.
@@ -144,13 +146,15 @@ public class SyringeFluidTypeManager {
      */
     public static boolean isPotion(Fluid fluid, RegistryAccess access) {
         ResourceLocation fluidKey = ForgeRegistries.FLUIDS.getKey(fluid);
-        return fluidKey != null && fluidKey.equals(new ResourceLocation(Create.ID, "potion"));
+        return fluidKey != null && (
+                fluidKey.equals(new ResourceLocation("forge", "potion"))
+                || fluidKey.equals(new ResourceLocation("create", "potion"))
+        );
     }
     /**
      * Gets the burning properties.
      */
     @SuppressWarnings("DataFlowIssue")
-    // broken as fuck
     public static void applyBurning(SyringeFluidType type, LivingEntity target) {
         type.burning().ifPresent(burning -> {
             target.setSecondsOnFire(burning.durationSeconds());

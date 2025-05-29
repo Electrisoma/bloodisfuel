@@ -1,6 +1,8 @@
 {
   "values": [
     "bloodisfuel:flowing_blood",
-    "bloodisfuel:blood"
+    "bloodisfuel:blood",
+    "bloodisfuel:flowing_oil_enriched_blood",
+    "bloodisfuel:oil_enriched_blood"
   ]
 }

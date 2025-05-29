@@ -39,27 +39,32 @@ public record SyringeFluidType(
         Optional<Float> damage,
         Optional<Float> attackSpeed,
         Optional<FoodProperties> food,
-        Optional<MobEffectInstance> effect,
+        Optional<List<EffectsData>> effects,
         Optional<HolderSet<EntityType<?>>> mobs,
+        int mobPriority,
         Optional<BurningData> burning,
         Optional<ExtinguishingData> extinguishing,
         Optional<DrowningData> drowning,
         Optional<FreezingData> freezing) {
     public static final Codec<SyringeFluidType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.list(RegistryCodecs.homogeneousList(Registries.FLUID)).fieldOf("fluids").forGetter(SyringeFluidType::fluids),
+            Codec.list(RegistryCodecs.homogeneousList(Registries.FLUID))
+                    .optionalFieldOf("fluids", List.of())
+                    .forGetter(SyringeFluidType::fluids),
             Codec.INT.fieldOf("color").forGetter(SyringeFluidType::color),
             Codec.BOOL.optionalFieldOf("glowing").forGetter(SyringeFluidType::glowing),
             Codec.BOOL.optionalFieldOf("opaque").forGetter(SyringeFluidType::opaque),
             Codec.FLOAT.optionalFieldOf("damage").forGetter(SyringeFluidType::damage),
             Codec.FLOAT.optionalFieldOf("attack_speed").forGetter(SyringeFluidType::attackSpeed),
             BCodecs.FOOD_PROPERTIES.optionalFieldOf("food").forGetter(SyringeFluidType::food),
-            BCodecs.MOB_EFFECT_INSTANCE.optionalFieldOf("effect").forGetter(SyringeFluidType::effect),
+            Codec.list(BCodecs.EFFECTS_DATA).optionalFieldOf("effects").forGetter(SyringeFluidType::effects),
             RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).optionalFieldOf("mobs").forGetter(SyringeFluidType::mobs),
+            Codec.INT.optionalFieldOf("mobPriority", 0).forGetter(SyringeFluidType::mobPriority),
             BCodecs.BURNING_DATA.optionalFieldOf("burning").forGetter(SyringeFluidType::burning),
             BCodecs.EXTINGUISHING_DATA.optionalFieldOf("extinguishing").forGetter(SyringeFluidType::extinguishing),
             BCodecs.DROWNING_DATA.optionalFieldOf("drowning").forGetter(SyringeFluidType::drowning),
             BCodecs.FREEZING_DATA.optionalFieldOf("freezing").forGetter(SyringeFluidType::freezing)
-    ).apply(instance, SyringeFluidType::new));
+            ).apply(instance, SyringeFluidType::new)
+    );
 
     /**
      * Returns true if this fluid type is a potion-based fluid.
@@ -130,8 +135,9 @@ public record SyringeFluidType(
         private Optional<Float> damage = Optional.empty();
         private Optional<Float> attackSpeed = Optional.empty();
         private Optional<FoodProperties> food = Optional.empty();
-        private MobEffectInstance effect;
+        private final List<EffectsData> effects = new ArrayList<>();
         private final List<Holder<EntityType<?>>> mobs = new ArrayList<>();
+        private int mobPriority = 0;
         private Optional<BurningData> burning = Optional.empty();
         private Optional<ExtinguishingData> extinguishing = Optional.empty();
         private Optional<DrowningData> drowning = Optional.empty();
@@ -140,6 +146,18 @@ public record SyringeFluidType(
         /**
          * Adds specific fluids that this type applies to.
          */
+        public Builder fluids(String... fluidIds) {
+            List<Holder<Fluid>> holders = new ArrayList<>();
+            for (String idStr : fluidIds) {
+                ResourceLocation id = new ResourceLocation(idStr);
+                Fluid fluid = ForgeRegistries.FLUIDS.getValue(id);
+                if (fluid == null)
+                    throw new IllegalArgumentException("Unknown fluid: " + idStr);
+                holders.add(fluid.builtInRegistryHolder());
+            }
+            fluidSets.add(HolderSet.direct(holders));
+            return this;
+        }
         public Builder fluids(Fluid... fluids) {
             List<Holder<Fluid>> holders = new ArrayList<>();
             for (Fluid fluid : fluids)
@@ -225,29 +243,75 @@ public record SyringeFluidType(
         /**
          * Defines the effect applied when the fluid type hits an entity.
          */
-        public Builder effect(MobEffect effect, int duration) {
-            this.effect = new MobEffectInstance(effect, duration, 0, false, true);
-            return this;
+        public Builder addEffect(String effectId, int amplifier) {
+            return addEffect(effectId, 1, amplifier, false, true, true);
         }
-        public Builder effect(MobEffect effect, int duration, int amplifier) {
-            this.effect = new MobEffectInstance(effect, duration, amplifier, false, true);
-            return this;
+        public Builder addEffect(String effectId, int duration, int amplifier) {
+            return addEffect(effectId, duration, amplifier, false, true, true);
         }
-        public Builder effect(MobEffect effect, int duration, int amplifier, boolean ambient, boolean visible) {
-            this.effect = new MobEffectInstance(effect, duration, amplifier, ambient, visible);
-            return this;
+        public Builder addEffect(String effectId, int duration, int amplifier, boolean visible) {
+            return addEffect(effectId, duration, amplifier, false, visible, true);
         }
-        public Builder effect(MobEffectInstance effect) {
-            this.effect = effect;
+        public Builder addEffect(String effectId, int duration, int amplifier, boolean visible, boolean ambient) {
+            return addEffect(effectId, duration, amplifier, ambient, visible, true);
+        }
+        public Builder addEffect(String effectId, int duration, int amplifier, boolean ambient, boolean visible, boolean visibleInTooltips) {
+            ResourceLocation id = new ResourceLocation(effectId);
+            MobEffect effect = ForgeRegistries.MOB_EFFECTS.getValue(id);
+            assert effect != null;
+            MobEffectInstance instance = new MobEffectInstance(effect, duration, amplifier, ambient, visible);
+            return addEffect(instance, visibleInTooltips);
+        }
+        public Builder addEffect(MobEffect effect, int amplifier) {
+            return addEffect(effect, 1, amplifier, false, true, true);
+        }
+        public Builder addEffect(MobEffect effect, int duration, int amplifier) {
+            return addEffect(effect, duration, amplifier, false, true, true);
+        }
+        public Builder addEffect(MobEffect effect, int duration, int amplifier, boolean visible) {
+            return addEffect(effect, duration, amplifier, false, visible, true);
+        }
+        public Builder addEffect(MobEffect effect, int duration, int amplifier, boolean visible, boolean ambient) {
+            return addEffect(effect, duration, amplifier, ambient, visible, true);
+        }
+        public Builder addEffect(MobEffect effect, int duration, int amplifier, boolean ambient, boolean visible, boolean visibleInTooltips) {
+            MobEffectInstance instance = new MobEffectInstance(effect, duration, amplifier, ambient, visible);
+            return addEffect(instance, visibleInTooltips);
+        }
+        public Builder addEffect(MobEffectInstance effect) {
+            return addEffect(effect, true);
+        }
+        public Builder addEffect(MobEffectInstance effect, boolean visibleInTooltips) {
+            if (effect != null) this.effects.add(new EffectsData(effect, visibleInTooltips));
             return this;
         }
 
         /**
          * Adds mobs associated with the fluid type.
          */
-        public Builder mobs(EntityType<?>... types) {
+        public Builder addMob(int priority, EntityType<?>... types) {
+            this.mobPriority = priority;
             for (EntityType<?> type : types)
                 ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(mobs::add);
+            return this;
+        }
+        public Builder addMob(String... entityIds) {
+            for (String idStr : entityIds) {
+                ResourceLocation id = new ResourceLocation(idStr);
+                EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(id);
+//                if (entityType == null)
+//                    throw new IllegalArgumentException("Unknown entity type: " + idStr);
+                ForgeRegistries.ENTITY_TYPES.getHolder(entityType).ifPresent(mobs::add);
+            }
+            return this;
+        }
+        public Builder addMob(EntityType<?>... types) {
+            for (EntityType<?> type : types)
+                ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(mobs::add);
+            return this;
+        }
+        public Builder mobPriority(int mobPriority) {
+            this.mobPriority = mobPriority;
             return this;
         }
 
@@ -302,8 +366,9 @@ public record SyringeFluidType(
                     damage,
                     attackSpeed,
                     food,
-                    Optional.ofNullable(effect),
+                    effects.isEmpty() ? Optional.empty() : Optional.of(List.copyOf(effects)),
                     mobs.isEmpty() ? Optional.empty() : Optional.of(HolderSet.direct(mobs)),
+                    mobPriority,
                     burning,
                     extinguishing,
                     drowning,

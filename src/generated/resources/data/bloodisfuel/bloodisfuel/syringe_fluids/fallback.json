@@ -2,11 +2,15 @@
   "attack_speed": -2.5,
   "color": 15797003,
   "damage": 6.0,
-  "effect": {
-    "amplifier": 1,
-    "duration": 500,
-    "effect": "minecraft:weakness"
-  },
+  "effects": [
+    {
+      "effect": {
+        "amplifier": 1,
+        "duration": 500,
+        "effect": "minecraft:weakness"
+      }
+    }
+  ],
   "fluids": [
     "bloodisfuel:blood"
   ],

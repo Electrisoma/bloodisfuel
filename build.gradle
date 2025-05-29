@@ -129,7 +129,7 @@ repositories {
 }
 
 dependencies {
-    // Create, Flywheel, Registrate, Create Diesel Generators
+    // Create, Ponder, Flywheel, Registrate
     modImplementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive=false }
     modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
     modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
@@ -295,8 +295,7 @@ boolean hasUnstaged() {
             commandLine("git", "status", "--porcelain")
         }
         String result=output.standardOutput.asText.get().replace("/M gradlew(\\.bat)?/", "").trim()
-        if (!result.isEmpty())
-            println("Found stageable results:\n ${result}\n")
+        if (!result.isEmpty()) println("Found stageable results:\n ${result}\n")
         return !result.isEmpty()
     } catch (Throwable ignored) {
         return false

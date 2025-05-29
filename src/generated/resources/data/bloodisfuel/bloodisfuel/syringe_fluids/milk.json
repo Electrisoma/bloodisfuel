@@ -1,9 +1,13 @@
 {
   "color": 16777215,
-  "effect": {
-    "duration": 100,
-    "effect": "minecraft:strength"
-  },
+  "effects": [
+    {
+      "effect": {
+        "amplifier": 100,
+        "effect": "minecraft:strength"
+      }
+    }
+  ],
   "fluids": [
     "#forge:milk"
   ],
