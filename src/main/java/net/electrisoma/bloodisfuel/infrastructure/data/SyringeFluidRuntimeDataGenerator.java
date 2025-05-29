@@ -1,70 +1,58 @@
 package net.electrisoma.bloodisfuel.infrastructure.data;
 
-import com.mojang.serialization.JsonOps;
-import com.simibubi.create.foundation.pack.DynamicPack;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagEntry;
-import net.minecraft.tags.TagFile;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.material.Fluid;
 
-import java.util.HashSet;
-import java.util.List;
+import com.simibubi.create.foundation.pack.DynamicPack;
+
+import net.minecraft.tags.TagKey;
+import net.minecraft.tags.TagFile;
+import net.minecraft.tags.TagEntry;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+
+import com.mojang.serialization.JsonOps;
+
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.HashSet;
+
 
 public class SyringeFluidRuntimeDataGenerator {
-    private static final ResourceLocation BLOODISFUEL_MOLTEN_TAG =
+    private static final ResourceLocation MOLTEN_TAG_ID =
             new ResourceLocation(BloodIsFuel.MOD_ID, "molten");
+    private static int moltenTagsAdded = 0;
 
     public static void insertIntoPack(DynamicPack pack) {
-        Set<ResourceLocation> foundMoltenTags = new HashSet<>();
-        Set<ResourceLocation> allTagIds = new HashSet<>();
+        addMoltenFluidTag(pack);
 
-        // Inspect all tags
+        BloodIsFuel.LOGGER.info("Added {} to #bloodisfuel:molten", moltenTagsAdded);
+    }
+
+    private static void addMoltenFluidTag(DynamicPack pack) {
+        Set<ResourceLocation> moltenTags = new HashSet<>();
+
+        //noinspection deprecation
         BuiltInRegistries.FLUID.getTags().forEach(tagWithFluids -> {
             TagKey<Fluid> tag = tagWithFluids.getFirst();
             ResourceLocation tagId = tag.location();
-            allTagIds.add(tagId);
 
-            BloodIsFuel.LOGGER.debug("Found fluid tag: {}", tagId);
-
-            if (tagId.getPath().startsWith("molten_")) {
-                foundMoltenTags.add(tagId);
-                BloodIsFuel.LOGGER.debug("Included in #bloodisfuel:molten: {}", tagId);
-            }
+            if (tagId.getPath().startsWith("molten_")) moltenTags.add(tagId);
         });
 
-        // DEBUG OUTPUT
-        BloodIsFuel.LOGGER.info("All fluid tags discovered ({}): {}", allTagIds.size(),
-                allTagIds.stream().map(ResourceLocation::toString).collect(Collectors.joining(", "))
-        );
-        BloodIsFuel.LOGGER.info("Molten tags matched ({}): {}", foundMoltenTags.size(),
-                foundMoltenTags.stream().map(ResourceLocation::toString).collect(Collectors.joining(", "))
-        );
+        if (moltenTags.isEmpty()) return;
 
-        if (foundMoltenTags.isEmpty()) {
-            BloodIsFuel.LOGGER.warn("No molten fluid tags were found to include in #bloodisfuel:molten");
-            return;
-        }
-
-        List<TagEntry> entries = foundMoltenTags.stream()
-                .map(TagEntry::tag)
-                .toList();
+        List<TagEntry> entries = moltenTags.stream().map(TagEntry::tag).toList();
 
         TagFile tagFile = new TagFile(entries, false);
         pack.put(
-                BLOODISFUEL_MOLTEN_TAG.withPrefix("tags/fluids/"),
+                MOLTEN_TAG_ID.withPrefix("tags/fluids/"),
                 TagFile.CODEC.encodeStart(JsonOps.INSTANCE, tagFile)
                         .result()
                         .orElseThrow(() -> new IllegalStateException("Failed to encode tag file for #bloodisfuel:molten"))
         );
 
-        BloodIsFuel.LOGGER.info("Generated #bloodisfuel:molten with {} entries: {}",
-                entries.size(),
-                foundMoltenTags.stream().map(ResourceLocation::toString).collect(Collectors.joining(", "))
-        );
+        moltenTagsAdded = entries.size();
     }
 }
+

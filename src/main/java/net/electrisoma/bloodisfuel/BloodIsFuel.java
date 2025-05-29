@@ -2,8 +2,6 @@ package net.electrisoma.bloodisfuel;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.simibubi.create.foundation.pack.DynamicPack;
-import net.electrisoma.bloodisfuel.infrastructure.data.SyringeFluidRuntimeDataGenerator;
 import net.electrisoma.bloodisfuel.registry.*;
 import net.electrisoma.bloodisfuel.infrastructure.data.BDatagen;
 import net.electrisoma.bloodisfuel.foundation.data.advancements.triggers.BTriggers;
@@ -18,7 +16,6 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.CreativeModeTab;
 
 import net.minecraftforge.api.distmarker.Dist;

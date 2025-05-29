@@ -9,6 +9,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
 
 
+@SuppressWarnings("unused")
 public class FillingRecipeGen extends BProcessingRecipeGen {
     GeneratedRecipe
 

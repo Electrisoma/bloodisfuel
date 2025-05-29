@@ -1,27 +1,11 @@
 package net.electrisoma.bloodisfuel.api.data;
 
-import com.mojang.serialization.DataResult;
-import net.minecraft.core.*;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.IReverseTag;
-import net.minecraftforge.registries.tags.ITagManager;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 
 @SuppressWarnings({"deprecation", "RedundantSuppression"})
