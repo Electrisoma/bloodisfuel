@@ -1,5 +1,7 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
+import com.simibubi.create.api.data.recipe.MixingRecipeGen;
+import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.*;
 
 import com.simibubi.create.AllRecipeTypes;
@@ -9,7 +11,11 @@ import net.minecraft.data.PackOutput;
 
 
 @SuppressWarnings({"all"})
-public class MixingRecipeGen extends BProcessingRecipeGen {
+public class BMixingRecipeGen extends MixingRecipeGen {
+    public BMixingRecipeGen(PackOutput output) {
+        super(output, BloodIsFuel.MOD_ID);
+    }
+
     GeneratedRecipe
 
     VISCERA_TO_BLOOD = create("viscera_to_blood", b -> b
@@ -33,13 +39,4 @@ public class MixingRecipeGen extends BProcessingRecipeGen {
             .output(BFluids.ENRICHED_BLOOD.get(), 250))
 
     ;
-
-    public MixingRecipeGen(PackOutput generator) {
-        super(generator);
-    }
-
-    @Override
-    protected AllRecipeTypes getRecipeType() {
-        return AllRecipeTypes.MIXING;
-    }
 }

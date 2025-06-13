@@ -126,7 +126,7 @@ public class SyringeGunItem extends ProjectileWeaponItem
     @Override public int getBarColor(ItemStack stack) {
         return SyringeUtils.super.getBarColor(stack);
     }
-    @Override @OnlyIn(Dist.CLIENT) public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    @Override public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         tooltipMaker(tooltip, stack);
         itemToolTipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
         projectileTooltipMaker(tooltip, stack, level != null ? level.registryAccess() : null);

@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
+import com.simibubi.create.api.data.recipe.BaseRecipeProvider;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.BItems;
 
@@ -17,6 +18,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCookingSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
@@ -33,18 +35,24 @@ import java.util.function.UnaryOperator;
 
 
 @SuppressWarnings("unused")
-public class StandardRecipeGen extends BRecipeProvider {
-    private final Marker COOKING = enterFolder();
+public class StandardRecipeGen extends BaseRecipeProvider {
+    final List<GeneratedRecipe> all = new ArrayList<>();
+
+    private final Marker COOKING = enterFolder("/");
+
     GeneratedRecipe
 
-    DRAINED_MEAT_TO_LEATHER = create(() -> Items.LEATHER).viaCooking().inSmoker()
+    DRAINED_MEAT_TO_LEATHER = create(() -> Items.LEATHER).viaCooking(BItems.DRAINED_MEAT).inSmoker()
 
     ;
 
+    static class Marker {
+    }
+
     String currentFolder = "";
 
-    Marker enterFolder() {
-        currentFolder = "/";
+    Marker enterFolder(String folder) {
+        currentFolder = folder;
         return new Marker();
     }
 
@@ -57,15 +65,13 @@ public class StandardRecipeGen extends BRecipeProvider {
     GeneratedRecipeBuilder create(ItemProviderEntry<? extends ItemLike> result) {
         return create(result::get);
     }
-
-    public GeneratedRecipeBuilder create(String path, Supplier<ItemLike> result) {
-        return new GeneratedRecipeBuilder(path, result);
-    }
-    public GeneratedRecipeBuilder create(String path, ResourceLocation result) {
-        return new GeneratedRecipeBuilder(path, result);
-    }
-    public GeneratedRecipeBuilder create(String path, ItemProviderEntry<? extends ItemLike> result) {
-        return create(path, result::get);
+    GeneratedRecipe createSpecial(Supplier<? extends SimpleCraftingRecipeSerializer<?>> serializer, String recipeType,
+                                  String path) {
+        ResourceLocation location = BloodIsFuel.asResource(recipeType + "/" + currentFolder + "/" + path);
+        return register(consumer -> {
+            SpecialRecipeBuilder b = SpecialRecipeBuilder.special(serializer.get());
+            b.save(consumer, location.toString());
+        });
     }
 
     public class GeneratedRecipeBuilder {
@@ -97,9 +103,9 @@ public class StandardRecipeGen extends BRecipeProvider {
             this.amount = amount;
             return this;
         }
-        GeneratedRecipeBuilder unlockedBy() {
+        GeneratedRecipeBuilder unlockedBy(Supplier<? extends ItemLike> item) {
             this.unlockedBy = () -> ItemPredicate.Builder.item()
-                    .of(((Supplier<? extends ItemLike>) BItems.DRAINED_MEAT).get())
+                    .of(item.get())
                     .build();
             return this;
         }
@@ -151,8 +157,8 @@ public class StandardRecipeGen extends BRecipeProvider {
                     .asItem()) : compatDatagenOutput;
         }
 
-        GeneratedRecipeBuilder.GeneratedCookingRecipeBuilder viaCooking() {
-            return unlockedBy().viaCookingIngredient(() -> Ingredient.of(((Supplier<? extends ItemLike>) BItems.DRAINED_MEAT).get()));
+        GeneratedCookingRecipeBuilder viaCooking(Supplier<? extends ItemLike> item) {
+            return unlockedBy(item).viaCookingIngredient(() -> Ingredient.of(item.get()));
         }
         GeneratedRecipeBuilder.GeneratedCookingRecipeBuilder viaCookingTag(Supplier<TagKey<Item>> tag) {
             return unlockedByTag(tag).viaCookingIngredient(() -> Ingredient.of(tag.get()));
@@ -280,7 +286,7 @@ public class StandardRecipeGen extends BRecipeProvider {
         return BloodIsFuel.NAME + " Standard Recipes";
     }
 
-    public StandardRecipeGen(PackOutput generator) {
-        super(generator);
+    public StandardRecipeGen(PackOutput output) {
+        super(output, BloodIsFuel.MOD_ID);
     }
 }

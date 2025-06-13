@@ -1,0 +1,1 @@
+net.electrisoma.bloodisfuel.compat.kubejs.BloodIsFuelKubeJS

@@ -137,7 +137,7 @@ public class SyringeBladeItem extends SwordItem
     @Override public int getBarWidth(ItemStack stack) {
         return SyringeUtils.super.getBarWidth(stack);
     }
-    @Override @OnlyIn(Dist.CLIENT) public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    @Override public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         tooltipMaker(tooltip, stack);
         itemToolTipMaker(tooltip, stack, level != null ? level.registryAccess() : null);
     }

@@ -1,10 +1,14 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
+import com.simibubi.create.api.data.recipe.ProcessingRecipeGen;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 
 import com.simibubi.create.AllTags;
 import com.simibubi.create.AllItems;
 
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -12,37 +16,48 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 
 @SuppressWarnings("unused")
 public class BRecipeProvider extends RecipeProvider {
-    protected final List<GeneratedRecipe> all = new ArrayList<>();
+    static final List<ProcessingRecipeGen> GENERATORS = new ArrayList<>();
+    static final int BUCKET = FluidType.BUCKET_VOLUME;
+    static final int BOTTLE = 250;
 
     public BRecipeProvider(PackOutput output) {
         super(output);
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> p_200404_1_) {
-        all.forEach(c -> c.register(p_200404_1_));
-        BloodIsFuel.LOGGER.info("{} registered {} recipe{}", getName(), all.size(), all.size() == 1 ? "" : "s");
-    }
+    protected void buildRecipes(Consumer<FinishedRecipe> writer) {}
 
-    protected GeneratedRecipe register(GeneratedRecipe recipe) {
-        all.add(recipe);
-        return recipe;
-    }
+    public static void registerAllProcessing(DataGenerator gen, PackOutput output) {
+        GENERATORS.add(new BMixingRecipeGen(output));
+        GENERATORS.add(new BFillingRecipeGen(output));
+        GENERATORS.add(new BEmptyingRecipeGen(output));
+        GENERATORS.add(new BCompactingRecipeGen(output));
 
-    @FunctionalInterface
-    public interface GeneratedRecipe {
-        void register(Consumer<FinishedRecipe> consumer);
-    }
+        gen.addProvider(true, new DataProvider() {
 
-    protected static class Marker {}
+            @Override
+            public String getName() {
+                return BloodIsFuel.NAME + "'s Processing Recipes";
+            }
+
+            @Override
+            public CompletableFuture<?> run(CachedOutput dc) {
+                return CompletableFuture.allOf(GENERATORS.stream()
+                        .map(gen -> gen.run(dc))
+                        .toArray(CompletableFuture[]::new));
+            }
+        });
+    }
 
     protected static class I {
         static ItemLike leather() {

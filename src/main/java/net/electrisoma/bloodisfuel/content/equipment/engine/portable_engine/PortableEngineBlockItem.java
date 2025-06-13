@@ -53,7 +53,7 @@ public class PortableEngineBlockItem extends BlockItem implements CapacityEnchan
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
-    @Override @OnlyIn(Dist.CLIENT) public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    @Override public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         tooltipMaker(tooltip, stack);
     }
     @Override public int getBarColor(ItemStack stack) {

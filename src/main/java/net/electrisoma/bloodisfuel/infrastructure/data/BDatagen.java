@@ -29,7 +29,7 @@ public class BDatagen {
 		BEntriesProvider bEntriesProvider = new BEntriesProvider(output, lookupProvider);
 		addExtraRegistrateData();
 		if (event.includeServer()) {
-			BProcessingRecipeGen.registerAll(generator, output);
+			BRecipeProvider.registerAllProcessing(generator, output);
 			generator.addProvider(true, bEntriesProvider);
 			generator.addProvider(true, new BAdvancements(output));
 			generator.addProvider(true, new StandardRecipeGen(output));

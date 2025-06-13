@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.foundation.data.entries;
 
+import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
 import com.simibubi.create.api.equipment.potatoCannon.PotatoCannonProjectileType;
 import com.simibubi.create.api.registry.CreateRegistries;
 import com.simibubi.create.content.equipment.potatoCannon.AllPotatoProjectileEntityHitActions.PotionEffect;
@@ -20,6 +21,15 @@ public class BPotatoCannonProjectiles {
                 .renderTumbling()
                 .onEntityHit(new PotionEffect(MobEffects.POISON, 1, 160, true))
                 .addItems(BItems.DRAINED_MEAT)
+                .build());
+        register(ctx, "sweetish_fish", new PotatoCannonProjectileType.Builder()
+                .damage(5)
+                .reloadTicks(15)
+                .knockback(0.05f)
+                .velocity(1.25f)
+                .renderTumbling()
+                .onEntityHit(new PotionEffect(MobEffects.POISON, 1, 160, true))
+                .addItems(ACItemRegistry.SWEETISH_FISH_GREEN.get())
                 .build());
     }
 

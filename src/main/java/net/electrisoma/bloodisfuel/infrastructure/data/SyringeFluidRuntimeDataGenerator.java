@@ -25,8 +25,7 @@ public class SyringeFluidRuntimeDataGenerator {
 
     public static void insertIntoPack(DynamicPack pack) {
         addMoltenFluidTag(pack);
-
-        BloodIsFuel.LOGGER.info("Added {} to #bloodisfuel:molten", moltenTagsAdded);
+        BloodIsFuel.LOGGER.info("Added {} tags to #bloodisfuel:molten", moltenTagsAdded);
     }
 
     private static void addMoltenFluidTag(DynamicPack pack) {

@@ -122,6 +122,19 @@ repositories {
 //        content {includeGroupByRegex("software\\.bernie.*")
 //        }
 //    }
+    maven {
+        url="https://maven.latvian.dev/releases"
+        content {
+            includeGroup "dev.latvian.mods"
+            includeGroup "dev.latvian.apps"
+        }
+    }
+    maven {
+        url="https://maven.architectury.dev"
+        content {
+            includeGroup "dev.architectury"
+        }
+    }
 
     mavenCentral()
     mavenLocal()
@@ -146,6 +159,12 @@ dependencies {
     modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     modCompileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     modImplementation("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+
+    //KubeJS
+    modImplementation("dev.latvian.mods:kubejs-forge:${kubejs_version}")
+    modImplementation("dev.latvian.mods:rhino-forge:2001.2.3-build.10")
+    modImplementation("dev.architectury:architectury-forge:9.1.12")
+
 
     // Biomancy
 //    modImplementation("maven.modrinth:biomancy:${biomancy_version}")

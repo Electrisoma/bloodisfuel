@@ -12,7 +12,6 @@ import net.minecraftforge.registries.DataPackRegistryEvent;
 
 @EventBusSubscriber(bus = Bus.MOD)
 public class BRegistriesImpl {
-
     @SubscribeEvent
     public static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(

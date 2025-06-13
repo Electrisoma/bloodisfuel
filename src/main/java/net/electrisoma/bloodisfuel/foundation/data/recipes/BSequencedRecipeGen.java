@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.foundation.data.recipes;
 
+import com.simibubi.create.api.data.recipe.SequencedAssemblyRecipeGen;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.BItems;
 
@@ -11,9 +12,15 @@ import net.minecraft.data.PackOutput;
 
 import java.util.function.UnaryOperator;
 
+import net.electrisoma.bloodisfuel.foundation.data.recipes.BRecipeProvider.I;
+
 
 @SuppressWarnings("unused")
-public class BSequencedRecipeGen extends BRecipeProvider {
+public class BSequencedRecipeGen extends SequencedAssemblyRecipeGen {
+    public BSequencedRecipeGen(PackOutput output) {
+        super(output, BloodIsFuel.MOD_ID);
+    }
+
     GeneratedRecipe
 
     SYRINGE_BLADE = create("syringe_blade", b -> b
@@ -40,21 +47,4 @@ public class BSequencedRecipeGen extends BRecipeProvider {
             .addStep(PressingRecipe::new, rb -> rb))
 
     ;
-
-    public BSequencedRecipeGen(PackOutput p_i48262_1_) {
-        super(p_i48262_1_);
-    }
-
-    protected BRecipeProvider.GeneratedRecipe create(String name, UnaryOperator<SequencedAssemblyRecipeBuilder> transform) {
-        BRecipeProvider.GeneratedRecipe generatedRecipe =
-                c -> transform.apply(new SequencedAssemblyRecipeBuilder(BloodIsFuel.asResource(name)))
-                        .build(c);
-        all.add(generatedRecipe);
-        return generatedRecipe;
-    }
-
-    @Override
-    public String getName() {
-        return BloodIsFuel.NAME + "'s Sequenced Assembly Recipes";
-    }
 }
