@@ -13,6 +13,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -141,7 +142,14 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
                 }
             }
             if (matchedType != null) {
-                FluidStack fluid = new FluidStack(SyringeFluidTypeManager.getFluidFor(matchedType), getCapacity(stack));
+                FluidStack fluid;
+
+                if (matchedType.isPotionType()) {
+                    fluid = SyringeFluidTypeManager.createPotionFluidStack(matchedType, getCapacity(stack));
+                } else {
+                    fluid = new FluidStack(SyringeFluidTypeManager.getFluidFor(matchedType), getCapacity(stack));
+                }
+
                 writeFluid(stack, fluid);
                 target.hurt(player.damageSources().playerAttack(player), 2.0F);
                 spawnBloodParticles(player.level(), target, stack, 5);

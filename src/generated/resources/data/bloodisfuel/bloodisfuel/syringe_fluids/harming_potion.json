@@ -1,0 +1,11 @@
+{
+  "color": 16777215,
+  "fluids": [
+    "create:potion",
+    "#forge:potion"
+  ],
+  "mobs": [
+    "minecraft:creeper"
+  ],
+  "potion": "minecraft:harming"
+}

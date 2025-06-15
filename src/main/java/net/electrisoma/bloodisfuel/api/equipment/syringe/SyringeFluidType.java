@@ -12,6 +12,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.material.Fluid;
 
 import net.minecraftforge.registries.ForgeRegistries;
@@ -33,6 +34,7 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 public record SyringeFluidType(
         List<HolderSet<Fluid>> fluids,
+        Optional<Potion> potion,
         int color,
         Optional<Boolean> glowing,
         Optional<Boolean> opaque,
@@ -50,6 +52,7 @@ public record SyringeFluidType(
             Codec.list(RegistryCodecs.homogeneousList(Registries.FLUID))
                     .optionalFieldOf("fluids", List.of())
                     .forGetter(SyringeFluidType::fluids),
+            ForgeRegistries.POTIONS.getCodec().optionalFieldOf("potion").forGetter(SyringeFluidType::potion),
             Codec.INT.fieldOf("color").forGetter(SyringeFluidType::color),
             Codec.BOOL.optionalFieldOf("glowing").forGetter(SyringeFluidType::glowing),
             Codec.BOOL.optionalFieldOf("opaque").forGetter(SyringeFluidType::opaque),
@@ -130,6 +133,7 @@ public record SyringeFluidType(
     @SuppressWarnings({"deprecation", "OptionalUsedAsFieldOrParameterType", "RedundantSuppression"})
     public static class Builder {
         private final List<HolderSet<Fluid>> fluidSets = new ArrayList<>();
+        private Optional<Potion> potion = Optional.empty();
         private int color = 0xFFFFFF;
         private Optional<Boolean> glowing = Optional.empty();
         private Optional<Boolean> opaque = Optional.empty();
@@ -182,6 +186,18 @@ public record SyringeFluidType(
             TagKey<Fluid> tag = TagKey.create(Registries.FLUID, tagId);
             HolderSet.Named<Fluid> tagSet = lookup.getOrThrow(tag);
             fluidSets.add(tagSet);
+            return this;
+        }
+
+        public Builder potion(Potion potion) {
+            this.potion = Optional.of(potion);
+            return this;
+        }
+        public Builder potion(String potionId) {
+            Potion potion = ForgeRegistries.POTIONS.getValue(new ResourceLocation(potionId));
+            if (potion == null)
+                throw new IllegalArgumentException("Unknown potion: " + potionId);
+            this.potion = Optional.of(potion);
             return this;
         }
 
@@ -374,6 +390,7 @@ public record SyringeFluidType(
         public SyringeFluidType build() {
             return new SyringeFluidType(
                     fluidSets,
+                    potion,
                     color,
                     glowing,
                     opaque,

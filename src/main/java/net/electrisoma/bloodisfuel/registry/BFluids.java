@@ -15,6 +15,7 @@ import com.tterrag.registrate.util.entry.FluidEntry;
 
 import net.minecraft.tags.FluidTags;
 
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 
@@ -172,8 +173,10 @@ public class BFluids {
                     .tag(FluidTags.WATER)
                     .tag(BTags.BFluidTags.BOILING_BLOOD.tag)
                             .source(BloodFluid.Source::new)
-                            .block(BoilingBloodBlock::new).build()
-                            .bucket().tag(BTags.forgeItemTag("buckets/boiling_blood"))
+                            .block(BoilingBloodBlock::new)
+                            .build()
+                            .bucket()
+                            .tag(BTags.forgeItemTag("buckets/boiling_blood"))
                             .build()
                     .register();
     public static final FluidEntry<ForgeFlowingFluid.Flowing> BLAZING_BLOOD =

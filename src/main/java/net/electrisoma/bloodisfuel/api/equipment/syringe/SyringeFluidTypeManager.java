@@ -11,8 +11,12 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -93,13 +97,13 @@ public class SyringeFluidTypeManager {
         if (syringeRegistry.containsKey(BSyringeFluidTypes.FALLBACK)) return syringeRegistry.get(BSyringeFluidTypes.FALLBACK);
         return EMPTY;
     }
+
     /**
      * Gets the display color of the fluid, including potion.
      */
     public static int getColor(SyringeFluidType type, FluidStack stack) {
-        if (type.isPotionType()) {
-            CompoundTag tag = stack.getOrCreateTag();
-            return PotionUtils.getColor(PotionUtils.getAllEffects(tag)) | 0xFF000000;
+        if (type.isPotionType() && stack.hasTag()) {
+            return PotionUtils.getColor(PotionUtils.getAllEffects(stack.getTag())) | 0xFF000000;
         }
         return type.color();
     }
@@ -151,6 +155,26 @@ public class SyringeFluidTypeManager {
                 || fluidKey.equals(new ResourceLocation("create", "potion"))
         );
     }
+    public static FluidStack createPotionFluidStack(SyringeFluidType type, int amount) {
+        if (!type.isPotionType()) return FluidStack.EMPTY;
+
+        Fluid potionFluid = getFluidFor(type);
+        FluidStack stack = new FluidStack(potionFluid, amount);
+
+        type.potion().ifPresent(potion -> {
+            ItemStack dummy = new ItemStack(Items.POTION);
+            PotionUtils.setPotion(dummy, potion);
+
+            if (dummy.hasTag()) {
+                assert dummy.getTag() != null;
+                stack.setTag(dummy.getTag().copy());
+            }
+        });
+
+        return stack;
+    }
+
+
     /**
      * Gets the burning properties.
      */

@@ -1,6 +1,7 @@
 package net.electrisoma.bloodisfuel.compat.jei.category;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
@@ -24,9 +25,11 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -120,26 +123,26 @@ public class BloodExtractorCategory implements IRecipeCategory<BloodExtractorInf
 
         float rotationX;
         float rotationY;
-        float yaw = 180;
+        float yaw = 0;
 
         if (BConfigs.client().mouseTracking.get()) {
             if (BConfigs.client().flippedMobs.get()) {
-                rotationX = (float) Math.atan((x - mouseX) / 40.0F);
-                rotationY = (float) Math.atan((y - mouseY) / 40.0F);
-            } else {
                 rotationX = (float) Math.atan((-x + mouseX) / 40.0F);
                 rotationY = (float) Math.atan((-y + mouseY) / 40.0F);
-                yaw = 0;
+            } else {
+                rotationX = (float) Math.atan((x - mouseX) / 40.0F);
+                rotationY = (float) Math.atan((y - mouseY) / 40.0F);
+                yaw = 180;
             }
         } else {
             rotationX = 25f / 40f;
             rotationY = 1.0f;
-            yaw = 0;
+            yaw = 180;
         }
 
         poseStack.pushPose();
         poseStack.translate(x, y, 50);
-        poseStack.scale(scale, scale, scale);
+        poseStack.scale(scale, scale, -scale);
 
         Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
         Quaternionf quaternion1 = Axis.XP.rotationDegrees(rotationY * 20.0F);
@@ -155,9 +158,14 @@ public class BloodExtractorCategory implements IRecipeCategory<BloodExtractorInf
         dispatcher.setRenderShadow(false);
         MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
 
+        RenderSystem.disableCull();
+
         dispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, poseStack, buffer, 15728880);
 
         buffer.endBatch();
+
+        RenderSystem.enableCull();
+
         dispatcher.setRenderShadow(true);
         poseStack.popPose();
     }
@@ -207,8 +215,19 @@ public class BloodExtractorCategory implements IRecipeCategory<BloodExtractorInf
                         if (type == EntityType.PLAYER) {
                             assert mc.player != null;
                             GameProfile profile = mc.player.getGameProfile();
-                            entity = new RemotePlayer(mc.level, profile);
-                            entity.setPos(0, 0, 0);
+
+                            RemotePlayer fakePlayer = new RemotePlayer(mc.level, profile);
+                            fakePlayer.setPos(0, 0, 0);
+
+                            fakePlayer.setItemSlot(EquipmentSlot.HEAD, mc.player.getItemBySlot(EquipmentSlot.HEAD).copy());
+                            fakePlayer.setItemSlot(EquipmentSlot.CHEST, mc.player.getItemBySlot(EquipmentSlot.CHEST).copy());
+                            fakePlayer.setItemSlot(EquipmentSlot.LEGS, mc.player.getItemBySlot(EquipmentSlot.LEGS).copy());
+                            fakePlayer.setItemSlot(EquipmentSlot.FEET, mc.player.getItemBySlot(EquipmentSlot.FEET).copy());
+
+                            fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, mc.player.getItemInHand(InteractionHand.MAIN_HAND).copy());
+                            fakePlayer.setItemInHand(InteractionHand.OFF_HAND, mc.player.getItemInHand(InteractionHand.OFF_HAND).copy());
+
+                            entity = fakePlayer;
                         } else {
                             entity = type.create(mc.level);
                             if (entity != null) {
@@ -224,6 +243,16 @@ public class BloodExtractorCategory implements IRecipeCategory<BloodExtractorInf
                 .filter(Objects::nonNull)
                 .findFirst()
                 .ifPresent(entity -> {
+                    if (entity instanceof RemotePlayer fakePlayer) {
+                        assert mc.player != null;
+                        fakePlayer.setItemSlot(EquipmentSlot.HEAD, mc.player.getItemBySlot(EquipmentSlot.HEAD).copy());
+                        fakePlayer.setItemSlot(EquipmentSlot.CHEST, mc.player.getItemBySlot(EquipmentSlot.CHEST).copy());
+                        fakePlayer.setItemSlot(EquipmentSlot.LEGS, mc.player.getItemBySlot(EquipmentSlot.LEGS).copy());
+                        fakePlayer.setItemSlot(EquipmentSlot.FEET, mc.player.getItemBySlot(EquipmentSlot.FEET).copy());
+                        fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, mc.player.getItemInHand(InteractionHand.MAIN_HAND).copy());
+                        fakePlayer.setItemInHand(InteractionHand.OFF_HAND, mc.player.getItemInHand(InteractionHand.OFF_HAND).copy());
+                    }
+
                     float scale = calculateEntityScale(entity);
                     int mobX = 100;
                     int mobY = 59;

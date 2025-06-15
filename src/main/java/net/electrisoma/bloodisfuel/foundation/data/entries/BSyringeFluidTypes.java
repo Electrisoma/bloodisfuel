@@ -13,6 +13,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.effect.MobEffects;
@@ -42,6 +44,14 @@ public class BSyringeFluidTypes {
                 .fluids(AllFluids.POTION.getSource()) // potion support, the color is overridden later
                 .fluidTag("forge", "potion", fluidLookup)
                 .appearance(0xFFFFFF, false, true)
+                .build());
+
+        // potions (mobs dropping potions; not hardcoded)
+        register(ctx, "harming_potion", new SyringeFluidType.Builder()
+                .fluids(AllFluids.POTION.getSource())
+                .fluidTag("forge", "potion", fluidLookup)
+                .potion(Potions.HARMING)
+                .addMob(EntityType.CREEPER)
                 .build());
 
         // vanilla and forge
