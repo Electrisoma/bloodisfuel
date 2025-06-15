@@ -10,7 +10,10 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagEntry;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.entity.EntityType;
@@ -203,6 +206,28 @@ public class BRegistrateTags {
 	}
 	private static void genEntityTags(RegistrateTagsProvider<EntityType<?>> provIn) {
 		TagGen.CreateTagsProvider<EntityType<?>> prov = new TagGen.CreateTagsProvider<>(provIn, EntityType::builtInRegistryHolder);
+
+		prov.tag(BTags.BEntityTags.DOES_NOT_DROP_FLUID.tag)
+				.add(EntityType.SILVERFISH)
+				.add(EntityType.IRON_GOLEM)
+				.addOptionalTag(EntityTypeTags.SKELETONS.location())
+		;
+
+		prov.tag(BTags.BEntityTags.UNDEAD.tag)
+				.add(EntityType.ZOMBIE)
+				.add(EntityType.ZOMBIE_HORSE)
+				.add(EntityType.ZOMBIE_VILLAGER)
+				.add(EntityType.ZOMBIFIED_PIGLIN)
+				.add(EntityType.ZOGLIN)
+		;
+
+		prov.tag(BTags.BEntityTags.ENDER.tag)
+				.add(EntityType.ENDERMITE)
+				.add(EntityType.ENDERMAN)
+				.add(EntityType.ENDER_DRAGON)
+				.add(EntityType.SHULKER)
+				.add(EntityType.PHANTOM)
+		;
 	}
 	private static void genFluidTags(RegistrateTagsProvider<Fluid> provIn) {
 		TagGen.CreateTagsProvider<Fluid> prov = new TagGen.CreateTagsProvider<>(provIn, Fluid::builtInRegistryHolder);

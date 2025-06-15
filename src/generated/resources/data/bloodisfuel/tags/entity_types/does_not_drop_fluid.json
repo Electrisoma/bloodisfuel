@@ -1,0 +1,10 @@
+{
+  "values": [
+    "minecraft:silverfish",
+    "minecraft:iron_golem",
+    {
+      "id": "#minecraft:skeletons",
+      "required": false
+    }
+  ]
+}

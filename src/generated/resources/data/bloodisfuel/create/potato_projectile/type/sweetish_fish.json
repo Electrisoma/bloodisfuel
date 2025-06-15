@@ -1,6 +1,6 @@
 {
   "damage": 5,
-  "items": "whatevermod:sweetish_fish_green",
+  "items": "alexscaves:sweetish_fish_green",
   "knockback": 0.05,
   "on_entity_hit": {
     "type": "create:potion_effect",

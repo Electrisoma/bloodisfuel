@@ -16,5 +16,15 @@
     "nutrition": 4,
     "saturation": 0.4
   },
-  "mobs": "alexscaves:sweetish_fish"
+  "mobs": [
+    "alexscaves:sweetish_fish",
+    "alexscaves:gummy_bear",
+    "alexscaves:gumbeeper",
+    "alexscaves:gum_worm",
+    "alexscaves:licowitch",
+    "alexscaves:gingerbread_man",
+    "alexscaves:caramel_cube",
+    "alexscaves:candicorn",
+    "alexscaves:caniac"
+  ]
 }

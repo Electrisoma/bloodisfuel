@@ -8,9 +8,18 @@ import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeItemColor;
 
 import net.minecraft.client.Minecraft;
 
+import net.minecraft.client.resources.SplashManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @SuppressWarnings({"unused", "deprecation", "RedundantSuppression"})
@@ -25,8 +34,24 @@ public class BClient {
     }
 
     public static void clientInit(final FMLClientSetupEvent event) {
-        //PonderIndex.addPlugin(new BPonderPlugin());
+        event.enqueueWork(() -> {
+            try {
+                SplashManager splashManager = Minecraft.getInstance().getSplashManager();
+                Field splashField = SplashManager.class.getDeclaredField("splashes");
+                splashField.setAccessible(true);
+
+                List<String> custom = loadCustomSplashes();
+                splashField.set(splashManager, new ArrayList<>(custom));
+
+                System.out.println("[BloodIsFuel] Replaced splashes with " + custom.size() + " custom splash texts.");
+
+            } catch (Exception e) {
+                System.err.println("[BloodIsFuel] Failed to inject splash texts:");
+                e.printStackTrace();
+            }
+        });
     }
+
 
     public static void setupParticles(RegisterParticleProvidersEvent registry) {
         registry.registerSpriteSet(BParticles.BLOOD_DROP.get(), BloodDropParticle.Factory::new);
@@ -40,5 +65,28 @@ public class BClient {
                 BItems.SYRINGE_BLADE.get(),
                 BItems.SYRINGE_GUN.get()
         );
+    }
+
+    private static List<String> loadCustomSplashes() {
+        List<String> list = new ArrayList<>();
+        ResourceLocation splashFile = BloodIsFuel.asResource("texts/splashes.txt");
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                        Minecraft.getInstance()
+                                .getResourceManager()
+                                .getResource(splashFile)
+                                .orElseThrow(() -> new IllegalStateException("Missing resource: " + splashFile))
+                                .open(),
+                        StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (!line.isEmpty()) list.add(line);
+            }
+        } catch (Exception e) {
+            System.err.println("[YourMod] Failed to load custom splash texts:");
+            e.printStackTrace();
+        }
+        return list;
     }
 }

@@ -7,6 +7,8 @@
     "nutrition": 4,
     "saturation": 2.0
   },
-  "mobs": "minecraft:bee",
+  "mobs": [
+    "minecraft:bee"
+  ],
   "opaque": true
 }

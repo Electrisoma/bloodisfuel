@@ -6,8 +6,13 @@ import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.registry.BAdvancements;
 import net.electrisoma.bloodisfuel.foundation.data.entries.BSyringeFluidTypes;
 
+import net.electrisoma.bloodisfuel.registry.BTags;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -15,6 +20,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.food.FoodProperties;
@@ -31,17 +38,38 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import org.joml.Vector3f;
 
+import java.util.Comparator;
+import java.util.Set;
 import java.util.UUID;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 
 @SuppressWarnings({"OptionalGetWithoutIsPresent", "DataFlowIssue", "RedundantSuppression", "unused"})
 public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUtils {
-    default SyringeFluidType getMatchingFluid(LivingEntity target, RegistryAccess access) {
-        return SyringeFluidTypeManager.getAll(access).stream()
-                .filter(type -> ForgeRegistries.ENTITY_TYPES.getHolder(target.getType())
-                        .map(holder -> type.mobs().map(set -> set.contains(holder)).orElse(false))
-                        .orElse(false)).min((a, b) -> Integer.compare(b.mobPriority(), a.mobPriority()))
+    default SyringeFluidType getMatchingFluid(LivingEntity target, RegistryAccess registryAccess) {
+        if (target.getType().is(BTags.BEntityTags.DOES_NOT_DROP_FLUID.tag)) {
+            return null;
+        }
+
+        var registry = registryAccess.registryOrThrow(Registries.ENTITY_TYPE);
+        var keyOpt = registry.getResourceKey(target.getType());
+        if (keyOpt.isEmpty()) return null;
+        var entityHolderOpt = registry.getHolder(keyOpt.get());
+        if (entityHolderOpt.isEmpty()) return null;
+        Holder<EntityType<?>> entityHolder = entityHolderOpt.get();
+
+        return SyringeFluidTypeManager.getAll(registryAccess).stream()
+                .filter(fluidType -> {
+                    if (fluidType.mobs().isEmpty()) return false;
+                    for (HolderSet<EntityType<?>> mobSet : fluidType.mobs().get()) {
+                        if (mobSet.contains(entityHolder)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                .max(Comparator.comparingInt(SyringeFluidType::mobPriority))
                 .orElse(null);
     }
     default SyringeFluidType getFallback(RegistryAccess access) {
@@ -68,7 +96,11 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
 
         if (ctx.fluid().isEmpty()) {
             SyringeFluidType selfType = getMatchingFluid(player, access);
-            if (selfType == null) selfType = getFallback(access);
+            if (selfType == null) {
+                if (!player.getType().is(BTags.BEntityTags.DOES_NOT_DROP_FLUID.tag)) {
+                    selfType = getFallback(access);
+                }
+            }
             if (selfType != null) {
                 FluidStack fluid = new FluidStack(SyringeFluidTypeManager.getFluidFor(selfType), getCapacity(stack));
                 writeFluid(stack, fluid);
@@ -103,7 +135,11 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
     default boolean extractFromTarget(ItemStack stack, LivingEntity target, Player player, RegistryAccess access) {
         if (readFluid(stack).isEmpty()) {
             SyringeFluidType matchedType = getMatchingFluid(target, access);
-            if (matchedType == null) matchedType = getFallback(access);
+            if (matchedType == null) {
+                if (!target.getType().is(BTags.BEntityTags.DOES_NOT_DROP_FLUID.tag)) {
+                    matchedType = getFallback(access);
+                }
+            }
             if (matchedType != null) {
                 FluidStack fluid = new FluidStack(SyringeFluidTypeManager.getFluidFor(matchedType), getCapacity(stack));
                 writeFluid(stack, fluid);
@@ -266,7 +302,9 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
 
         player.level().getServer().tell(new TickTask(1, task));
     }
-
+    default void spawnBloodParticles(Level level, Entity entity, FluidStack fluid, RegistryAccess access, int count) {
+        spawnColorParticles(level, entity, fluid, access, count, 0.5, 1.0, 0.5);
+    }
     default void spawnBloodParticles(Level level, Entity entity, ItemStack stack, int count) {
         spawnColorParticles(level, entity, stack, count, 0.5, 1.0, 0.5);
     }
@@ -284,6 +322,19 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
             server.sendParticles(new ColorableDripParticleData(color.x(), color.y(), color.z()), x, y, z, 5, 0, 0, 0, 0);
         }
     }
+    default void spawnColorParticles(Level level, Entity entity, FluidStack fluid, RegistryAccess access, int count, double dxRange, double dyRange, double dzRange) {
+        if (!(level instanceof ServerLevel server)) return;
+        Vector3f color = getParticleColor(fluid, access);
+
+        for (int i = 0; i < count; i++) {
+            double dx = (level.random.nextDouble() - 0.5) * dxRange;
+            double dy = level.random.nextDouble() * dyRange;
+            double dz = (level.random.nextDouble() - 0.5) * dzRange;
+            server.sendParticles(new DustParticleOptions(color, 1.0F),
+                    entity.getX() + dx, entity.getY() + dy, entity.getZ() + dz,
+                    1, 0, 0, 0, 0);
+        }
+    }
     default void spawnColorParticles(Level level, Entity entity, ItemStack stack, int count, double dxRange, double dyRange, double dzRange) {
         if (!(level instanceof ServerLevel server)) return;
         Vector3f color = getParticleColor(stack, level.registryAccess());
@@ -296,6 +347,14 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
         }
     }
 
+    default Vector3f getParticleColor(FluidStack fluidStack, RegistryAccess access) {
+        SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);
+        int color = SyringeFluidTypeManager.getColor(type, fluidStack);
+        float r = ((color >> 16) & 0xFF) / 255f;
+        float g = ((color >> 8) & 0xFF) / 255f;
+        float b = (color & 0xFF) / 255f;
+        return new Vector3f(r, g, b);
+    }
     default Vector3f getParticleColor(ItemStack stack, RegistryAccess access) {
         FluidStack fluidStack = readFluid(stack);
         SyringeFluidType type = SyringeFluidTypeManager.fromFluid(fluidStack, access);

@@ -11,6 +11,8 @@
   ],
   "glowing": true,
   "mobPriority": 1,
-  "mobs": "minecraft:blaze",
+  "mobs": [
+    "minecraft:blaze"
+  ],
   "opaque": true
 }

@@ -7,6 +7,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 
+import net.electrisoma.bloodisfuel.content.equipment.bloodextractor.BloodExtractorBlock;
 import net.electrisoma.bloodisfuel.content.equipment.engine.portable_engine.*;
 import net.electrisoma.bloodisfuel.content.equipment.engine.vampire_engine.*;
 import net.minecraft.world.level.block.SoundType;
@@ -33,8 +34,8 @@ public class BBlocks {
     }
 
     // TODO: finish the engine
-    public static final BlockEntry<PortableEngineBlock> PORTABLE_ENGINE =
-            REGISTRATE.block("portable_engine", PortableEngineBlock::new)
+    public static final BlockEntry<PortableEngineBlock> PORTABLE_ENGINE = REGISTRATE
+            .block("portable_engine", PortableEngineBlock::new)
             .properties(p -> p
                     .mapColor(MapColor.METAL)
                     .sound(SoundType.NETHERITE_BLOCK)
@@ -56,8 +57,8 @@ public class BBlocks {
             .item(PortableEngineBlockItem::new)
             .transform(customItemModel())
             .register();
-    public static final BlockEntry<VampireEngineBlock> VAMPIRE_ENGINE =
-            REGISTRATE.block("vampire_engine", VampireEngineBlock::new)
+    public static final BlockEntry<VampireEngineBlock> VAMPIRE_ENGINE = REGISTRATE
+            .block("vampire_engine", VampireEngineBlock::new)
             .properties(p -> p
                     .mapColor(MapColor.METAL)
                     .sound(SoundType.NETHERITE_BLOCK)
@@ -65,6 +66,17 @@ public class BBlocks {
                     .strength(3f))
             .tag(AllTags.AllBlockTags.SAFE_NBT.tag)
             .blockstate(new VampireEngineGenerator()::generate)
+            .item()
+            .transform(customItemModel())
+            .register();
+    public static final BlockEntry<BloodExtractorBlock> BLOOD_EXTRACTOR = REGISTRATE
+            .block("blood_extractor", BloodExtractorBlock::new)
+            .properties(p -> p
+                    .mapColor(MapColor.METAL)
+                    .sound(SoundType.NETHERITE_BLOCK)
+                    .noOcclusion()
+                    .strength(3f))
+            .tag(AllTags.AllBlockTags.SAFE_NBT.tag)
             .item()
             .transform(customItemModel())
             .register();

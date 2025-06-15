@@ -176,8 +176,7 @@ public class BTags {
         BOILING_BLOOD,
         BLAZING_BLOOD(FORGE),
         UBER_FLUID,
-
-        DIVING_FLUID, // obsolete in the next update
+        LIQUID_END,
 
         LIQUID_CARBOHYDRATES,
 
@@ -226,6 +225,9 @@ public class BTags {
         private static void register() {}
     }
     public enum BEntityTags {
+        DOES_NOT_DROP_FLUID,
+        UNDEAD(FORGE),
+        ENDER
 
         ;
 

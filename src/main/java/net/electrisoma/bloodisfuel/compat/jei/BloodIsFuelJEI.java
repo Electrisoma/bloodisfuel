@@ -1,6 +1,7 @@
 package net.electrisoma.bloodisfuel.compat.jei;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
+import net.electrisoma.bloodisfuel.compat.jei.category.BloodExtractorCategory;
 import net.electrisoma.bloodisfuel.compat.jei.category.SyringeCategory;
 import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidTypeManager;
 
@@ -68,14 +69,19 @@ public class BloodIsFuelJEI implements IModPlugin {
     @Override public void registerCategories(IRecipeCategoryRegistration registration) {
         IGuiHelper helper = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(new SyringeCategory(helper));
+        registration.addRecipeCategories(new BloodExtractorCategory(helper));
     }
     @Override public void registerRecipes(IRecipeRegistration registration) {
         assert Minecraft.getInstance().level != null;
         RegistryAccess access = Minecraft.getInstance().level.registryAccess();
 
-        List<SyringeInfo> entries = SyringeJeiHelper.collectAndGroupSyringeRecipes(access);
-        registration.addRecipes(SyringeInfo.TYPE, entries);
+        List<SyringeInfo> syringeEntries = SyringeJeiHelper.collectAndGroupSyringeRecipes(access);
+        registration.addRecipes(SyringeInfo.TYPE, syringeEntries);
+
+        List<BloodExtractorInfo> extractorEntries = BloodExtractorJeiHelper.INSTANCE.collectAndGroupBloodExtractorRecipes(access);
+        registration.addRecipes(BloodExtractorInfo.TYPE, extractorEntries);
     }
+
     @Override public <T> void registerFluidSubtypes(ISubtypeRegistration registration, IPlatformFluidHelper<T> platformFluidHelper) {
         assert Minecraft.getInstance().level != null;
         RegistryAccess access = Minecraft.getInstance().level.registryAccess();

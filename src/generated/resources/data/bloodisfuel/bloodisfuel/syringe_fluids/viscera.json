@@ -14,6 +14,8 @@
   "fluids": [
     "bloodisfuel:viscera"
   ],
-  "mobs": "minecraft:zombie",
+  "mobs": [
+    "#forge:undead"
+  ],
   "opaque": true
 }

@@ -40,7 +40,7 @@ public record SyringeFluidType(
         Optional<Float> attackSpeed,
         Optional<FoodProperties> food,
         Optional<List<EffectsData>> effects,
-        Optional<HolderSet<EntityType<?>>> mobs,
+        Optional<List<HolderSet<EntityType<?>>>> mobs,
         int mobPriority,
         Optional<BurningData> burning,
         Optional<ExtinguishingData> extinguishing,
@@ -57,14 +57,15 @@ public record SyringeFluidType(
             Codec.FLOAT.optionalFieldOf("attack_speed").forGetter(SyringeFluidType::attackSpeed),
             BCodecs.FOOD_PROPERTIES.optionalFieldOf("food").forGetter(SyringeFluidType::food),
             Codec.list(BCodecs.EFFECTS_DATA).optionalFieldOf("effects").forGetter(SyringeFluidType::effects),
-            RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).optionalFieldOf("mobs").forGetter(SyringeFluidType::mobs),
+            Codec.list(RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE)) // ← updated
+                    .optionalFieldOf("mobs")
+                    .forGetter(SyringeFluidType::mobs),
             Codec.INT.optionalFieldOf("mobPriority", 0).forGetter(SyringeFluidType::mobPriority),
             BCodecs.BURNING_DATA.optionalFieldOf("burning").forGetter(SyringeFluidType::burning),
             BCodecs.EXTINGUISHING_DATA.optionalFieldOf("extinguishing").forGetter(SyringeFluidType::extinguishing),
             BCodecs.DROWNING_DATA.optionalFieldOf("drowning").forGetter(SyringeFluidType::drowning),
             BCodecs.FREEZING_DATA.optionalFieldOf("freezing").forGetter(SyringeFluidType::freezing)
-            ).apply(instance, SyringeFluidType::new)
-    );
+    ).apply(instance, SyringeFluidType::new));
 
     /**
      * Returns true if this fluid type is a potion-based fluid.
@@ -136,7 +137,7 @@ public record SyringeFluidType(
         private Optional<Float> attackSpeed = Optional.empty();
         private Optional<FoodProperties> food = Optional.empty();
         private final List<EffectsData> effects = new ArrayList<>();
-        private final List<Holder<EntityType<?>>> mobs = new ArrayList<>();
+        private final List<HolderSet<EntityType<?>>> mobSets = new ArrayList<>();
         private int mobPriority = 0;
         private Optional<BurningData> burning = Optional.empty();
         private Optional<ExtinguishingData> extinguishing = Optional.empty();
@@ -289,25 +290,38 @@ public record SyringeFluidType(
         /**
          * Adds mobs associated with the fluid type.
          */
+        public Builder mobTag(String namespace, String tag, HolderLookup.RegistryLookup<EntityType<?>> lookup) {
+            ResourceLocation tagLoc = new ResourceLocation(namespace, tag);
+            return mobTag(tagLoc, lookup);
+        }
+
+        public Builder mobTag(ResourceLocation tagLoc, HolderLookup.RegistryLookup<EntityType<?>> lookup) {
+            TagKey<EntityType<?>> tag = TagKey.create(Registries.ENTITY_TYPE, tagLoc);
+            HolderSet.Named<EntityType<?>> tagSet = lookup.getOrThrow(tag);
+            mobSets.add(tagSet);
+            return this;
+        }
         public Builder addMob(int priority, EntityType<?>... types) {
             this.mobPriority = priority;
-            for (EntityType<?> type : types)
-                ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(mobs::add);
+            for (EntityType<?> type : types) {
+                ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(holder -> mobSets.add(HolderSet.direct(holder)));
+            }
             return this;
         }
         public Builder addMob(String... entityIds) {
             for (String idStr : entityIds) {
                 ResourceLocation id = new ResourceLocation(idStr);
                 EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(id);
-//                if (entityType == null)
-//                    throw new IllegalArgumentException("Unknown entity type: " + idStr);
-                ForgeRegistries.ENTITY_TYPES.getHolder(entityType).ifPresent(mobs::add);
+                if (entityType == null)
+                    throw new IllegalArgumentException("Unknown entity type: " + idStr);
+                ForgeRegistries.ENTITY_TYPES.getHolder(entityType).ifPresent(holder -> mobSets.add(HolderSet.direct(holder)));
             }
             return this;
         }
         public Builder addMob(EntityType<?>... types) {
-            for (EntityType<?> type : types)
-                ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(mobs::add);
+            for (EntityType<?> type : types) {
+                ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(holder -> mobSets.add(HolderSet.direct(holder)));
+            }
             return this;
         }
         public Builder mobPriority(int mobPriority) {
@@ -367,7 +381,7 @@ public record SyringeFluidType(
                     attackSpeed,
                     food,
                     effects.isEmpty() ? Optional.empty() : Optional.of(List.copyOf(effects)),
-                    mobs.isEmpty() ? Optional.empty() : Optional.of(HolderSet.direct(mobs)),
+                    mobSets.isEmpty() ? Optional.empty() : Optional.of(List.copyOf(mobSets)),
                     mobPriority,
                     burning,
                     extinguishing,

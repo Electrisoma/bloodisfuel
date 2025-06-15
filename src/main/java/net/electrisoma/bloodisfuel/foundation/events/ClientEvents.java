@@ -9,10 +9,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import static net.createmod.ponder.PonderClient.isGameActive;
 
-
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class ClientEvents {
-
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent event) {
         if (!isGameActive()) return;

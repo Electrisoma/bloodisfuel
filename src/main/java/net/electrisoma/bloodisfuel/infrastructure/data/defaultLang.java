@@ -28,6 +28,7 @@ public class defaultLang {
         consume(consumer, dm, "syringe_gun.item", "%1$s was shot by %2$s using %3$s");
 
         jei(consumer, "syringe_fill", "Syringe Filling");
+        jei(consumer, "fluid_extraction", "Fluid Extraction");
 
         // tooltips
         tooltipSummary(consumer, blade, "Extract and inject the _fluid_ of your _friends_ or _enemies_!");

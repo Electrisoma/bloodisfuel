@@ -1,5 +1,6 @@
 package net.electrisoma.bloodisfuel.foundation.data.entries;
 
+import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
@@ -7,6 +8,7 @@ import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
 
 import com.simibubi.create.AllFluids;
 
+import net.electrisoma.bloodisfuel.registry.BTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -27,6 +29,7 @@ public class BSyringeFluidTypes {
 
     public static void bootstrap(BootstapContext<SyringeFluidType> ctx) {
         var fluidLookup = (HolderLookup.RegistryLookup<Fluid>) ctx.lookup(Registries.FLUID);
+        var mobLookup = (HolderLookup.RegistryLookup<EntityType<?>>) ctx.lookup(Registries.ENTITY_TYPE);
 
         // always
         register(ctx, "fallback", new SyringeFluidType.Builder()
@@ -112,7 +115,7 @@ public class BSyringeFluidTypes {
                 .appearance(0xDF4416, true)
                 .addEffect(MobEffects.POISON, 500, 1)
                 .stats(6, -2.5F)
-                .addMob(EntityType.ZOMBIE)
+                .mobTag("forge", "undead", mobLookup)
                 .build());
         register(ctx, "blood", new SyringeFluidType.Builder()
                 .fluids(BFluids.BLOOD.getSource())
@@ -135,10 +138,19 @@ public class BSyringeFluidTypes {
                 .build());
 
         // mod compat
-        register(ctx, "purple_soda_from_fishes", new SyringeFluidType.Builder()
+        register(ctx, "purple_soda", new SyringeFluidType.Builder()
                 .fluids("alexscaves:purple_soda")
                 .color(0x7F00FF)
-                .addMob("alexscaves:sweetish_fish")
+                .addMob(ACEntityRegistry.SWEETISH_FISH.get(),
+                        ACEntityRegistry.GUMMY_BEAR.get(),
+                        ACEntityRegistry.GUMBEEPER.get(),
+                        ACEntityRegistry.GUM_WORM.get(),
+                        ACEntityRegistry.LICOWITCH.get(),
+                        ACEntityRegistry.GINGERBREAD_MAN.get(),
+                        ACEntityRegistry.CARAMEL_CUBE.get(),
+                        ACEntityRegistry.CANDICORN.get(),
+                        ACEntityRegistry.CANIAC.get()
+                )
                 .addEffect("alexscaves:sugar_rush", 500, 1)
                 .food(4, 0.4F)
                 .build());

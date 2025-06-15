@@ -1,6 +1,7 @@
 package net.electrisoma.bloodisfuel.compat.jei.category;
 
 import mezz.jei.api.forge.ForgeTypes;
+import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.compat.jei.SyringeInfo;
 
 import com.simibubi.create.foundation.gui.AllGuiTextures;
@@ -20,7 +21,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -60,7 +60,7 @@ public class SyringeCategory implements IRecipeCategory<SyringeInfo> {
     private ItemStack getSyringeIconItem() {
         Set<Item> syringes = Objects.requireNonNull(ForgeRegistries.ITEMS.tags())
                 .getTag(net.minecraft.tags.TagKey.create(ForgeRegistries.ITEMS.getRegistryKey(),
-                        new ResourceLocation("bloodisfuel", "syringes")))
+                        BloodIsFuel.asResource("syringes")))
                 .stream()
                 .collect(Collectors.toSet());
 

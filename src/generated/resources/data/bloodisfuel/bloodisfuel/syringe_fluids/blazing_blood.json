@@ -9,6 +9,8 @@
     "#forge:blazing_blood"
   ],
   "glowing": true,
-  "mobs": "minecraft:blaze",
+  "mobs": [
+    "minecraft:blaze"
+  ],
   "opaque": true
 }

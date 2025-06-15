@@ -11,6 +11,8 @@
   "fluids": [
     "#forge:milk"
   ],
-  "mobs": "minecraft:cow",
+  "mobs": [
+    "minecraft:cow"
+  ],
   "opaque": true
 }
