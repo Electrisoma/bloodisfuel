@@ -102,7 +102,13 @@ public class SyringeProjectileEntity extends AbstractHurtingProjectile
             ItemStack syringeStack = new ItemStack(Items.STICK);
             writeFluid(syringeStack, fluid);
 
-            injectIntoTarget(syringeStack, target, player, level().registryAccess());
+            boolean isSelfInflicted = target.getUUID().equals(player.getUUID());
+
+            if (isSelfInflicted) {
+                injectSelf(syringeStack, level(), target, true);
+            } else {
+                injectIntoTarget(syringeStack, target, player, level().registryAccess());
+            }
 
             playHitSound(level(), position());
         }

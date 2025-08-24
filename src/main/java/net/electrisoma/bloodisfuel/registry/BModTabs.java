@@ -1,5 +1,7 @@
 package net.electrisoma.bloodisfuel.registry;
 
+import com.simibubi.create.foundation.item.TagDependentIngredientItem;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
@@ -26,7 +28,6 @@ import net.minecraft.world.item.CreativeModeTab.DisplayItemsGenerator;
 
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -45,11 +46,6 @@ public class BModTabs {
     private static final DeferredRegister<CreativeModeTab> REGISTER =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, BloodIsFuel.MOD_ID);
 
-    public static void register(IEventBus modEventBus) {
-        REGISTER.register(modEventBus);
-        BloodIsFuel.LOGGER.info("Registering tabs for " + BloodIsFuel.NAME);
-    }
-
     public static final RegistryObject<CreativeModeTab> BASE_CREATIVE_TAB = REGISTER.register("base",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.bloodisfuel.base"))
@@ -59,8 +55,13 @@ public class BModTabs {
                     .build()
     );
 
+    public static void register(IEventBus modEventBus) {
+        REGISTER.register(modEventBus);
+        BloodIsFuel.LOGGER.info("Registering tabs for " + BloodIsFuel.NAME);
+    }
+
     // logic
-    private record RegistrateDisplayItemsGenerator(boolean addItems, RegistryObject<CreativeModeTab> tabFilter) implements DisplayItemsGenerator {
+    private static class RegistrateDisplayItemsGenerator implements DisplayItemsGenerator {
         private static final Predicate<Item> IS_ITEM_3D_PREDICATE;
 
         static {
@@ -75,15 +76,14 @@ public class BModTabs {
             IS_ITEM_3D_PREDICATE = isItem3d.getValue();
         }
 
-        @OnlyIn(Dist.CLIENT)
-        private static Predicate<Item> makeClient3dItemPredicate() {
-            return item -> {
-                ItemRenderer itemRenderer = Minecraft.getInstance()
-                        .getItemRenderer();
-                BakedModel model = itemRenderer.getModel(new ItemStack(item), null, null, 0);
-                return model.isGui3d();
-            };
+        private final boolean addItems;
+        private final RegistryObject<CreativeModeTab> tabFilter;
+
+        public RegistrateDisplayItemsGenerator(boolean addItems, RegistryObject<CreativeModeTab> tabFilter) {
+            this.addItems = addItems;
+            this.tabFilter = tabFilter;
         }
+
         private static Predicate<Item> makeExclusionPredicate() {
             Set<Item> exclusions = new ReferenceOpenHashSet<>();
 
@@ -92,9 +92,41 @@ public class BModTabs {
                     BItems.INCOMPLETE_SYRINGE_GUN
             );
 
-            for (ItemProviderEntry<?> entry : simpleExclusions) exclusions.add(entry.asItem());
+            List<ItemEntry<TagDependentIngredientItem>> tagDependentExclusions = List.of(
+            );
+
+            for (ItemProviderEntry<?> entry : simpleExclusions) {
+                exclusions.add(entry.asItem());
+            }
+
+            for (ItemEntry<TagDependentIngredientItem> entry : tagDependentExclusions) {
+                TagDependentIngredientItem item = entry.get();
+                if (item.shouldHide()) {
+                    exclusions.add(entry.asItem());
+                }
+            }
 
             return exclusions::contains;
+        }
+
+        private static List<ItemOrdering> makeOrderings() {
+            List<ItemOrdering> orderings = new ReferenceArrayList<>();
+
+            Map<ItemProviderEntry<?>, ItemProviderEntry<?>> simpleBeforeOrderings = Map.of(
+            );
+
+            Map<ItemProviderEntry<?>, ItemProviderEntry<?>> simpleAfterOrderings = Map.of(
+            );
+
+            simpleBeforeOrderings.forEach((entry, otherEntry) -> {
+                orderings.add(ItemOrdering.before(entry.asItem(), otherEntry.asItem()));
+            });
+
+            simpleAfterOrderings.forEach((entry, otherEntry) -> {
+                orderings.add(ItemOrdering.after(entry.asItem(), otherEntry.asItem()));
+            });
+
+            return orderings;
         }
 
         private static Function<Item, ItemStack> makeStackFunc() {
@@ -123,28 +155,6 @@ public class BModTabs {
             };
         }
 
-        private List<Item> collectBlocks(Predicate<Item> exclusionPredicate) {
-            List<Item> items = new ReferenceArrayList<>();
-            for (RegistryEntry<Block> entry : BloodIsFuel.registrate().getAll(Registries.BLOCK)) {
-                if (!CreateRegistrate.isInCreativeTab(entry, tabFilter)) continue;
-                Item item = entry.get().asItem();
-                if (item == Items.AIR) continue;
-                if (!exclusionPredicate.test(item)) items.add(item);
-            }
-            items = new ReferenceArrayList<>(new ReferenceLinkedOpenHashSet<>(items));
-            return items;
-        }
-        private List<Item> collectItems(Predicate<Item> exclusionPredicate) {
-            List<Item> items = new ReferenceArrayList<>();
-            for (RegistryEntry<Item> entry : BloodIsFuel.registrate().getAll(Registries.ITEM)) {
-                if (!CreateRegistrate.isInCreativeTab(entry, tabFilter)) continue;
-                Item item = entry.get();
-                if (item instanceof BlockItem) continue;
-                if (!exclusionPredicate.test(item)) items.add(item);
-            }
-            return items;
-        }
-
         @Override
         public void accept(ItemDisplayParameters parameters, Output output) {
             Predicate<Item> exclusionPredicate = makeExclusionPredicate();
@@ -153,20 +163,48 @@ public class BModTabs {
             Function<Item, TabVisibility> visibilityFunc = makeVisibilityFunc();
 
             List<Item> items = new LinkedList<>();
-            if (addItems) items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE.negate())));
-
+            if (addItems) {
+                items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE.negate())));
+            }
             items.addAll(collectBlocks(exclusionPredicate));
-            if (addItems) items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE)));
+            if (addItems) {
+                items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE)));
+            }
 
             applyOrderings(items, orderings);
             outputAll(output, items, stackFunc, visibilityFunc);
         }
-        private static void outputAll(Output output, List<Item> items, Function<Item, ItemStack> stackFunc, Function<Item, TabVisibility> visibilityFunc) {
-            for (Item item : items) output.accept(stackFunc.apply(item), visibilityFunc.apply(item));
+
+        private List<Item> collectBlocks(Predicate<Item> exclusionPredicate) {
+            List<Item> items = new ReferenceArrayList<>();
+            for (RegistryEntry<Block> entry : BloodIsFuel.registrate().getAll(Registries.BLOCK)) {
+                if (!CreateRegistrate.isInCreativeTab(entry, tabFilter))
+                    continue;
+                Item item = entry.get()
+                        .asItem();
+                if (item == Items.AIR)
+                    continue;
+                if (!exclusionPredicate.test(item))
+                    items.add(item);
+            }
+            items = new ReferenceArrayList<>(new ReferenceLinkedOpenHashSet<>(items));
+            return items;
         }
-        private static List<ItemOrdering> makeOrderings() {
-            return new ReferenceArrayList<>();
+
+        private List<Item> collectItems(Predicate<Item> exclusionPredicate) {
+            List<Item> items = new ReferenceArrayList<>();
+            for (RegistryEntry<Item> entry : BloodIsFuel.registrate().getAll(Registries.ITEM)) {
+                if (!CreateRegistrate.isInCreativeTab(entry, tabFilter))
+                    continue;
+                Item item = entry.get();
+                if (item instanceof BlockItem)
+                    continue;
+                if (!exclusionPredicate.test(item))
+                    items.add(item);
+            }
+            return items;
         }
+
         private static void applyOrderings(List<Item> items, List<ItemOrdering> orderings) {
             for (ItemOrdering ordering : orderings) {
                 int anchorIndex = items.indexOf(ordering.anchor());
@@ -175,24 +213,37 @@ public class BModTabs {
                     int itemIndex = items.indexOf(item);
                     if (itemIndex != -1) {
                         items.remove(itemIndex);
-                        if (itemIndex < anchorIndex) anchorIndex--;
+                        if (itemIndex < anchorIndex) {
+                            anchorIndex--;
+                        }
                     }
-                    if (ordering.type() == ItemOrdering.Type.AFTER)
+                    if (ordering.type() == ItemOrdering.Type.AFTER) {
                         items.add(anchorIndex + 1, item);
-                    else items.add(anchorIndex, item);
+                    } else {
+                        items.add(anchorIndex, item);
+                    }
                 }
             }
         }
+
+        private static void outputAll(Output output, List<Item> items, Function<Item, ItemStack> stackFunc, Function<Item, TabVisibility> visibilityFunc) {
+            for (Item item : items) {
+                output.accept(stackFunc.apply(item), visibilityFunc.apply(item));
+            }
+        }
+
         private record ItemOrdering(Item item, Item anchor, Type type) {
             public static ItemOrdering before(Item item, Item anchor) {
                 return new ItemOrdering(item, anchor, Type.BEFORE);
             }
+
             public static ItemOrdering after(Item item, Item anchor) {
                 return new ItemOrdering(item, anchor, Type.AFTER);
             }
+
             public enum Type {
                 BEFORE,
-                AFTER
+                AFTER;
             }
         }
     }

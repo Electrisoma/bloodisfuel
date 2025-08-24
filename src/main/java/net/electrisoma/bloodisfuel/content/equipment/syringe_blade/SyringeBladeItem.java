@@ -157,7 +157,7 @@ public class SyringeBladeItem extends SwordItem
             return;
         }
 
-        injectSelf(stack, level, player);
+        injectSelf(stack, level, player, false);
         player.getCooldowns().addCooldown(this, 40);
         isOnCooldown = false;
     }

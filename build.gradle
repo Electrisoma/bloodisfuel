@@ -31,10 +31,10 @@ base {
     version=mod_version + (dev && buildNumber != null ? "-build-${buildNumber}" : '')
 }
 
-def refmap
+Provider<RegularFile> refmap
 mixin {
-    refmap=add sourceSets.main, 'bloodisfuel.refmap.json'
-    config 'bloodisfuel.mixins.json'
+    refmap=add(sourceSets.main, "bloodisfuel.refmap.json")
+    config "bloodisfuel.mixins.json"
 }
 
 println "Java: ${System.getProperty 'java.version'}, " +

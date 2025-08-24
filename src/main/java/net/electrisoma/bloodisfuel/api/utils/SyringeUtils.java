@@ -232,7 +232,7 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
 
         return false;
     }
-    default void injectSelf(ItemStack stack, Level level, LivingEntity entityLiving) {
+    default void injectSelf(ItemStack stack, Level level, LivingEntity entityLiving, boolean isProjectile) {
         if (!(entityLiving instanceof Player player)) return;
 
         RegistryAccess access = level.registryAccess();
@@ -249,9 +249,7 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
             player.hurt(player.damageSources().generic(), 2.0F);
             playSound(level, player, SoundEvents.PLAYER_ATTACK_CRIT);
 
-            boolean isDirect = player.getUUID().equals(player.getUUID());
-
-            advancementLogic(player, player, ctx, isDirect);
+            advancementLogic(player, player, ctx, isProjectile);
         }
     }
     default boolean injectIntoTarget(ItemStack stack, LivingEntity target, Player player, RegistryAccess access) {
@@ -291,7 +289,7 @@ public interface SyringeUtils extends FluidUtils, CombatContextUtils, TooltipUti
 
         if (isSelf) {
             if (isMilk) BAdvancements.LACTOSE_TOLERANT.awardTo(player);
-            BAdvancements.SELF_INFLICTED_SCIENCE.awardTo(player);
+            if (isDirect) BAdvancements.SELF_INFLICTED_SCIENCE.awardTo(player);
         }
         else {
             if (isHelpful) BAdvancements.MEDIC.awardTo(player);

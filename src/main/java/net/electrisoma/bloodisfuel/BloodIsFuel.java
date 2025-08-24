@@ -73,11 +73,13 @@ public class BloodIsFuel {
 
         ModLoadingContext modLoadingContext = ModLoadingContext.get();
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus modEventBus = FMLJavaModLoadingContext.get()
+                .getModEventBus();
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
+
         REGISTRATE.registerEventListeners(modEventBus);
 
-        ModSetup.register();
+        ModSetup.register(modEventBus, modLoadingContext);
 
         modEventBus.addListener(BloodIsFuel::init);
         modEventBus.addListener(EventPriority.LOWEST, BDatagen::gatherData);

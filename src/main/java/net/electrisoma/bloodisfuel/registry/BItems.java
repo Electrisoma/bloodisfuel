@@ -17,7 +17,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.effect.MobEffectInstance;
 
-@SuppressWarnings({"all"})
 public class BItems {
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
     static {REGISTRATE.setCreativeTab(BModTabs.BASE_CREATIVE_TAB);}
@@ -39,13 +38,14 @@ public class BItems {
                                 .nutrition(4)
                                 .meat()
                                 .saturationMod(0.1f)
-                                .effect(new MobEffectInstance(MobEffects.HUNGER, 600, 0),0.8f)
-                                .effect(new MobEffectInstance(MobEffects.POISON, 300, 2),0.8f)
+                                .effect(() -> new MobEffectInstance(MobEffects.HUNGER, 600, 0), 0.8f)
+                                .effect(() -> new MobEffectInstance(MobEffects.POISON, 300, 0), 0.8f)
                                 .build()))
                 .register();
 
         BLOOD_BOTTLE = REGISTRATE
                 .item("blood_bottle", BottleItem::new)
+                .properties(p -> p.stacksTo(16))
                 .tag(AllTags.AllItemTags.UPRIGHT_ON_BELT.tag)
                 .register();
 
