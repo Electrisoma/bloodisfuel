@@ -15,15 +15,17 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 public class BEnchantments {
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
 
+    public static RegistryEntry<ChargesEnchantment> EXTRA_VIALS;
+
     public static void register() {
         BloodIsFuel.LOGGER.info("Registering enchantments for " + BloodIsFuel.NAME);
-    }
 
-    public static final RegistryEntry<ChargesEnchantment> EXTRA_VIALS =
-            REGISTRATE.object("extra_vials")
-                    .enchantment(EnchantmentCategory.WEAPON, ChargesEnchantment::new)
-                    .addSlots(EquipmentSlot.MAINHAND)
-                    .lang("Extra Vials")
-                    .rarity(Enchantment.Rarity.UNCOMMON)
-                    .register();
+        EXTRA_VIALS = REGISTRATE
+                .object("extra_vials")
+                .enchantment(EnchantmentCategory.WEAPON, ChargesEnchantment::new)
+                .addSlots(EquipmentSlot.MAINHAND)
+                .lang("Extra Vials")
+                .rarity(Enchantment.Rarity.UNCOMMON)
+                .register();
+    }
 }

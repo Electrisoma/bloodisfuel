@@ -1,6 +1,6 @@
 package net.electrisoma.bloodisfuel.foundation.data.entries;
 
-import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
+
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.registry.BFluids;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
@@ -8,12 +8,9 @@ import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
 
 import com.simibubi.create.AllFluids;
 
-import net.electrisoma.bloodisfuel.registry.BTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -22,16 +19,14 @@ import net.minecraft.data.worldgen.BootstapContext;
 
 import net.minecraftforge.common.Tags;
 
-
 public class BSyringeFluidTypes {
     public static final ResourceKey<SyringeFluidType> FALLBACK =
-            ResourceKey.create(BRegistries.SYRINGE_FLUIDS, BloodIsFuel.asResource("fallback"));
+            ResourceKey.create(BRegistries.SYRINGE_FLUIDS, BloodIsFuel.path("fallback"));
     public static final ResourceKey<SyringeFluidType> POTION =
-            ResourceKey.create(BRegistries.SYRINGE_FLUIDS, BloodIsFuel.asResource("potion"));
+            ResourceKey.create(BRegistries.SYRINGE_FLUIDS, BloodIsFuel.path("potion"));
 
     public static void bootstrap(BootstapContext<SyringeFluidType> ctx) {
         var fluidLookup = (HolderLookup.RegistryLookup<Fluid>) ctx.lookup(Registries.FLUID);
-        var mobLookup = (HolderLookup.RegistryLookup<EntityType<?>>) ctx.lookup(Registries.ENTITY_TYPE);
 
         // always
         register(ctx, "fallback", new SyringeFluidType.Builder()
@@ -50,8 +45,9 @@ public class BSyringeFluidTypes {
         register(ctx, "harming_potion", new SyringeFluidType.Builder()
                 .fluids(AllFluids.POTION.getSource())
                 .fluidTag("forge", "potion", fluidLookup)
+                .appearance(0xFFFFFF, false, true)
                 .potion(Potions.HARMING)
-                .addMob(EntityType.CREEPER)
+//                .addMobs(EntityType.CREEPER)
                 .build());
 
         // vanilla and forge
@@ -69,13 +65,13 @@ public class BSyringeFluidTypes {
                 .fluidTag(Tags.Fluids.MILK.location(), fluidLookup)
                 .appearance(0xFFFFFF, true)
                 .addEffect(MobEffects.DAMAGE_BOOST, 100)
-                .addMob(EntityType.COW)
+//                .addMobs(EntityType.COW)
                 .build());
         register(ctx, "honey", new SyringeFluidType.Builder()
                 .fluidTag("forge", "honey", fluidLookup)
                 .appearance(0xFFBF00, true)
                 .food(4, 2)
-                .addMob(EntityType.BEE)
+//                .addMobs(EntityType.BEE)
                 .build());
         register(ctx, "chocolate", new SyringeFluidType.Builder()
                 .fluidTag("forge", "chocolate", fluidLookup)
@@ -106,12 +102,22 @@ public class BSyringeFluidTypes {
                 .appearance(0x61DE2A, true, true)
                 .addEffect(MobEffects.WITHER, 300, 1)
                 .build());
-        register(ctx, "blazing_blood", new SyringeFluidType.Builder()
-                .fluidTag("forge", "blazing_blood", fluidLookup)
-                .appearance(0xFFAE42, true, true)
-                .stats(6, -2.5F)
-                .burning(4, 4F)
-                .addMob(EntityType.BLAZE)
+        register(ctx, "slime", new SyringeFluidType.Builder()
+                .fluidTag("forge", "slime", fluidLookup)
+                .appearance(0x7AC25B, true)
+                .addEffect(MobEffects.JUMP, 300, 1)
+//                .addMobs(EntityType.SLIME)
+                .build());
+        register(ctx, "ender", new SyringeFluidType.Builder()
+                .fluidTag("forge", "ender", fluidLookup)
+                .appearance(0x258474, true, true)
+                .teleports(20)
+                .build());
+        register(ctx, "powdered_snow", new SyringeFluidType.Builder()
+                .fluidTag("forge", "powdered_snow", fluidLookup)
+                .appearance(0xFFFFFF, true, false)
+//                .addMobs("minecraft:snow_golem")
+                .freezing(8, 0.25f, 0.5f)
                 .build());
 
         // blood is fuel
@@ -125,7 +131,7 @@ public class BSyringeFluidTypes {
                 .appearance(0xDF4416, true)
                 .addEffect(MobEffects.POISON, 500, 1)
                 .stats(6, -2.5F)
-                .mobTag("forge", "undead", mobLookup)
+                //.mobTag("forge", "undead", mobLookup)
                 .build());
         register(ctx, "blood", new SyringeFluidType.Builder()
                 .fluids(BFluids.BLOOD.getSource())
@@ -146,39 +152,76 @@ public class BSyringeFluidTypes {
                 .stats(6, -2.5F)
                 .burning(4, 4F)
                 .build());
+        register(ctx, "blazing_blood", new SyringeFluidType.Builder()
+                .fluids(BFluids.BLAZING_BLOOD.getSource())
+                .appearance(0xFFAE42, true, true)
+                .stats(6, -2.5F)
+                .burning(4, 4F)
+                //.addMobs(EntityType.BLAZE)
+                .build());
 
         // mod compat
-        register(ctx, "purple_soda", new SyringeFluidType.Builder()
+        register(ctx, "ac_purple_soda", new SyringeFluidType.Builder()
                 .fluids("alexscaves:purple_soda")
                 .color(0x7F00FF)
-                .addMob(ACEntityRegistry.SWEETISH_FISH.get(),
-                        ACEntityRegistry.GUMMY_BEAR.get(),
-                        ACEntityRegistry.GUMBEEPER.get(),
-                        ACEntityRegistry.GUM_WORM.get(),
-                        ACEntityRegistry.LICOWITCH.get(),
-                        ACEntityRegistry.GINGERBREAD_MAN.get(),
-                        ACEntityRegistry.CARAMEL_CUBE.get(),
-                        ACEntityRegistry.CANDICORN.get(),
-                        ACEntityRegistry.CANIAC.get()
-                )
+//                .addMobs(
+//                        "alexscaves:sweetish_fish",
+//                        "alexscaves:gummy_bear",
+//                        "alexscaves:gumbeeper",
+//                        "alexscaves:gum_worm",
+//                        "alexscaves:licowitch",
+//                        "alexscaves:caramel_cube",
+//                        "alexscaves:candicorn",
+//                        "alexscaves:caniac"
+//                )
                 .addEffect("alexscaves:sugar_rush", 500, 1)
                 .food(4, 0.4F)
                 .build());
-        register(ctx, "tc_blazing_blood", new SyringeFluidType.Builder()
-                .fluidTag("tconstruct", "blazing_blood", fluidLookup)
-                .appearance(0xFFAE42, true, true)
-                .stats(6, -2.5F)
-                .burning(2, 7F)
-                .addMob(1, EntityType.BLAZE)
+        register(ctx, "ac_acid", new SyringeFluidType.Builder()
+                .fluids("alexscaves:acid")
+                .appearance(0x61DE2A, true, true)
+                .addEffect(MobEffects.WITHER, 300, 1)
+//                .addMobs(
+//                        "alexscaves:nucleeper",
+//                        "alexscaves:radgill",
+//                        "alexscaves:brainiac",
+//                        "alexscaves:gammaroach",
+//                        "alexscaves:raycat",
+//                        "alexscaves:tremorzilla"
+//                )
                 .build());
-        register(ctx, "nutrients_fluid", new SyringeFluidType.Builder()
+        register(ctx, "bf_nutrients_fluid", new SyringeFluidType.Builder()
                 .fluidTag("biofactory", "nutrients_fluid", fluidLookup)
                 .appearance(0x495C22, true)
                 .food(9, 1.2F)
                 .build());
+        register(ctx, "tc_earthslime", new SyringeFluidType.Builder()
+                .fluidTag("tconstruct", "earth_slime", fluidLookup)
+                .appearance(0x7AC25B, true)
+                .addEffect("tconstruct:bouncy", 300,1)
+                //.addMobs(EntityType.SLIME)
+                .build());
+        register(ctx, "tc_skyslime", new SyringeFluidType.Builder()
+                .fluidTag("tconstruct", "sky_slime", fluidLookup)
+                .appearance(0x6CC8C2, true)
+                .addEffect("tconstruct:ricochet", 300,1)
+                //.addMobs("tconstruct:sky_slime")
+                .build());
+        register(ctx, "tc_enderslime", new SyringeFluidType.Builder()
+                .fluidTag("tconstruct", "ender_slime", fluidLookup)
+                .appearance(0xB552F0, true)
+                .addEffect("tconstruct:enderference", 300,1)
+                //.addMobs("tconstruct:ender_slime")
+                .build());
+        register(ctx, "tc_terracube", new SyringeFluidType.Builder()
+                .fluidTag("tconstruct", "molten_clay", fluidLookup)
+                .appearance(0x563D2D, true, true)
+                .burning(2, 7F)
+                //.addMobs("tconstruct:terracube")
+                .build());
     }
 
     private static void register(BootstapContext<SyringeFluidType> ctx, String name, SyringeFluidType type) {
-        ctx.register(ResourceKey.create(BRegistries.SYRINGE_FLUIDS, BloodIsFuel.asResource(name)), type);
+        ctx.register(ResourceKey.create(BRegistries.SYRINGE_FLUIDS, BloodIsFuel.path(name)), type);
     }
 }

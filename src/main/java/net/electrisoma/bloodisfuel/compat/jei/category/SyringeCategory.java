@@ -60,7 +60,7 @@ public class SyringeCategory implements IRecipeCategory<SyringeInfo> {
     private ItemStack getSyringeIconItem() {
         Set<Item> syringes = Objects.requireNonNull(ForgeRegistries.ITEMS.tags())
                 .getTag(net.minecraft.tags.TagKey.create(ForgeRegistries.ITEMS.getRegistryKey(),
-                        BloodIsFuel.asResource("syringes")))
+                        BloodIsFuel.path("syringes")))
                 .stream()
                 .collect(Collectors.toSet());
 

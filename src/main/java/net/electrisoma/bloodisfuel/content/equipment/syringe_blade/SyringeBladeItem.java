@@ -1,5 +1,8 @@
 package net.electrisoma.bloodisfuel.content.equipment.syringe_blade;
 
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidTypeManager;
+import net.electrisoma.bloodisfuel.api.registry.BRegistries;
 import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
 import net.electrisoma.bloodisfuel.registry.BTags;
 import net.electrisoma.bloodisfuel.registry.enchantments.ChargesEnchantment;
@@ -15,8 +18,14 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -29,6 +38,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
@@ -36,7 +46,14 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.ImmutableMultimap;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.network.NetworkHooks;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -83,15 +100,42 @@ public class SyringeBladeItem extends SwordItem
 
         return builder.build();
     }
-    @Override public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
+
+        if (!level.isClientSide) FluidUtil.getFluidHandler(stack);
+
         if (BTags.BItemTags.SYRINGE_BLADE.matches(stack) && entity instanceof Player player && isSelected) {
             isOnCooldown = player.getCooldowns().isOnCooldown(stack.getItem());
             offHandPower = BTags.BItemTags.SYRINGE_BLADE.matches(player.getOffhandItem().getItem());
         }
     }
+    @Override public boolean overrideOtherStackedOnMe(ItemStack syringeStack, ItemStack incomingStack, Slot slot, ClickAction action, Player player, SlotAccess access) {
+        return tryInsertFluidFromContainer(syringeStack, incomingStack, slot, action, player, access);
+    }
     @Override public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        boolean isEmpty = readFluid(stack).isEmpty();
+
+        if (player.isShiftKeyDown() && isEmpty && player.isCreative()) {
+            if (!level.isClientSide) {
+                List<FluidStack> fluids = SyringeFluidSelectMenu.buildFluidList(player);
+                ItemStack syringe = player.getMainHandItem();
+
+                NetworkHooks.openScreen((ServerPlayer) player,
+                        new SimpleMenuProvider(
+                                (id, inv, ply) -> new SyringeFluidSelectMenu(id, inv, syringe, fluids),
+                                Component.literal("Select Fluid")
+                        ),
+                        buf -> {
+                            buf.writeItem(syringe);
+                            SyringeFluidSelectMenu.writeFluidList(buf, fluids);
+                        }
+                );
+            }
+            return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        }
 
         if (player.isShiftKeyDown()) {
             drainVial(stack, player, level);

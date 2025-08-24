@@ -7,11 +7,17 @@ import com.simibubi.create.AllEnchantments;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 
+import net.electrisoma.bloodisfuel.content.equipment.syringe_blade.SyringeFluidSelectMenu;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
@@ -27,6 +33,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -45,6 +52,26 @@ public class SyringeGunItem extends ProjectileWeaponItem
 
     @Override public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        boolean isEmpty = readFluid(stack).isEmpty();
+
+        if (player.isShiftKeyDown() && isEmpty && player.isCreative()) {
+            if (!level.isClientSide) {
+                List<FluidStack> fluids = SyringeFluidSelectMenu.buildFluidList(player);
+                ItemStack syringe = player.getMainHandItem();
+
+                NetworkHooks.openScreen((ServerPlayer) player,
+                        new SimpleMenuProvider(
+                                (id, inv, ply) -> new SyringeFluidSelectMenu(id, inv, syringe, fluids),
+                                Component.literal("Select Fluid")
+                        ),
+                        buf -> {
+                            buf.writeItem(syringe);
+                            SyringeFluidSelectMenu.writeFluidList(buf, fluids);
+                        }
+                );
+            }
+            return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        }
 
         if (player.isShiftKeyDown()) {
             drainVial(stack, player, level);
@@ -54,10 +81,15 @@ public class SyringeGunItem extends ProjectileWeaponItem
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(stack);
     }
+    @Override public boolean overrideOtherStackedOnMe(ItemStack syringeStack, ItemStack incomingStack, Slot slot, ClickAction action, Player player, SlotAccess access) {
+        return tryInsertFluidFromContainer(syringeStack, incomingStack, slot, action, player, access);
+    }
     @Override public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         if (!(entityLiving instanceof Player player)) return;
 
         if (readFluid(stack).isEmpty()) {
+            int useDuration = getUseDuration(stack) - player.getUseItemRemainingTicks();
+            if (useDuration < 20) return;
             extractFromSelf(stack, level, player);
             return;
         }

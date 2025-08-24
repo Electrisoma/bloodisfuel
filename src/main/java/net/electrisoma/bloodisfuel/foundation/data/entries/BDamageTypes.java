@@ -18,7 +18,7 @@ public class BDamageTypes {
             SYRINGE_GUN = key("syringe_gun");
 
     private static ResourceKey<DamageType> key(String name) {
-        return ResourceKey.create(Registries.DAMAGE_TYPE, BloodIsFuel.asResource(name));
+        return ResourceKey.create(Registries.DAMAGE_TYPE, BloodIsFuel.path(name));
     }
 
     public static void bootstrap(BootstapContext<DamageType> ctx) {

@@ -26,7 +26,7 @@ import net.minecraft.server.level.ServerPlayer;
 @MethodsReturnNonnullByDefault
 public abstract class BCriterionTrigger<T extends BCriterionTrigger.Instance> implements CriterionTrigger<T> {
     public BCriterionTrigger(String id) {
-        this.id = BloodIsFuel.asResource(id);
+        this.id = BloodIsFuel.path(id);
     }
 
     private final ResourceLocation id;

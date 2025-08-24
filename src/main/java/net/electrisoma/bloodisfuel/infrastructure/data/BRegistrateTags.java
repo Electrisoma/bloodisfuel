@@ -2,7 +2,6 @@ package net.electrisoma.bloodisfuel.infrastructure.data;
 
 import net.electrisoma.bloodisfuel.registry.*;
 import net.electrisoma.bloodisfuel.BloodIsFuel;
-import net.electrisoma.bloodisfuel.infrastructure.utils.Utils;
 
 import com.simibubi.create.foundation.data.TagGen;
 import com.simibubi.create.foundation.data.CreateRegistrate;
@@ -10,10 +9,8 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagEntry;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.entity.EntityType;
@@ -25,7 +22,7 @@ import net.minecraft.world.level.material.Fluid;
 @SuppressWarnings({"unused", "deprecation", "RedundantSuppression"})
 public class BRegistrateTags {
 	private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
-
+	
 	public static void addGenerators() {
 		REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, BRegistrateTags::genItemTags);
 		REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, BRegistrateTags::genBlockTags);
@@ -54,80 +51,80 @@ public class BRegistrateTags {
 				)
 
 				//Create
-				.addOptional(Utils.location("create:sweet_roll"))
-				.addOptional(Utils.location("create:chocolate_glazed_berries"))
-				.addOptional(Utils.location("create:honeyed_apple"))
-				.addOptional(Utils.location("create:bar_of_chocolate"))
+				.addOptional(BloodIsFuel.path("create:sweet_roll"))
+				.addOptional(BloodIsFuel.path("create:chocolate_glazed_berries"))
+				.addOptional(BloodIsFuel.path("create:honeyed_apple"))
+				.addOptional(BloodIsFuel.path("create:bar_of_chocolate"))
 
 				//CC&A
-				.addOptional(Utils.location("createaddition:chocolate_cake"))
+				.addOptional(BloodIsFuel.path("createaddition:chocolate_cake"))
 
 				//Garnished
-				.addOptionalTag(Utils.location("garnished:garnished_foods"))
-				.addOptionalTag(Utils.location("garnished:aversion_foods"))
+				.addOptionalTag(BloodIsFuel.path("garnished:garnished_foods"))
+				.addOptionalTag(BloodIsFuel.path("garnished:aversion_foods"))
 
 				//Confectionery
-				.addOptional(Utils.location("create_confectionery:bar_of_caramel"))
-				.addOptional(Utils.location("create_confectionery:bar_of_black_chocolate"))
-				.addOptional(Utils.location("create_confectionery:bar_of_white_chocolate"))
-				.addOptional(Utils.location("create_confectionery:bar_of_ruby_chocolate"))
-				.addOptional(Utils.location("create_confectionery:full_chocolate_bar"))
-				.addOptional(Utils.location("create_confectionery:full_black_chocolate_bar"))
-				.addOptional(Utils.location("create_confectionery:full_white_chocolate_bar"))
-				.addOptional(Utils.location("create_confectionery:full_ruby_chocolate_bar"))
-				.addOptional(Utils.location("create_confectionery:caramel_glazed_berries"))
-				.addOptional(Utils.location("create_confectionery:dark_chocolate_glazed_berries"))
-				.addOptional(Utils.location("create_confectionery:white_chocolate_glazed_berries"))
-				.addOptional(Utils.location("create_confectionery:ruby_chocolate_glazed_berries"))
-				.addOptional(Utils.location("create_confectionery:marshmallow"))
-				.addOptional(Utils.location("create_confectionery:marshmallow_on_a_stick"))
-				.addOptional(Utils.location("create_confectionery:caramelized_marshmellow_on_a_stick"))
-				.addOptional(Utils.location("create_confectionery:chocolate_glazed_marshmallow"))
-				.addOptional(Utils.location("create_confectionery:black_chocolate_glazed_marshmallow"))
-				.addOptional(Utils.location("create_confectionery:white_chocolate_glazed_marshmallow"))
-				.addOptional(Utils.location("create_confectionery:ruby_chocolate_glazed_marshmallow"))
-				.addOptional(Utils.location("create_confectionery:candy_cane"))
-				.addOptional(Utils.location("create_confectionery:crushed_cocoa"))
-				.addOptional(Utils.location("create_confectionery:cocoa_butter"))
-				.addOptional(Utils.location("create_confectionery:cocoa_powder"))
-				.addOptional(Utils.location("create_confectionery:gingerbread"))
-				.addOptional(Utils.location("create_confectionery:gingerbread_man"))
-				.addOptional(Utils.location("create_confectionery:honey_candy"))
-				.addOptional(Utils.location("create_confectionery:chocolate_candy"))
-				.addOptional(Utils.location("create_confectionery:chocolate_candy_1"))
-				.addOptional(Utils.location("create_confectionery:chocolate_candy_2"))
-				.addOptional(Utils.location("create_confectionery:chocolate_candy_3"))
-				.addOptional(Utils.location("create_confectionery:dark_chocolate_candy"))
-				.addOptional(Utils.location("create_confectionery:dark_chocolate_candy_1"))
-				.addOptional(Utils.location("create_confectionery:dark_chocolate_candy_2"))
-				.addOptional(Utils.location("create_confectionery:dark_chocolate_candy_3"))
-				.addOptional(Utils.location("create_confectionery:white_chocolate_candy"))
-				.addOptional(Utils.location("create_confectionery:white_chocolate_candy_1"))
-				.addOptional(Utils.location("create_confectionery:white_chocolate_candy_2"))
-				.addOptional(Utils.location("create_confectionery:white_chocolate_candy_3"))
-				.addOptional(Utils.location("create_confectionery:ruby_chocolate_candy"))
-				.addOptional(Utils.location("create_confectionery:ruby_chocolate_candy_1"))
-				.addOptional(Utils.location("create_confectionery:ruby_chocolate_candy_2"))
-				.addOptional(Utils.location("create_confectionery:ruby_chocolate_candy_3"))
+				.addOptional(BloodIsFuel.path("create_confectionery:bar_of_caramel"))
+				.addOptional(BloodIsFuel.path("create_confectionery:bar_of_black_chocolate"))
+				.addOptional(BloodIsFuel.path("create_confectionery:bar_of_white_chocolate"))
+				.addOptional(BloodIsFuel.path("create_confectionery:bar_of_ruby_chocolate"))
+				.addOptional(BloodIsFuel.path("create_confectionery:full_chocolate_bar"))
+				.addOptional(BloodIsFuel.path("create_confectionery:full_black_chocolate_bar"))
+				.addOptional(BloodIsFuel.path("create_confectionery:full_white_chocolate_bar"))
+				.addOptional(BloodIsFuel.path("create_confectionery:full_ruby_chocolate_bar"))
+				.addOptional(BloodIsFuel.path("create_confectionery:caramel_glazed_berries"))
+				.addOptional(BloodIsFuel.path("create_confectionery:dark_chocolate_glazed_berries"))
+				.addOptional(BloodIsFuel.path("create_confectionery:white_chocolate_glazed_berries"))
+				.addOptional(BloodIsFuel.path("create_confectionery:ruby_chocolate_glazed_berries"))
+				.addOptional(BloodIsFuel.path("create_confectionery:marshmallow"))
+				.addOptional(BloodIsFuel.path("create_confectionery:marshmallow_on_a_stick"))
+				.addOptional(BloodIsFuel.path("create_confectionery:caramelized_marshmellow_on_a_stick"))
+				.addOptional(BloodIsFuel.path("create_confectionery:chocolate_glazed_marshmallow"))
+				.addOptional(BloodIsFuel.path("create_confectionery:black_chocolate_glazed_marshmallow"))
+				.addOptional(BloodIsFuel.path("create_confectionery:white_chocolate_glazed_marshmallow"))
+				.addOptional(BloodIsFuel.path("create_confectionery:ruby_chocolate_glazed_marshmallow"))
+				.addOptional(BloodIsFuel.path("create_confectionery:candy_cane"))
+				.addOptional(BloodIsFuel.path("create_confectionery:crushed_cocoa"))
+				.addOptional(BloodIsFuel.path("create_confectionery:cocoa_butter"))
+				.addOptional(BloodIsFuel.path("create_confectionery:cocoa_powder"))
+				.addOptional(BloodIsFuel.path("create_confectionery:gingerbread"))
+				.addOptional(BloodIsFuel.path("create_confectionery:gingerbread_man"))
+				.addOptional(BloodIsFuel.path("create_confectionery:honey_candy"))
+				.addOptional(BloodIsFuel.path("create_confectionery:chocolate_candy"))
+				.addOptional(BloodIsFuel.path("create_confectionery:chocolate_candy_1"))
+				.addOptional(BloodIsFuel.path("create_confectionery:chocolate_candy_2"))
+				.addOptional(BloodIsFuel.path("create_confectionery:chocolate_candy_3"))
+				.addOptional(BloodIsFuel.path("create_confectionery:dark_chocolate_candy"))
+				.addOptional(BloodIsFuel.path("create_confectionery:dark_chocolate_candy_1"))
+				.addOptional(BloodIsFuel.path("create_confectionery:dark_chocolate_candy_2"))
+				.addOptional(BloodIsFuel.path("create_confectionery:dark_chocolate_candy_3"))
+				.addOptional(BloodIsFuel.path("create_confectionery:white_chocolate_candy"))
+				.addOptional(BloodIsFuel.path("create_confectionery:white_chocolate_candy_1"))
+				.addOptional(BloodIsFuel.path("create_confectionery:white_chocolate_candy_2"))
+				.addOptional(BloodIsFuel.path("create_confectionery:white_chocolate_candy_3"))
+				.addOptional(BloodIsFuel.path("create_confectionery:ruby_chocolate_candy"))
+				.addOptional(BloodIsFuel.path("create_confectionery:ruby_chocolate_candy_1"))
+				.addOptional(BloodIsFuel.path("create_confectionery:ruby_chocolate_candy_2"))
+				.addOptional(BloodIsFuel.path("create_confectionery:ruby_chocolate_candy_3"))
 
 				//Biomancy
-				.addOptional(Utils.location("biomancy:nutrient_paste"))
-				.addOptional(Utils.location("biomancy:nutrient_bar"))
+				.addOptional(BloodIsFuel.path("biomancy:nutrient_paste"))
+				.addOptional(BloodIsFuel.path("biomancy:nutrient_bar"))
 
 				//BiC
-				.addOptional(Utils.location("born_in_chaos_v1:mint_candy"))
-				.addOptional(Utils.location("born_in_chaos_v1:mint_ice_cream"))
-				.addOptional(Utils.location("born_in_chaos_v1:coffee_candy"))
-				.addOptional(Utils.location("born_in_chaos_v1:gummy_vampire_teeth"))
-				.addOptional(Utils.location("born_in_chaos_v1:chocolate_heart"))
-				.addOptional(Utils.location("born_in_chaos_v1:caramel_pepper"))
-				.addOptional(Utils.location("born_in_chaos_v1:holiday_candy"))
-				.addOptional(Utils.location("born_in_chaos_v1:magical_holiday_candy"))
-				.addOptional(Utils.location("born_in_chaos_v1:eternal_candy"))
-				.addOptional(Utils.location("born_in_chaos_v1:creepy_cookies_with_milk"))
-				.addOptional(Utils.location("born_in_chaos_v1:spiritual_gingerbread"))
-				.addOptional(Utils.location("born_in_chaos_v1:spiritual_dust"))
-				.addOptional(Utils.location("born_in_chaos_v1:intoxicating_decoction"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:mint_candy"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:mint_ice_cream"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:coffee_candy"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:gummy_vampire_teeth"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:chocolate_heart"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:caramel_pepper"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:holiday_candy"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:magical_holiday_candy"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:eternal_candy"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:creepy_cookies_with_milk"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:spiritual_gingerbread"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:spiritual_dust"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:intoxicating_decoction"))
 		;
 
 		prov.tag(BTags.BItemTags.MEATS.tag)
@@ -148,17 +145,17 @@ public class BRegistrateTags {
 				.add(TagEntry.element(BItems.DRAINED_MEAT.getId()))
 
 				//BiC
-				.addOptional(Utils.location("born_in_chaos_v1:monster_flesh"))
-				.addOptional(Utils.location("born_in_chaos_v1:bloody_gadfly_eye"))
-				.addOptional(Utils.location("born_in_chaos_v1:corpse_maggot"))
-				.addOptional(Utils.location("born_in_chaos_v1:ethereal_spirit"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:monster_flesh"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:bloody_gadfly_eye"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:corpse_maggot"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:ethereal_spirit"))
 
 				//Farmer's Delight
-				.addOptional(Utils.location("farmersdelight:bacon"))
-				.addOptional(Utils.location("farmersdelight:minced_beef"))
-				.addOptional(Utils.location("farmersdelight:chicken_cuts"))
-				.addOptional(Utils.location("farmersdelight:mutton_chops"))
-				.addOptional(Utils.location("farmersdelight:ham"))
+				.addOptional(BloodIsFuel.path("farmersdelight:bacon"))
+				.addOptional(BloodIsFuel.path("farmersdelight:minced_beef"))
+				.addOptional(BloodIsFuel.path("farmersdelight:chicken_cuts"))
+				.addOptional(BloodIsFuel.path("farmersdelight:mutton_chops"))
+				.addOptional(BloodIsFuel.path("farmersdelight:ham"))
 		;
 
 		prov.tag(BTags.BItemTags.FISHES.tag)
@@ -172,12 +169,12 @@ public class BRegistrateTags {
 				)
 
 				//Farmer's Delight
-				.addOptional(Utils.location("farmersdelight:cod_slice"))
-				.addOptional(Utils.location("farmersdelight:salmon_slice"))
+				.addOptional(BloodIsFuel.path("farmersdelight:cod_slice"))
+				.addOptional(BloodIsFuel.path("farmersdelight:salmon_slice"))
 
 				//BiC
-				.addOptional(Utils.location("born_in_chaos_v1:rotten_fish"))
-				.addOptional(Utils.location("born_in_chaos_v1:sea_terror_eye"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:rotten_fish"))
+				.addOptional(BloodIsFuel.path("born_in_chaos_v1:sea_terror_eye"))
 		;
 
 		//Biomancy meat
@@ -189,19 +186,19 @@ public class BRegistrateTags {
 		prov.tag(BTags.BBlockTags.CARBOHYDRATES.tag)
 
 				//AC
-				.addOptional(Utils.location("alexscaves:block_of_chocolate"))
-				.addOptional(Utils.location("alexscaves:block_of_polished_chocolate"))
-				.addOptional(Utils.location("alexscaves:block_of_chiseled_chocolate"))
-				.addOptional(Utils.location("alexscaves:block_of_frosted_chocolate"))
-				.addOptional(Utils.location("alexscaves:block_of_frosting"))
-				.addOptional(Utils.location("alexscaves:block_of_vanilla_frosting"))
-				.addOptional(Utils.location("alexscaves:block_of_chocolate_frosting"))
-				.addOptional(Utils.location("alexscaves:cake_layer"))
-				.addOptional(Utils.location("alexscaves:cookie_block"))
-				.addOptional(Utils.location("alexscaves:wafer_cookie_block"))
-				.addOptional(Utils.location("alexscaves:dough_block"))
-				.addOptional(Utils.location("alexscaves:confection_oven"))
-				.addOptionalTag(Utils.location("alexscaves:rock_candies"))
+				.addOptional(BloodIsFuel.path("alexscaves:block_of_chocolate"))
+				.addOptional(BloodIsFuel.path("alexscaves:block_of_polished_chocolate"))
+				.addOptional(BloodIsFuel.path("alexscaves:block_of_chiseled_chocolate"))
+				.addOptional(BloodIsFuel.path("alexscaves:block_of_frosted_chocolate"))
+				.addOptional(BloodIsFuel.path("alexscaves:block_of_frosting"))
+				.addOptional(BloodIsFuel.path("alexscaves:block_of_vanilla_frosting"))
+				.addOptional(BloodIsFuel.path("alexscaves:block_of_chocolate_frosting"))
+				.addOptional(BloodIsFuel.path("alexscaves:cake_layer"))
+				.addOptional(BloodIsFuel.path("alexscaves:cookie_block"))
+				.addOptional(BloodIsFuel.path("alexscaves:wafer_cookie_block"))
+				.addOptional(BloodIsFuel.path("alexscaves:dough_block"))
+				.addOptional(BloodIsFuel.path("alexscaves:confection_oven"))
+				.addOptionalTag(BloodIsFuel.path("alexscaves:rock_candies"))
 		;
 	}
 	private static void genEntityTags(RegistrateTagsProvider<EntityType<?>> provIn) {
@@ -211,6 +208,10 @@ public class BRegistrateTags {
 				.add(EntityType.SILVERFISH)
 				.add(EntityType.IRON_GOLEM)
 				.addOptionalTag(EntityTypeTags.SKELETONS.location())
+		;
+
+		prov.tag(BTags.BEntityTags.ALLOW_FLUID_DROP.tag)
+				.add(EntityType.SNOW_GOLEM)
 		;
 
 		prov.tag(BTags.BEntityTags.UNDEAD.tag)
@@ -228,6 +229,10 @@ public class BRegistrateTags {
 				.add(EntityType.SHULKER)
 				.add(EntityType.PHANTOM)
 		;
+
+		prov.tag(BTags.BEntityTags.SNOWY.tag)
+				.add(EntityType.SNOW_GOLEM)
+		;
 	}
 	private static void genFluidTags(RegistrateTagsProvider<Fluid> provIn) {
 		TagGen.CreateTagsProvider<Fluid> prov = new TagGen.CreateTagsProvider<>(provIn, Fluid::builtInRegistryHolder);
@@ -235,10 +240,10 @@ public class BRegistrateTags {
 		prov.tag(BTags.BFluidTags.VISCERA.tag)
 
 				//BoP
-				.addOptional(Utils.location("biomesoplenty:blood"))
+				.addOptional(BloodIsFuel.path("biomesoplenty:blood"))
 
 				//TConstruct
-				.addOptional(Utils.location("tconstruct:meat_soup"))
+				.addOptional(BloodIsFuel.path("tconstruct:meat_soup"))
 		;
 
 		prov.tag(BTags.BFluidTags.FUEL.tag)
@@ -254,29 +259,29 @@ public class BRegistrateTags {
 
 		prov.tag(BTags.BFluidTags.LIQUID_CARBOHYDRATES.tag)
 
-				//Create
-				.addOptional(Utils.location("create:honey"))
-				.addOptional(Utils.location("create:chocolate"))
-				.addOptional(Utils.location("create:tea"))
+				//Forge
+				.addOptionalTag(BloodIsFuel.path("forge:honey"))
+				.addOptionalTag(BloodIsFuel.path("forge:chocolate"))
+				.addOptionalTag(BloodIsFuel.path("forge:tea"))
 
 				//Garnished
-				.addOptional(Utils.location("garnished:apple_cider"))
-				.addOptional(Utils.location("garnished:garnish"))
-				.addOptional(Utils.location("garnished:sweet_tea"))
+				.addOptional(BloodIsFuel.path("garnished:apple_cider"))
+				.addOptional(BloodIsFuel.path("garnished:garnish"))
+				.addOptional(BloodIsFuel.path("garnished:sweet_tea"))
 
 				//Confectionery
-				.addOptional(Utils.location("create_confectionery:caramel"))
-				.addOptional(Utils.location("create_confectionery:black_chocolate"))
-				.addOptional(Utils.location("create_confectionery:white_chocolate"))
-				.addOptional(Utils.location("create_confectionery:ruby_chocolate"))
-				.addOptional(Utils.location("create_confectionery:hot_chocolate"))
-				.addOptional(Utils.location("create_confectionery:soothing_hot_chocolate"))
+				.addOptional(BloodIsFuel.path("create_confectionery:caramel"))
+				.addOptional(BloodIsFuel.path("create_confectionery:black_chocolate"))
+				.addOptional(BloodIsFuel.path("create_confectionery:white_chocolate"))
+				.addOptional(BloodIsFuel.path("create_confectionery:ruby_chocolate"))
+				.addOptional(BloodIsFuel.path("create_confectionery:hot_chocolate"))
+				.addOptional(BloodIsFuel.path("create_confectionery:soothing_hot_chocolate"))
 
 				//Biofactory
-				.addOptional(Utils.location("biofactory:nutrients_fluid"))
+				.addOptional(BloodIsFuel.path("biofactory:nutrients_fluid"))
 		;
 
 		// compat tag (for syringe system)
-		prov.tag(BTags.BFluidTags.NUTRIENTS_FLUID.tag).addOptional(Utils.location("biofactory:nutrients_fluid"));
+		prov.tag(BTags.BFluidTags.NUTRIENTS_FLUID.tag).addOptional(BloodIsFuel.path("biofactory:nutrients_fluid"));
 	}
 }

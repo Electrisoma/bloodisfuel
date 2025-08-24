@@ -17,54 +17,64 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.effect.MobEffectInstance;
 
-
 @SuppressWarnings({"all"})
 public class BItems {
     private static final CreateRegistrate REGISTRATE = BloodIsFuel.registrate();
     static {REGISTRATE.setCreativeTab(BModTabs.BASE_CREATIVE_TAB);}
 
+    public static ItemEntry<Item> DRAINED_MEAT;
+    public static ItemEntry<BottleItem> BLOOD_BOTTLE;
+    public static ItemEntry<SyringeBladeItem> SYRINGE_BLADE;
+    public static ItemEntry<SyringeGunItem> SYRINGE_GUN;
+    public static ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_BLADE;
+    public static ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_GUN;
+
     public static void register() {
         BloodIsFuel.LOGGER.info("Registering items for " + BloodIsFuel.NAME);
+
+        DRAINED_MEAT = REGISTRATE
+                .item("drained_meat", Item::new)
+                .properties(p -> p.rarity(Rarity.COMMON)
+                        .food(new FoodProperties.Builder()
+                                .nutrition(4)
+                                .meat()
+                                .saturationMod(0.1f)
+                                .effect(new MobEffectInstance(MobEffects.HUNGER, 600, 0),0.8f)
+                                .effect(new MobEffectInstance(MobEffects.POISON, 300, 2),0.8f)
+                                .build()))
+                .register();
+
+        BLOOD_BOTTLE = REGISTRATE
+                .item("blood_bottle", BottleItem::new)
+                .tag(AllTags.AllItemTags.UPRIGHT_ON_BELT.tag)
+                .register();
+
+        SYRINGE_BLADE = REGISTRATE
+                .item("syringe_blade", p ->
+                        new SyringeBladeItem(Tiers.IRON,3,-2.4f,p))
+                .model(AssetLookup.itemModelWithPartials())
+                .tag(BTags.BItemTags.SYRINGE_BLADE.tag)
+                .tag(BTags.BItemTags.SYRINGES.tag)
+                .register();
+
+        SYRINGE_GUN = REGISTRATE
+                .item("syringe_gun", SyringeGunItem::new)
+                .model(AssetLookup.itemModelWithPartials())
+                .properties(p -> p.stacksTo(1))
+                .tag(BTags.BItemTags.SYRINGE_GUN.tag)
+                .tag(BTags.BItemTags.SYRINGES.tag)
+                .register();
+
+        INCOMPLETE_SYRINGE_BLADE = REGISTRATE
+                .item("incomplete_syringe_blade", SequencedAssemblyItem::new)
+                .model(AssetLookup.itemModelWithPartials())
+                .lang("Incomplete Syringe Blade")
+                .register();
+
+        INCOMPLETE_SYRINGE_GUN = REGISTRATE
+                .item("incomplete_syringe_gun", SequencedAssemblyItem::new)
+                .model(AssetLookup.itemModelWithPartials())
+                .lang("Incomplete Syringe Gun")
+                .register();
     }
-
-    public static final ItemEntry<Item> DRAINED_MEAT =
-            REGISTRATE.item("drained_meat", Item::new)
-                    .properties(p -> p.rarity(Rarity.COMMON)
-                            .food(new FoodProperties.Builder()
-                                    .nutrition(4)
-                                    .meat()
-                                    .saturationMod(0.1f)
-                                    .effect(new MobEffectInstance(MobEffects.HUNGER, 600, 0),0.8f)
-                                    .effect(new MobEffectInstance(MobEffects.POISON, 300, 2),0.8f)
-                                    .build()))
-                    .register();
-    public static final ItemEntry<BottleItem> BLOOD_BOTTLE =
-            REGISTRATE.item("blood_bottle", BottleItem::new)
-                    .tag(AllTags.AllItemTags.UPRIGHT_ON_BELT.tag)
-                    .register();
-
-    public static final ItemEntry<SyringeBladeItem> SYRINGE_BLADE =
-            REGISTRATE.item("syringe_blade", p ->
-                            new SyringeBladeItem(Tiers.IRON,3,-2.4f,p))
-                    .model(AssetLookup.itemModelWithPartials())
-                    .tag(BTags.BItemTags.SYRINGE_BLADE.tag)
-                    .tag(BTags.BItemTags.SYRINGES.tag)
-                    .register();
-    public static final ItemEntry<SyringeGunItem> SYRINGE_GUN =
-            REGISTRATE.item("syringe_gun", SyringeGunItem::new)
-                    .model(AssetLookup.itemModelWithPartials())
-                    .properties(p -> p.stacksTo(1))
-                    .tag(BTags.BItemTags.SYRINGE_GUN.tag)
-                    .tag(BTags.BItemTags.SYRINGES.tag)
-                    .register();
-    public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_BLADE =
-            REGISTRATE.item("incomplete_syringe_blade", SequencedAssemblyItem::new)
-                    .model(AssetLookup.itemModelWithPartials())
-                    .lang("Incomplete Syringe Blade")
-                    .register();
-    public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_SYRINGE_GUN =
-            REGISTRATE.item("incomplete_syringe_gun", SequencedAssemblyItem::new)
-                    .model(AssetLookup.itemModelWithPartials())
-                    .lang("Incomplete Syringe Gun")
-                    .register();
 }

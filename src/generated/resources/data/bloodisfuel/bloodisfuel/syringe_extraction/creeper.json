@@ -1,0 +1,7 @@
+{
+  "fluid": "create:potion",
+  "mobs": [
+    "minecraft:creeper"
+  ],
+  "potion": "minecraft:harming"
+}

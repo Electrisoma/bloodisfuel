@@ -4,5 +4,6 @@
     "#forge:experience"
   ],
   "glowing": true,
+  "on_hit_effects": {},
   "opaque": true
 }

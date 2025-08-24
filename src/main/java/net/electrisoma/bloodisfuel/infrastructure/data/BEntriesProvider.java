@@ -2,10 +2,7 @@ package net.electrisoma.bloodisfuel.infrastructure.data;
 
 import net.electrisoma.bloodisfuel.BloodIsFuel;
 import net.electrisoma.bloodisfuel.api.registry.BRegistries;
-import net.electrisoma.bloodisfuel.foundation.data.entries.BDamageTypes;
-import net.electrisoma.bloodisfuel.foundation.data.entries.BEngineFluidTypes;
-import net.electrisoma.bloodisfuel.foundation.data.entries.BPotatoCannonProjectiles;
-import net.electrisoma.bloodisfuel.foundation.data.entries.BSyringeFluidTypes;
+import net.electrisoma.bloodisfuel.foundation.data.entries.*;
 
 import com.simibubi.create.api.registry.CreateRegistries;
 
@@ -25,6 +22,7 @@ public class BEntriesProvider extends DatapackBuiltinEntriesProvider {
             .add(Registries.DAMAGE_TYPE, BDamageTypes::bootstrap)
             .add(CreateRegistries.POTATO_PROJECTILE_TYPE, BPotatoCannonProjectiles::bootstrap)
             .add(BRegistries.SYRINGE_FLUIDS, BSyringeFluidTypes::bootstrap)
+            .add(BRegistries.SYRINGE_EXTRACTION, BExtractionTypes::bootstrap)
             .add(BRegistries.ENGINE_FLUIDS, BEngineFluidTypes::bootstrap)
     ;
 

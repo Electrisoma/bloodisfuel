@@ -67,7 +67,7 @@ public class StandardRecipeGen extends BaseRecipeProvider {
     }
     GeneratedRecipe createSpecial(Supplier<? extends SimpleCraftingRecipeSerializer<?>> serializer, String recipeType,
                                   String path) {
-        ResourceLocation location = BloodIsFuel.asResource(recipeType + "/" + currentFolder + "/" + path);
+        ResourceLocation location = BloodIsFuel.path(recipeType + "/" + currentFolder + "/" + path);
         return register(consumer -> {
             SpecialRecipeBuilder b = SpecialRecipeBuilder.special(serializer.get());
             b.save(consumer, location.toString());
@@ -147,10 +147,10 @@ public class StandardRecipeGen extends BaseRecipeProvider {
         }
 
         private ResourceLocation createSimpleLocation(String recipeType) {
-            return BloodIsFuel.asResource(recipeType + "/" + getRegistryName().getPath() + suffix);
+            return BloodIsFuel.path(recipeType + "/" + getRegistryName().getPath() + suffix);
         }
         private ResourceLocation createLocation() {
-            return BloodIsFuel.asResource("crafting" + "/" + path + "/" + getRegistryName().getPath() + suffix);
+            return BloodIsFuel.path("crafting" + "/" + path + "/" + getRegistryName().getPath() + suffix);
         }
         private ResourceLocation getRegistryName() {
             return compatDatagenOutput == null ? CatnipServices.REGISTRIES.getKeyOrThrow(result.get()

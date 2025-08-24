@@ -20,6 +20,7 @@ public class ModSetup {
         BBlocks.register();
         BBlockEntityTypes.register();
         BEntityTypes.register();
+        BMenuTypes.register();
         BFluids.register();
         BItems.register();
         BPackets.registerPackets();

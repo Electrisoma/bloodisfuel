@@ -1,12 +1,14 @@
 {
-  "burning": {
-    "damage_per_second": 4.0,
-    "duration_seconds": 15
-  },
   "color": 16729344,
   "fluids": [
     "#bloodisfuel:molten"
   ],
   "glowing": true,
+  "on_hit_effects": {
+    "burning": {
+      "damage_per_second": 4.0,
+      "duration_seconds": 15
+    }
+  },
   "opaque": true
 }

@@ -202,7 +202,7 @@ public class BAdvancements implements DataProvider {
     }
 
     public static ResourceLocation getBackground() {
-        return BloodIsFuel.asResource("textures/gui/advancements.png");
+        return BloodIsFuel.path("textures/gui/advancements.png");
     }
 
     @Override

@@ -4,8 +4,8 @@
     "create:potion",
     "#forge:potion"
   ],
-  "mobs": [
-    "minecraft:creeper"
-  ],
+  "glowing": true,
+  "on_hit_effects": {},
+  "opaque": false,
   "potion": "minecraft:harming"
 }

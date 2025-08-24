@@ -3,9 +3,11 @@
   "fluids": [
     "#forge:beetroot_soup"
   ],
-  "food": {
-    "nutrition": 6,
-    "saturation": 7.2
+  "on_hit_effects": {
+    "food": {
+      "nutrition": 6,
+      "saturation": 7.2
+    }
   },
   "opaque": true
 }

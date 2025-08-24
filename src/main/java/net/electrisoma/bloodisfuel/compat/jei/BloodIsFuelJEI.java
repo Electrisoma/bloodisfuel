@@ -22,6 +22,8 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
 
+import net.electrisoma.bloodisfuel.registry.BBlocks;
+import net.electrisoma.bloodisfuel.registry.BTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -50,7 +52,7 @@ import static com.simibubi.create.compat.jei.CreateJEI.*;
 @JeiPlugin
 @ParametersAreNonnullByDefault
 public class BloodIsFuelJEI implements IModPlugin {
-    private static final ResourceLocation ID = BloodIsFuel.asResource("jei_plugin");
+    private static final ResourceLocation ID = BloodIsFuel.path("jei_plugin");
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -66,6 +68,17 @@ public class BloodIsFuelJEI implements IModPlugin {
         return new CategoryBuilder<>(recipeClass);
     }
 
+    @Override public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        registration.addRecipeCatalyst(new ItemStack(BBlocks.BLOOD_EXTRACTOR), BloodExtractorInfo.TYPE);
+
+        ForgeRegistries.ITEMS.getValues().stream()
+                .filter(item -> item.builtInRegistryHolder().is(BTags.BItemTags.SYRINGES.tag))
+                .forEach(item -> registration.addRecipeCatalyst(new ItemStack(item), BloodExtractorInfo.TYPE));
+
+        ForgeRegistries.ITEMS.getValues().stream()
+                .filter(item -> item.builtInRegistryHolder().is(BTags.BItemTags.SYRINGES.tag))
+                .forEach(item -> registration.addRecipeCatalyst(new ItemStack(item), SyringeInfo.TYPE));
+    }
     @Override public void registerCategories(IRecipeCategoryRegistration registration) {
         IGuiHelper helper = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(new SyringeCategory(helper));
@@ -78,7 +91,7 @@ public class BloodIsFuelJEI implements IModPlugin {
         List<SyringeInfo> syringeEntries = SyringeJeiHelper.collectAndGroupSyringeRecipes(access);
         registration.addRecipes(SyringeInfo.TYPE, syringeEntries);
 
-        List<BloodExtractorInfo> extractorEntries = BloodExtractorJeiHelper.INSTANCE.collectAndGroupBloodExtractorRecipes(access);
+        List<BloodExtractorInfo> extractorEntries = BloodExtractorJeiHelper.INSTANCE.getOrCollectRecipes(access);
         registration.addRecipes(BloodExtractorInfo.TYPE, extractorEntries);
     }
 
@@ -242,7 +255,7 @@ public class BloodIsFuelJEI implements IModPlugin {
             }
 
             CreateRecipeCategory.Info<T> info = new CreateRecipeCategory.Info<>(
-                    new mezz.jei.api.recipe.RecipeType<>(BloodIsFuel.asResource(name), recipeClass),
+                    new mezz.jei.api.recipe.RecipeType<>(BloodIsFuel.path(name), recipeClass),
                     Component.translatable("bloodisfuel.recipe." + name), background, icon, recipesSupplier, catalysts);
             CreateRecipeCategory<T> category = factory.create(info);
             allCategories.add(category);

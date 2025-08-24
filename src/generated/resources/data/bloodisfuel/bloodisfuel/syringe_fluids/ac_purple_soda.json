@@ -1,0 +1,21 @@
+{
+  "color": 8323327,
+  "fluids": [
+    "alexscaves:purple_soda"
+  ],
+  "on_hit_effects": {
+    "effects": [
+      {
+        "effect": {
+          "amplifier": 1,
+          "duration": 500,
+          "effect": "alexscaves:sugar_rush"
+        }
+      }
+    ],
+    "food": {
+      "nutrition": 4,
+      "saturation": 0.4
+    }
+  }
+}

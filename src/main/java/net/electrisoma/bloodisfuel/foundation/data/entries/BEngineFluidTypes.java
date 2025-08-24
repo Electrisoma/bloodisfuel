@@ -15,7 +15,7 @@ import net.minecraft.world.level.material.Fluid;
 @SuppressWarnings("unused")
 public class BEngineFluidTypes {
     public static final ResourceKey<EngineFluidType> FALLBACK =
-            ResourceKey.create(BRegistries.ENGINE_FLUIDS, BloodIsFuel.asResource("fallback"));
+            ResourceKey.create(BRegistries.ENGINE_FLUIDS, BloodIsFuel.path("fallback"));
 
     public static void bootstrap(BootstapContext<EngineFluidType> ctx) {
         var fluidLookup = (HolderLookup.RegistryLookup<Fluid>) ctx.lookup(Registries.FLUID);
@@ -59,6 +59,6 @@ public class BEngineFluidTypes {
     }
 
     private static void register(BootstapContext<EngineFluidType> ctx, String name, EngineFluidType type) {
-        ctx.register(ResourceKey.create(BRegistries.ENGINE_FLUIDS, BloodIsFuel.asResource(name)), type);
+        ctx.register(ResourceKey.create(BRegistries.ENGINE_FLUIDS, BloodIsFuel.path(name)), type);
     }
 }

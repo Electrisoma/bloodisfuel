@@ -22,12 +22,11 @@ import java.util.function.Supplier;
 
 import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
 
-
 @SuppressWarnings("unused")
 public enum BPackets {
     SYRINGE_GUN(SyringeGunPacket.class, SyringeGunPacket::new, PLAY_TO_CLIENT);
 
-    public static final ResourceLocation CHANNEL_NAME = BloodIsFuel.asResource("main");
+    public static final ResourceLocation CHANNEL_NAME = BloodIsFuel.path("main");
     public static final int NETWORK_VERSION = 3;
     public static final String NETWORK_VERSION_STR = String.valueOf(NETWORK_VERSION);
     private static SimpleChannel channel;

@@ -1,12 +1,14 @@
 {
   "attack_speed": -2.5,
-  "burning": {
-    "damage_per_second": 4.0
-  },
   "color": 14750483,
   "damage": 6.0,
   "fluids": [
     "bloodisfuel:boiling_blood"
   ],
+  "on_hit_effects": {
+    "burning": {
+      "damage_per_second": 4.0
+    }
+  },
   "opaque": true
 }

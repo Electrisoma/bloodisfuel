@@ -18,6 +18,6 @@ public class BPartialModels {
             ;
 
     private static PartialModel block(String path) {
-        return PartialModel.of(BloodIsFuel.asResource("block/" + path));
+        return PartialModel.of(BloodIsFuel.path("block/" + path));
     }
 }

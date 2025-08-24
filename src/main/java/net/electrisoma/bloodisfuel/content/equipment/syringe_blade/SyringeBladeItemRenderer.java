@@ -26,8 +26,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 
 public class SyringeBladeItemRenderer extends CustomRenderedItemModelRenderer implements SyringeUtils {
-    protected static final PartialModel VIAL = PartialModel.of(BloodIsFuel.asResource("item/syringe_blade/vial"));
-    protected static final PartialModel VIAL_OPAQUE = PartialModel.of(BloodIsFuel.asResource("item/syringe_blade/vial_opaque"));
+    protected static final PartialModel VIAL = PartialModel.of(BloodIsFuel.path("item/syringe_blade/vial"));
+    protected static final PartialModel VIAL_OPAQUE = PartialModel.of(BloodIsFuel.path("item/syringe_blade/vial_opaque"));
 
     @Override
     protected void render(ItemStack stack, CustomRenderedItemModel model, PartialItemModelRenderer renderer,

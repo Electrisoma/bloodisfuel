@@ -11,28 +11,6 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "Tanks",
-                  "target": "BlockEntityTag.Tanks"
-                },
-                {
-                  "op": "replace",
-                  "source": "Enchantments",
-                  "target": "Enchantments"
-                }
-              ],
-              "source": "block_entity"
-            },
-            {
-              "function": "minecraft:copy_name",
-              "source": "block_entity"
-            }
-          ],
           "name": "bloodisfuel:portable_engine"
         }
       ],

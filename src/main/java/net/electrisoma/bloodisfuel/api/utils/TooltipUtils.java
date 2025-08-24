@@ -1,6 +1,7 @@
 package net.electrisoma.bloodisfuel.api.utils;
 
 import net.electrisoma.bloodisfuel.api.data.EffectsData;
+import net.electrisoma.bloodisfuel.api.data.OnHitEffects;
 import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidTypeManager;
 
@@ -76,11 +77,13 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
 
         List<MobEffectInstance> effects = type.isPotionType() && fluid.hasTag()
                 ? PotionUtils.getAllEffects(fluid.getTag())
-                : type.effects()
-                .map(list -> list.stream()
-                        .filter(EffectsData::visibleInTooltips)
-                        .map(EffectsData::effect)
-                        .toList())
+                : type.statusEffects()
+                .map(onHit -> onHit.effects()
+                        .map(list -> list.stream()
+                                .filter(EffectsData::visibleInTooltips)
+                                .map(EffectsData::effect)
+                                .toList())
+                        .orElse(List.of()))
                 .orElse(List.of());
 
         for (MobEffectInstance effect : effects) {
@@ -97,9 +100,10 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
                     .append(Component.translatable("bloodisfuel.tooltip.effect").withStyle(ChatFormatting.GRAY))
                     .append(": ").append(name).append(level).append(duration));
         }
-
         if (type.hasBurning()) {
-            type.burning().ifPresent(burning -> {
+            type.statusEffects()
+                    .flatMap(OnHitEffects::burning)
+                    .ifPresent(burning -> {
                 int duration = burning.durationSeconds();
                 float dps = burning.damagePerSecond();
 
@@ -115,7 +119,7 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
 
                 if (dps > 0) {
                     if (duration > 0) line.append(" ");
-                    line.append(Component.literal("(" + dps + " ").withStyle(ChatFormatting.RED))
+                    line.append(Component.literal("(" + dps + " ").withStyle(ChatFormatting.GRAY))
                             .append(Component.translatable("bloodisfuel.tooltip.damage"))
                             .append(Component.literal("/"))
                             .append(Component.translatable("bloodisfuel.tooltip.seconds"))
@@ -125,15 +129,16 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
                 tooltip.add(line);
             });
         }
-
         if (type.hasExtinguishing()) {
-            type.extinguishing().ifPresent(ext -> {
+            type.statusEffects()
+                    .flatMap(OnHitEffects::extinguishing)
+                    .ifPresent(ext -> {
                 int duration = ext.durationSeconds();
                 float heal = ext.healPerSecond();
 
                 MutableComponent line = Component.literal("• ")
                         .withStyle(ChatFormatting.GRAY)
-                        .append(Component.translatable("bloodisfuel.tooltip.extinguishing").withStyle(ChatFormatting.AQUA))
+                        .append(Component.translatable("bloodisfuel.tooltip.extinguishing").withStyle(ChatFormatting.BLUE))
                         .append(": ");
 
                 if (duration > 0) {
@@ -153,6 +158,71 @@ public interface TooltipUtils extends CombatContextUtils, FluidUtils {
                 tooltip.add(line);
             });
         }
+        if (type.hasFreezing()) {
+            type.statusEffects()
+                    .flatMap(OnHitEffects::freezing)
+                    .ifPresent(freezing -> {
+                        int duration = freezing.durationSeconds();
+                        float damage = freezing.damagePerSecond();
+                        float slow = freezing.slowAmount();
+
+                        MutableComponent line = Component.literal("• ")
+                                .withStyle(ChatFormatting.GRAY)
+                                .append(Component.translatable("bloodisfuel.tooltip.freezing").withStyle(ChatFormatting.AQUA))
+                                .append(": ");
+
+                        boolean appendedSomething = false;
+
+                        if (duration > 0) {
+                            line.append(Component.literal(String.valueOf(duration))
+                                            .withStyle(ChatFormatting.GOLD))
+                                    .append(Component.translatable("bloodisfuel.tooltip.seconds")
+                                            .withStyle(ChatFormatting.GOLD));
+                            appendedSomething = true;
+                        }
+
+                        if (damage > 0) {
+                            if (appendedSomething) line.append(" ");
+                            line.append(Component.literal("(" + damage + " ")
+                                            .withStyle(ChatFormatting.AQUA))
+                                    .append(Component.translatable("bloodisfuel.tooltip.damage"))
+                                    .append(Component.literal("/")
+                                            .append(Component.translatable("bloodisfuel.tooltip.seconds"))
+                                            .append(Component.literal(")")));
+                            appendedSomething = true;
+                        }
+
+                        if (slow > 0) {
+                            if (appendedSomething) line.append(" ");
+                            line.append(Component.literal("(" + slow + " ")
+                                            .withStyle(ChatFormatting.AQUA))
+                                    .append(Component.translatable("bloodisfuel.tooltip.slow"))
+                                    .append(Component.literal(")"));
+                        }
+
+                        tooltip.add(line);
+                    });
+        }
+        if (type.canTeleport()) {
+            type.statusEffects()
+                    .flatMap(OnHitEffects::teleportation)
+                    .ifPresent(tp -> {
+                        float diameter = tp.diameter();
+
+                        MutableComponent line = Component.literal("• ")
+                                .withStyle(ChatFormatting.GRAY)
+                                .append(Component.translatable("bloodisfuel.tooltip.teleportation").withStyle(ChatFormatting.LIGHT_PURPLE))
+                                .append(": ");
+
+                        if (diameter > 0) {
+                            line.append(Component.literal(String.format("%.1f ", diameter)).withStyle(ChatFormatting.LIGHT_PURPLE))
+                                    .append(Component.translatable("bloodisfuel.tooltip.diameter").withStyle(ChatFormatting.GRAY));
+                        }
+
+                        tooltip.add(line);
+                    });
+        }
+
     }
     default void projectileTooltipMaker(List<Component> tooltip, ItemStack stack, @Nullable RegistryAccess registryAccess) {
         CombatContext ctx = getCombatContext(stack, registryAccess);

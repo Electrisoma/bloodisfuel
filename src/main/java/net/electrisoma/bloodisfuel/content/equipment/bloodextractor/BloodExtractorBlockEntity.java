@@ -4,6 +4,8 @@ import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeExtractionType;
+import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidExtractionTypeManager;
 import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidType;
 import net.electrisoma.bloodisfuel.api.equipment.syringe.SyringeFluidTypeManager;
 import net.electrisoma.bloodisfuel.api.utils.SyringeUtils;
@@ -75,7 +77,7 @@ public class BloodExtractorBlockEntity extends KineticBlockEntity implements Syr
         if (targets.isEmpty())
             return;
 
-        LivingEntity target = targets.getFirst();
+        LivingEntity target = targets.get(0);
         processEntity(target, rpm);
     }
 
@@ -84,11 +86,11 @@ public class BloodExtractorBlockEntity extends KineticBlockEntity implements Syr
 
         assert level != null;
         RegistryAccess access = level.registryAccess();
-        SyringeFluidType type = getMatchingFluid(entity, access);
-        if (type == null) type = getFallback(access);
+        SyringeExtractionType type = getMatchingFluid(entity, access);
+        if (type == null) type = getFallbackExtraction(access);
         if (type == null) return;
 
-        Fluid fluid = SyringeFluidTypeManager.getFluidFor(type);
+        Fluid fluid = SyringeFluidExtractionTypeManager.getFluidFor(type);
         if (fluid == null || fluid == Fluids.EMPTY) return;
 
         DamageSource source = new DamageSource(access

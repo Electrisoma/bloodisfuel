@@ -1,0 +1,13 @@
+{
+  "color": 2458740,
+  "fluids": [
+    "#forge:ender"
+  ],
+  "glowing": true,
+  "on_hit_effects": {
+    "teleportation": {
+      "diameter": 20
+    }
+  },
+  "opaque": true
+}

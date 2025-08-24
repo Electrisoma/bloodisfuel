@@ -205,7 +205,7 @@
 //            }
 //
 //            CreateRecipeCategory.Info<T> info = new CreateRecipeCategory.Info<>(
-//                    new mezz.jei.api.recipe.RecipeType<>(BloodIsFuel.asResource(name), recipeClass),
+//                    new mezz.jei.api.recipe.RecipeType<>(BloodIsFuel.path(name), recipeClass),
 //                    Component.translatable("bloodisfuel.recipe." + name), background, icon, recipesSupplier, catalysts);
 //            CreateRecipeCategory<T> category = factory.create(info);
 //            allCategories.add(category);

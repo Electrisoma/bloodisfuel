@@ -1,0 +1,14 @@
+{
+  "color": 16777215,
+  "fluids": [
+    "#forge:powdered_snow"
+  ],
+  "glowing": false,
+  "on_hit_effects": {
+    "freezing": {
+      "damage_per_second": 0.25,
+      "duration_seconds": 8
+    }
+  },
+  "opaque": true
+}

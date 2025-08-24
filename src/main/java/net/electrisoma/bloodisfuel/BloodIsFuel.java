@@ -2,6 +2,9 @@ package net.electrisoma.bloodisfuel;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.createmod.catnip.config.ConfigBase;
+import net.electrisoma.bloodisfuel.config.BConfigs;
+import net.electrisoma.bloodisfuel.content.equipment.syringe_blade.SyringeFluidSelectScreen;
 import net.electrisoma.bloodisfuel.registry.*;
 import net.electrisoma.bloodisfuel.infrastructure.data.BDatagen;
 import net.electrisoma.bloodisfuel.foundation.data.advancements.triggers.BTriggers;
@@ -14,15 +17,19 @@ import com.simibubi.create.foundation.item.TooltipModifier;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -33,6 +40,9 @@ import net.minecraftforge.event.server.ServerStartedEvent;
 import com.mojang.logging.LogUtils;
 
 import org.slf4j.Logger;
+
+import java.util.Map;
+import java.util.Set;
 
 
 @SuppressWarnings("unused")
@@ -46,7 +56,8 @@ public class BloodIsFuel {
             .disableHtmlEscaping()
             .create();
 
-    private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID)
+    private static final CreateRegistrate REGISTRATE = CreateRegistrate
+            .create(MOD_ID)
             .defaultCreativeTab((ResourceKey<CreativeModeTab>) null)
             .setTooltipModifierFactory(item ->
                     new ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
@@ -87,7 +98,7 @@ public class BloodIsFuel {
         return new LangBuilder(MOD_ID);
     }
 
-    public static ResourceLocation asResource(String path) {
+    public static ResourceLocation path(String path) {
         return new ResourceLocation(MOD_ID, path);
     }
 

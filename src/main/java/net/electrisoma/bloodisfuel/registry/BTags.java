@@ -226,8 +226,10 @@ public class BTags {
     }
     public enum BEntityTags {
         DOES_NOT_DROP_FLUID,
+        ALLOW_FLUID_DROP,
         UNDEAD(FORGE),
-        ENDER
+        ENDER(FORGE),
+        SNOWY(FORGE)
 
         ;
 

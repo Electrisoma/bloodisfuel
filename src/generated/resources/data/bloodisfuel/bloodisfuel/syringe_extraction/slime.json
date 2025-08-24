@@ -1,0 +1,6 @@
+{
+  "fluid": "#forge:slime",
+  "mobs": [
+    "#forge:slimes"
+  ]
+}

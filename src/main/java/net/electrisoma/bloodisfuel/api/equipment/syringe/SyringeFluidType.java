@@ -40,14 +40,10 @@ public record SyringeFluidType(
         Optional<Boolean> opaque,
         Optional<Float> damage,
         Optional<Float> attackSpeed,
-        Optional<FoodProperties> food,
-        Optional<List<EffectsData>> effects,
-        Optional<List<HolderSet<EntityType<?>>>> mobs,
-        int mobPriority,
-        Optional<BurningData> burning,
-        Optional<ExtinguishingData> extinguishing,
-        Optional<DrowningData> drowning,
-        Optional<FreezingData> freezing) {
+//        Optional<List<HolderSet<EntityType<?>>>> mobs,
+        Optional<OnHitEffects> statusEffects
+//        Optional<ResourceLocation> inheritFrom
+) {
     public static final Codec<SyringeFluidType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(RegistryCodecs.homogeneousList(Registries.FLUID))
                     .optionalFieldOf("fluids", List.of())
@@ -58,16 +54,14 @@ public record SyringeFluidType(
             Codec.BOOL.optionalFieldOf("opaque").forGetter(SyringeFluidType::opaque),
             Codec.FLOAT.optionalFieldOf("damage").forGetter(SyringeFluidType::damage),
             Codec.FLOAT.optionalFieldOf("attack_speed").forGetter(SyringeFluidType::attackSpeed),
-            BCodecs.FOOD_PROPERTIES.optionalFieldOf("food").forGetter(SyringeFluidType::food),
-            Codec.list(BCodecs.EFFECTS_DATA).optionalFieldOf("effects").forGetter(SyringeFluidType::effects),
-            Codec.list(RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE)) // ← updated
-                    .optionalFieldOf("mobs")
-                    .forGetter(SyringeFluidType::mobs),
-            Codec.INT.optionalFieldOf("mobPriority", 0).forGetter(SyringeFluidType::mobPriority),
-            BCodecs.BURNING_DATA.optionalFieldOf("burning").forGetter(SyringeFluidType::burning),
-            BCodecs.EXTINGUISHING_DATA.optionalFieldOf("extinguishing").forGetter(SyringeFluidType::extinguishing),
-            BCodecs.DROWNING_DATA.optionalFieldOf("drowning").forGetter(SyringeFluidType::drowning),
-            BCodecs.FREEZING_DATA.optionalFieldOf("freezing").forGetter(SyringeFluidType::freezing)
+//            Codec.list(RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE))
+//                    .optionalFieldOf("mobs")
+//                    .forGetter(SyringeFluidType::mobs),
+            BCodecs.STATUS_EFFECTS.optionalFieldOf("on_hit_effects").forGetter(SyringeFluidType::statusEffects)
+//            Codec.STRING.optionalFieldOf("inherit_from").xmap(
+//                    rl -> rl.map(ResourceLocation::new),
+//                    optRl -> optRl.map(ResourceLocation::toString)
+//            ).forGetter(SyringeFluidType::inheritFrom)
     ).apply(instance, SyringeFluidType::new));
 
     /**
@@ -85,35 +79,44 @@ public record SyringeFluidType(
      * Returns true if this fluid type can burn.
      */
     public boolean hasBurning() {
-        return burning.isPresent();
+        return statusEffects.flatMap(OnHitEffects::burning).isPresent();
     }
 
     /**
      * Returns true if this fluid type can extinguish.
      */
     public boolean hasExtinguishing() {
-        return extinguishing.isPresent();
+        return statusEffects.flatMap(OnHitEffects::extinguishing).isPresent();
     }
 
     /**
      * Returns true if this fluid type can burn.
      */
     public boolean hasDrowning() {
-        return drowning.isPresent();
+        return statusEffects.flatMap(OnHitEffects::drowning).isPresent();
     }
 
     /**
      * Returns true if this fluid type can extinguish.
      */
     public boolean hasFreezing() {
-        return freezing.isPresent();
+        return statusEffects.flatMap(OnHitEffects::freezing).isPresent();
+    }
+
+    /**
+     * Returns true if this fluid type can teleport.
+     */
+    public boolean canTeleport() {
+        return statusEffects.flatMap(OnHitEffects::teleportation)
+                .map(t -> t.diameter() != null)
+                .orElse(false);
     }
 
     /**
      * Returns true if this fluid type can feed.
      */
     public boolean hasFood() {
-        return food.isPresent();
+        return statusEffects.flatMap(OnHitEffects::food).isPresent();
     }
 
     /**
@@ -141,12 +144,15 @@ public record SyringeFluidType(
         private Optional<Float> attackSpeed = Optional.empty();
         private Optional<FoodProperties> food = Optional.empty();
         private final List<EffectsData> effects = new ArrayList<>();
-        private final List<HolderSet<EntityType<?>>> mobSets = new ArrayList<>();
-        private int mobPriority = 0;
+//        private final List<HolderSet<EntityType<?>>> mobSets = new ArrayList<>();
+//        private int mobPriority = 0;
         private Optional<BurningData> burning = Optional.empty();
         private Optional<ExtinguishingData> extinguishing = Optional.empty();
         private Optional<DrowningData> drowning = Optional.empty();
         private Optional<FreezingData> freezing = Optional.empty();
+        private Optional<TeleportationData> teleports = Optional.empty();
+
+//        private Optional<ResourceLocation> inheritFrom = Optional.empty();
 
         /**
          * Adds specific fluids that this type applies to.
@@ -275,7 +281,10 @@ public record SyringeFluidType(
         public Builder addEffect(String effectId, int duration, int amplifier, boolean ambient, boolean visible, boolean visibleInTooltips) {
             ResourceLocation id = new ResourceLocation(effectId);
             MobEffect effect = ForgeRegistries.MOB_EFFECTS.getValue(id);
-            assert effect != null;
+            if (effect == null) {
+                System.err.println("[BloodIsFuel] Skipping unknown MobEffect: " + id);
+                return this;
+            }
             MobEffectInstance instance = new MobEffectInstance(effect, duration, amplifier, ambient, visible);
             return addEffect(instance, visibleInTooltips);
         }
@@ -306,44 +315,43 @@ public record SyringeFluidType(
         /**
          * Adds mobs associated with the fluid type.
          */
-        public Builder mobTag(String namespace, String tag, HolderLookup.RegistryLookup<EntityType<?>> lookup) {
-            ResourceLocation tagLoc = new ResourceLocation(namespace, tag);
-            return mobTag(tagLoc, lookup);
-        }
-
-        public Builder mobTag(ResourceLocation tagLoc, HolderLookup.RegistryLookup<EntityType<?>> lookup) {
-            TagKey<EntityType<?>> tag = TagKey.create(Registries.ENTITY_TYPE, tagLoc);
-            HolderSet.Named<EntityType<?>> tagSet = lookup.getOrThrow(tag);
-            mobSets.add(tagSet);
-            return this;
-        }
-        public Builder addMob(int priority, EntityType<?>... types) {
-            this.mobPriority = priority;
-            for (EntityType<?> type : types) {
-                ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(holder -> mobSets.add(HolderSet.direct(holder)));
-            }
-            return this;
-        }
-        public Builder addMob(String... entityIds) {
-            for (String idStr : entityIds) {
-                ResourceLocation id = new ResourceLocation(idStr);
-                EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(id);
-                if (entityType == null)
-                    throw new IllegalArgumentException("Unknown entity type: " + idStr);
-                ForgeRegistries.ENTITY_TYPES.getHolder(entityType).ifPresent(holder -> mobSets.add(HolderSet.direct(holder)));
-            }
-            return this;
-        }
-        public Builder addMob(EntityType<?>... types) {
-            for (EntityType<?> type : types) {
-                ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(holder -> mobSets.add(HolderSet.direct(holder)));
-            }
-            return this;
-        }
-        public Builder mobPriority(int mobPriority) {
-            this.mobPriority = mobPriority;
-            return this;
-        }
+//        public Builder mobTag(String namespace, String tag, HolderLookup.RegistryLookup<EntityType<?>> lookup) {
+//            ResourceLocation tagLoc = new ResourceLocation(namespace, tag);
+//            return mobTag(tagLoc, lookup);
+//        }
+//        public Builder mobTag(ResourceLocation tagLoc, HolderLookup.RegistryLookup<EntityType<?>> lookup) {
+//            TagKey<EntityType<?>> tag = TagKey.create(Registries.ENTITY_TYPE, tagLoc);
+//            HolderSet.Named<EntityType<?>> tagSet = lookup.getOrThrow(tag);
+//            mobSets.add(tagSet);
+//            return this;
+//        }
+//        public Builder addMobs(int priority, EntityType<?>... types) {
+//            this.mobPriority = priority;
+//            for (EntityType<?> type : types) {
+//                ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(holder -> mobSets.add(HolderSet.direct(holder)));
+//            }
+//            return this;
+//        }
+//        public Builder addMobs(String... entityIds) {
+//            for (String idStr : entityIds) {
+//                ResourceLocation id = new ResourceLocation(idStr);
+//                EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(id);
+//                if (entityType == null)
+//                    throw new IllegalArgumentException("Unknown entity type: " + idStr);
+//                ForgeRegistries.ENTITY_TYPES.getHolder(entityType).ifPresent(holder -> mobSets.add(HolderSet.direct(holder)));
+//            }
+//            return this;
+//        }
+//        public Builder addMobs(EntityType<?>... types) {
+//            for (EntityType<?> type : types) {
+//                ForgeRegistries.ENTITY_TYPES.getHolder(type).ifPresent(holder -> mobSets.add(HolderSet.direct(holder)));
+//            }
+//            return this;
+//        }
+//        public Builder mobPriority(int mobPriority) {
+//            this.mobPriority = mobPriority;
+//            return this;
+//        }
 
         /**
          * Adds status effects to the fluid type.
@@ -384,6 +392,20 @@ public record SyringeFluidType(
             return this;
         }
 
+        public Builder teleports(int diameter) {
+            this.teleports = Optional.of(new TeleportationData(diameter));
+            return this;
+        }
+        public Builder teleports(TeleportationData teleportationData) {
+            this.teleports = Optional.ofNullable(teleportationData);
+            return this;
+        }
+
+//        public Builder inheritFrom(ResourceLocation id) {
+//            this.inheritFrom = Optional.of(id);
+//            return this;
+//        }
+
         /**
          * Builds the SyringeFluidType instance.
          */
@@ -396,14 +418,16 @@ public record SyringeFluidType(
                     opaque,
                     damage,
                     attackSpeed,
-                    food,
-                    effects.isEmpty() ? Optional.empty() : Optional.of(List.copyOf(effects)),
-                    mobSets.isEmpty() ? Optional.empty() : Optional.of(List.copyOf(mobSets)),
-                    mobPriority,
-                    burning,
-                    extinguishing,
-                    drowning,
-                    freezing
+//                    mobSets.isEmpty() ? Optional.empty() : Optional.of(List.copyOf(mobSets)),
+                    Optional.of(new OnHitEffects(
+                            effects.isEmpty() ? Optional.empty() : Optional.of(List.copyOf(effects)),
+                            food,
+                            burning,
+                            extinguishing,
+                            drowning,
+                            freezing,
+                            teleports))
+//                    inheritFrom
             );
         }
     }

@@ -25,11 +25,10 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.*;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -123,20 +122,24 @@ public class BloodExtractorCategory implements IRecipeCategory<BloodExtractorInf
 
         float rotationX;
         float rotationY;
-        float yaw = 0;
+        float yaw;
 
-        if (BConfigs.client().mouseTracking.get()) {
-            if (BConfigs.client().flippedMobs.get()) {
+        boolean mouseTracking = BConfigs.client().mouseTracking.get();
+        boolean flipped = BConfigs.client().flippedMobs.get();
+
+        if (mouseTracking) {
+            if (flipped) {
                 rotationX = (float) Math.atan((-x + mouseX) / 40.0F);
                 rotationY = (float) Math.atan((-y + mouseY) / 40.0F);
+                yaw = 0;
             } else {
                 rotationX = (float) Math.atan((x - mouseX) / 40.0F);
                 rotationY = (float) Math.atan((y - mouseY) / 40.0F);
                 yaw = 180;
             }
         } else {
-            rotationX = 25f / 40f;
-            rotationY = 1.0f;
+            rotationX = -25f / 40f;
+            rotationY = -1.0f;
             yaw = 180;
         }
 
@@ -144,16 +147,61 @@ public class BloodExtractorCategory implements IRecipeCategory<BloodExtractorInf
         poseStack.translate(x, y, 50);
         poseStack.scale(scale, scale, -scale);
 
-        Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
-        Quaternionf quaternion1 = Axis.XP.rotationDegrees(rotationY * 20.0F);
-        quaternion.mul(quaternion1);
-        poseStack.mulPose(quaternion);
+        Quaternionf baseRotation = Axis.ZP.rotationDegrees(180.0F);
+        Quaternionf pitchRotation = Axis.XP.rotationDegrees(rotationY * 20.0F);
+        baseRotation.mul(pitchRotation);
+        poseStack.mulPose(baseRotation);
 
         float bodyYaw = yaw + rotationX * 40.0F;
 
+        float prevYRot = entity.getYRot();
+        float prevYHeadRot = entity.getYHeadRot();
+
+        float prevBodyYRot = 0f;
+        float prevXRot = 0f;
+
+        boolean isLiving = entity instanceof LivingEntity;
+        LivingEntity living = isLiving ? (LivingEntity) entity : null;
+
+        if (isLiving) {
+            prevBodyYRot = living.yBodyRot;
+            prevXRot = living.getXRot();
+        }
+
         entity.setYRot(bodyYaw);
-        entity.setYHeadRot(bodyYaw);
-        entity.setYBodyRot(bodyYaw);
+        if (isLiving) {
+            living.yBodyRot = bodyYaw;
+        }
+
+        if (mouseTracking) {
+            float headYawRaw;
+            if (flipped) {
+                headYawRaw = (float) Math.toDegrees(Math.atan2(mouseX - x, 40.0));
+            } else {
+                headYawRaw = (float) Math.toDegrees(Math.atan2(x - mouseX, 40.0));
+            }
+            float headYawReduced = headYawRaw * 0.4f;
+            float headYaw = Mth.clamp(headYawReduced, -30f, 30f);
+
+            float headPitchRaw = (float) Math.toDegrees(Math.atan2(mouseY - y, 40.0));
+            float headPitchReduced = headPitchRaw * 0.5f;
+            float headPitch = Mth.clamp(headPitchReduced, -15f, 15f);
+
+            float newHeadYaw = bodyYaw + headYaw;
+
+            entity.setYHeadRot(newHeadYaw);
+
+            if (isLiving) {
+                living.yHeadRot = newHeadYaw;
+                living.setXRot(headPitch);
+            }
+        } else {
+            entity.setYHeadRot(bodyYaw);
+            if (isLiving) {
+                living.yHeadRot = bodyYaw;
+                living.setXRot(0f);
+            }
+        }
 
         dispatcher.setRenderShadow(false);
         MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
@@ -168,6 +216,13 @@ public class BloodExtractorCategory implements IRecipeCategory<BloodExtractorInf
 
         dispatcher.setRenderShadow(true);
         poseStack.popPose();
+
+        entity.setYRot(prevYRot);
+        entity.setYHeadRot(prevYHeadRot);
+        if (isLiving) {
+            living.yBodyRot = prevBodyYRot;
+            living.setXRot(prevXRot);
+        }
     }
     private float calculateEntityScale(Entity entity) {
         var pose = entity.getPose();
@@ -199,65 +254,42 @@ public class BloodExtractorCategory implements IRecipeCategory<BloodExtractorInf
 
         recipe.matchingMobs().stream()
                 .map(Holder::value)
-                .map(type -> {
-                    String cacheKey;
+                .findFirst()
+                .ifPresent(type -> {
+                    Entity entityToRender;
+
                     if (type == EntityType.PLAYER) {
-                        cacheKey = "player";
+                        entityToRender = mc.player;
                     } else {
+                        String cacheKey;
                         long ticks = System.currentTimeMillis() / 1000L;
                         long skinCycleIndex = ticks % 8;
                         cacheKey = type + ":" + skinCycleIndex;
-                    }
 
-                    return entityCache.computeIfAbsent(cacheKey, key -> {
-                        Entity entity;
+                        entityToRender = entityCache.computeIfAbsent(cacheKey, key -> {
+                            Entity e = type.create(mc.level);
+                            if (e != null) {
+                                long hash = type.hashCode() + skinCycleIndex;
+                                e.setUUID(new UUID(0L, hash));
 
-                        if (type == EntityType.PLAYER) {
-                            assert mc.player != null;
-                            GameProfile profile = mc.player.getGameProfile();
-
-                            RemotePlayer fakePlayer = new RemotePlayer(mc.level, profile);
-                            fakePlayer.setPos(0, 0, 0);
-
-                            fakePlayer.setItemSlot(EquipmentSlot.HEAD, mc.player.getItemBySlot(EquipmentSlot.HEAD).copy());
-                            fakePlayer.setItemSlot(EquipmentSlot.CHEST, mc.player.getItemBySlot(EquipmentSlot.CHEST).copy());
-                            fakePlayer.setItemSlot(EquipmentSlot.LEGS, mc.player.getItemBySlot(EquipmentSlot.LEGS).copy());
-                            fakePlayer.setItemSlot(EquipmentSlot.FEET, mc.player.getItemBySlot(EquipmentSlot.FEET).copy());
-
-                            fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, mc.player.getItemInHand(InteractionHand.MAIN_HAND).copy());
-                            fakePlayer.setItemInHand(InteractionHand.OFF_HAND, mc.player.getItemInHand(InteractionHand.OFF_HAND).copy());
-
-                            entity = fakePlayer;
-                        } else {
-                            entity = type.create(mc.level);
-                            if (entity != null) {
-                                long ticks = System.currentTimeMillis() / 1000L;
-                                long skinCycleIndex = ticks % 8;
-                                entity.setUUID(new UUID(0L, type.hashCode() + skinCycleIndex));
+                                CompoundTag tag = new CompoundTag();
+                                tag.putLong("JeiVariantCycleSeed", hash);
+                                e.load(tag);
                             }
-                        }
-
-                        return entity;
-                    });
-                })
-                .filter(Objects::nonNull)
-                .findFirst()
-                .ifPresent(entity -> {
-                    if (entity instanceof RemotePlayer fakePlayer) {
-                        assert mc.player != null;
-                        fakePlayer.setItemSlot(EquipmentSlot.HEAD, mc.player.getItemBySlot(EquipmentSlot.HEAD).copy());
-                        fakePlayer.setItemSlot(EquipmentSlot.CHEST, mc.player.getItemBySlot(EquipmentSlot.CHEST).copy());
-                        fakePlayer.setItemSlot(EquipmentSlot.LEGS, mc.player.getItemBySlot(EquipmentSlot.LEGS).copy());
-                        fakePlayer.setItemSlot(EquipmentSlot.FEET, mc.player.getItemBySlot(EquipmentSlot.FEET).copy());
-                        fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, mc.player.getItemInHand(InteractionHand.MAIN_HAND).copy());
-                        fakePlayer.setItemInHand(InteractionHand.OFF_HAND, mc.player.getItemInHand(InteractionHand.OFF_HAND).copy());
+                            return e;
+                        });
                     }
 
-                    float scale = calculateEntityScale(entity);
+                    if (entityToRender == null) return;
+
+                    float scale = calculateEntityScale(entityToRender);
                     int mobX = 100;
                     int mobY = 59;
-                    AllGuiTextures.JEI_LIGHT.render(graphics, 76, 59);
-                    renderEntity(graphics.pose(), mobX, mobY, scale, entity, (float) mouseX, (float) mouseY);
+                    AllGuiTextures.JEI_LIGHT.render(graphics, 75, 59);
+                    float eyeHeight = entityToRender.getEyeHeight(entityToRender.getPose());
+                    float adjustedMouseY = (float) mouseY + eyeHeight * scale;
+                    renderEntity(graphics.pose(), mobX, mobY, scale, entityToRender, (float) mouseX, adjustedMouseY);
                 });
     }
+
 }

@@ -19,21 +19,26 @@ public class BParticles {
     public static final DeferredRegister<ParticleType<?>> PARTICLES =
             DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, BloodIsFuel.MOD_ID);
 
+    public static RegistryObject<SimpleParticleType> BOILING_BLOOD_DROP;
+    public static RegistryObject<SimpleParticleType> BLOOD_DROP;
+    public static RegistryObject<ParticleType<ColorableDripParticleData>> COLORABLE_DRIPPING;
+
     public static void register(IEventBus modEventBus) {
         PARTICLES.register(modEventBus);
+
+        BOILING_BLOOD_DROP = PARTICLES
+                .register("boiling_blood_drop", () -> new SimpleParticleType(false));
+        BLOOD_DROP = PARTICLES
+                .register("blood_drop", () -> new SimpleParticleType(false));
+        COLORABLE_DRIPPING = PARTICLES
+                .register("colorable_dripping", () ->
+                        new ParticleType<>(false, ColorableDripParticleData.DESERIALIZER) {
+                    @Override
+                    public Codec<ColorableDripParticleData> codec() {
+                                return BCodecs.COLORABLE_DRIP_CODEC;
+                            }
+                });
+
         BloodIsFuel.LOGGER.info("Registering particles for " + BloodIsFuel.NAME);
     }
-
-    public static final RegistryObject<SimpleParticleType> BOILING_BLOOD_DROP =
-            PARTICLES.register("boiling_blood_drop", () -> new SimpleParticleType(false));
-    public static final RegistryObject<SimpleParticleType> BLOOD_DROP =
-            PARTICLES.register("blood_drop", () -> new SimpleParticleType(false));
-    public static final RegistryObject<ParticleType<ColorableDripParticleData>> COLORABLE_DRIPPING =
-            PARTICLES.register("colorable_dripping", () -> new ParticleType<>(false,
-                    ColorableDripParticleData.DESERIALIZER) {
-                @Override
-                public Codec<ColorableDripParticleData> codec() {
-                    return BCodecs.COLORABLE_DRIP_CODEC;
-                }
-            });
 }

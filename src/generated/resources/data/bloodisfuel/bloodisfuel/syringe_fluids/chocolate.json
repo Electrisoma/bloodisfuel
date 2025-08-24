@@ -3,9 +3,11 @@
   "fluids": [
     "#forge:chocolate"
   ],
-  "food": {
-    "nutrition": 4,
-    "saturation": 2.0
+  "on_hit_effects": {
+    "food": {
+      "nutrition": 4,
+      "saturation": 2.0
+    }
   },
   "opaque": true
 }

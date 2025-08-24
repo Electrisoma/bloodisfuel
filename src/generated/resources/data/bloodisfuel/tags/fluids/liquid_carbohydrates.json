@@ -1,15 +1,15 @@
 {
   "values": [
     {
-      "id": "create:honey",
+      "id": "#forge:honey",
       "required": false
     },
     {
-      "id": "create:chocolate",
+      "id": "#forge:chocolate",
       "required": false
     },
     {
-      "id": "create:tea",
+      "id": "#forge:tea",
       "required": false
     },
     {

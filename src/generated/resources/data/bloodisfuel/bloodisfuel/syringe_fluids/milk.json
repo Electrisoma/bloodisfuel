@@ -1,18 +1,17 @@
 {
   "color": 16777215,
-  "effects": [
-    {
-      "effect": {
-        "amplifier": 100,
-        "effect": "minecraft:strength"
-      }
-    }
-  ],
   "fluids": [
     "#forge:milk"
   ],
-  "mobs": [
-    "minecraft:cow"
-  ],
+  "on_hit_effects": {
+    "effects": [
+      {
+        "effect": {
+          "amplifier": 100,
+          "effect": "minecraft:strength"
+        }
+      }
+    ]
+  },
   "opaque": true
 }

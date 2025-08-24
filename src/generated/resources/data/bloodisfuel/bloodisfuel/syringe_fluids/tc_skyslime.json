@@ -1,0 +1,18 @@
+{
+  "color": 7129282,
+  "fluids": [
+    "#tconstruct:sky_slime"
+  ],
+  "on_hit_effects": {
+    "effects": [
+      {
+        "effect": {
+          "amplifier": 1,
+          "duration": 300,
+          "effect": "tconstruct:ricochet"
+        }
+      }
+    ]
+  },
+  "opaque": true
+}
